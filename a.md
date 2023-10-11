@@ -1,6 +1,6 @@
 ---
 layout: 'redirect'
 permalink: /a
-redir_to: 'http://example.com'
+redir_to: 'https://www.stoneydsp.com'
 sitemap: false
 ---
