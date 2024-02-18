@@ -162,6 +162,10 @@ plugin wrappers inherit the same compile/link flags.
 ]=============================================================================]#
 target_link_libraries (shared PUBLIC juce::juce_recommended_lto_flags)
 
+if (BUILD_TESTS)
+  enable_testing ()
+endif ()
+
 if (StoneyDSP_IS_INSTALLABLE)
     include (GNUInstallDirs)
     set (StoneyDSP_INCLUDE_DIR "${CMAKE_INSTALL_INCLUDEDIR}/StoneyDSP" CACHE PATH "StoneyDSP include directory." FORCE)
