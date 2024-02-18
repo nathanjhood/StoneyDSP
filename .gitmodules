@@ -1,6 +1,3 @@
-[submodule "ext/juce-framework/JUCE"]
-	path = ext/juce-framework/JUCE
-	url = https://github.com/juce-framework/JUCE.git
 [submodule "ext/microsoft/vcpkg"]
 	path = ext/microsoft/vcpkg
 	url = https://github.com/microsoft/vcpkg.git
