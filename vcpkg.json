@@ -12,7 +12,19 @@
       "name": "cmakerc"
     },
     {
+      "name": "openssl"
+    },
+    {
       "name": "curl"
+    },
+    {
+      "name": "vcpkg-tool-nodejs"
+    },
+    {
+      "name": "juce",
+      "features": [
+        "curl"
+      ]
     }
   ]
 }

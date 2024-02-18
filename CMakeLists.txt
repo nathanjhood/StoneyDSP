@@ -1,6 +1,10 @@
 cmake_minimum_required (VERSION 3.22...3.28 FATAL_ERROR)
 
-if (EXISTS "${CMAKE_CURRENT_LIST_DIR}/ext/microsoft/vcpkg/scripts/buildsystems/vcpkg.cmake")
+if (DEFINED VCPKG_ROOT)
+    # global install...
+    set (CMAKE_TOOLCHAIN_FILE "${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE FILEPATH "" FORCE)
+elseif (EXISTS "${CMAKE_CURRENT_LIST_DIR}/ext/microsoft/vcpkg/scripts/buildsystems/vcpkg.cmake")
+    # submodule...
     set (CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_LIST_DIR}/ext/microsoft/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE FILEPATH "" FORCE)
 endif ()
 
@@ -65,8 +69,13 @@ set_target_properties (shared
   POSITION_INDEPENDENT_CODE ON
 )
 
+find_package(OpenSSL REQUIRED)
+target_link_libraries(shared PRIVATE OpenSSL::SSL OpenSSL::Crypto)
 
-include (CMakeRC)
+find_package (CURL CONFIG REQUIRED)
+target_link_libraries (shared PRIVATE CURL::libcurl)
+
+find_package (CMakeRC CONFIG REQUIRED)
 # Create a CMakeRC library
 # See https://github.com/vector-of-bool/cmrc/blob/master/README.md#usage
 cmrc_add_resource_library (resources
@@ -95,6 +104,46 @@ else ()
     # if JUCE is installed globally...
     find_package (JUCE CONFIG REQUIRED)
 endif ()
+
+target_link_libraries(shared PRIVATE
+  juce::juce_core
+  juce::juce_audio_basics
+  juce::juce_events
+  juce::juce_audio_devices
+)
+
+#[==[
+juce provides the following common CMake targets:
+
+find_package(JUCE CONFIG REQUIRED)
+target_link_libraries(main PRIVATE
+juce::juce_core
+juce::juce_audio_basics
+juce::juce_events
+juce::juce_audio_devices
+juce::juce_recommended_config_flags
+juce::juce_recommended_lto_flags
+juce::juce_recommended_warning_flags)
+
+See the Juce CMake API documentation and the License for details on how to create targets. Here are other available targets:
+
+juce::juce_graphics
+juce::juce_gui_basics
+juce::juce_gui_extra
+juce::juce_opengl
+juce::juce_analytics
+juce::juce_audio_formats
+juce::juce_audio_plugin_client
+juce::juce_audio_processors
+juce::juce_audio_utils
+juce::juce_box2d
+juce::juce_cryptography
+juce::juce_data_structures
+juce::juce_dsp
+juce::juce_osc
+juce::juce_product_unlocking
+juce::juce_video
+]==]#
 
 #[=============================================================================[
 Create a static library that embeds the contents of the files passed as
