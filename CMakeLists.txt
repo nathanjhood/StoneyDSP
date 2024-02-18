@@ -1,12 +1,25 @@
 cmake_minimum_required (VERSION 3.22...3.28 FATAL_ERROR)
 
+list (APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/share/cmake/Modules")
+
+include (GetGitRef)
+include (WriteVersionFile)
+
+get_git_ref ()
+write_version_file ()
+
 project (
     StoneyDSP
-    VERSION 1.0.0
+    # VERSION 1.0.0
     DESCRIPTION ""
     HOMEPAGE_URL "https://stoneydsp.com"
     LANGUAGES C;CXX
 )
+
+set (PROJECT_VERSION_MAJOR 1                  CACHE STRING "First version number component of the ``PROJECT_VERSION`` variable as set by the ``project()`` command." FORCE)
+set (PROJECT_VERSION_MINOR 0                  CACHE STRING "Second version number component of the ``PROJECT_VERSION`` variable as set by the ``project()`` command." FORCE)
+set (PROJECT_VERSION_PATCH 0                  CACHE STRING "Third version number component of the ``PROJECT_VERSION`` variable as set by the ``project()`` command." FORCE)
+set (PROJECT_VERSION_TWEAK "${git_revision}"  CACHE STRING "Fourth version number component of the ``PROJECT_VERSION`` variable as set by the ``project()`` command." FORCE)
 
 string (TOLOWER "${PROJECT_NAME}" PROJECT_NAME_LOWER)
 string (TOUPPER "${PROJECT_NAME}" PROJECT_NAME_UPPER)
@@ -34,6 +47,8 @@ else ()
     # if JUCE is installed globally...
     find_package (JUCE CONFIG REQUIRED)
 endif ()
+
+
 
 #[=============================================================================[
 This is a target which can be linked to other targets using
