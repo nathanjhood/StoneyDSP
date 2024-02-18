@@ -1,6 +1,6 @@
 /**
  * @file version.h
- * @author your name (you@domain.com)
+ * @author Nathan J. Hood (nathanjhood@googlemail.com)
  * @brief
  * @version 0.1
  * @date 2024-02-18
@@ -9,8 +9,12 @@
  *
  */
 
-
 #ifndef STONEYDSP_VERSION_H
 #define STONEYDSP_VERSION_H
+
+#define STONEYDSP_VERSION_MAJOR
+#define STONEYDSP_VERSION_MINOR
+#define STONEYDSP_VERSION_PATCH
+#define STONEYDSP_VERSION_TWEAK
 
 #endif // STONEYDSP_VERSION_H
