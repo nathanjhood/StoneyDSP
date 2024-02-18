@@ -1,0 +1,18 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
+  "name": "stoneydsp",
+  "version": "1.0.0",
+  "homepage": "https://stoneydsp.com",
+  "maintainers": [
+    "Nathan J. Hood <nathanjhood@googlemail.com>"
+  ],
+  "license": "MIT",
+  "dependencies": [
+    {
+      "name": "cmakerc"
+    },
+    {
+      "name": "curl"
+    }
+  ]
+}
