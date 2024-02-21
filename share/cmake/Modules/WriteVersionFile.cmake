@@ -1,14 +1,20 @@
 include (GetGitRef)
 
-if (NOT DEFINED git_revision)
-    get_git_ref ()
+if (NOT DEFINED STONEYDSP_GIT_COMMIT_REF)
+    stoneydsp_get_git_ref ()
 endif ()
 
-macro (write_version_file)
-    set(VERSION_FILE "${CMAKE_CURRENT_LIST_DIR}/VERSION")
-    file(WRITE "${VERSION_FILE}.tmp" "${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}.${git_revision}\n")
+#[=============================================================================[
+Provides:
+
+    STONEYDSP_VERSION_FILE
+
+]=============================================================================]#
+macro (stoneydsp_write_version_file)
+    set(STONEYDSP_VERSION_FILE "${StoneyDSP_SOURCE_DIR}/VERSION")
+    file(WRITE "${STONEYDSP_VERSION_FILE}.tmp" "${STONEYDSP_VERSION_MAJOR}.${STONEYDSP_VERSION_MINOR}.${STONEYDSP_VERSION_PATCH}.${STONEYDSP_VERSION_TWEAK}\n")
 
     #Copy the file only if it has changed.
-    execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different "${VERSION_FILE}.tmp" "${VERSION_FILE}")
-    file(REMOVE "${VERSION_FILE}.tmp")
+    execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different "${STONEYDSP_VERSION_FILE}.tmp" "${STONEYDSP_VERSION_FILE}")
+    file(REMOVE "${STONEYDSP_VERSION_FILE}.tmp")
 endmacro ()

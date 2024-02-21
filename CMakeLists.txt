@@ -10,12 +10,6 @@ endif ()
 
 list (APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/share/cmake/Modules")
 
-include (CMakePackageConfigHelpers)
-include (GetGitRef)
-include (WriteVersionFile)
-
-get_git_ref ()
-write_version_file ()
 
 option(BUILD_TESTS "Build tests" ON)
 
@@ -27,12 +21,20 @@ project (
     LANGUAGES C;CXX
 )
 
-set (STONEYDSP_VERSION_MAJOR 1                  CACHE STRING "First version number component of the ``PROJECT_VERSION`` variable as set by the ``project()`` command." FORCE)
-set (STONEYDSP_VERSION_MINOR 0                  CACHE STRING "Second version number component of the ``PROJECT_VERSION`` variable as set by the ``project()`` command." FORCE)
-set (STONEYDSP_VERSION_PATCH 0                  CACHE STRING "Third version number component of the ``PROJECT_VERSION`` variable as set by the ``project()`` command." FORCE)
-set (STONEYDSP_VERSION_TWEAK "${git_revision}"  CACHE STRING "Fourth version number component of the ``PROJECT_VERSION`` variable as set by the ``project()`` command." FORCE)
+include (CMakePackageConfigHelpers)
+include (GetGitRef)
+include (WriteVersionFile)
+
+stoneydsp_get_git_ref ()
+
+set (STONEYDSP_VERSION_MAJOR 1                                                  CACHE STRING "First version number component of the ``PROJECT_VERSION`` variable as set by the ``project()`` command." FORCE)
+set (STONEYDSP_VERSION_MINOR 0                                                  CACHE STRING "Second version number component of the ``PROJECT_VERSION`` variable as set by the ``project()`` command." FORCE)
+set (STONEYDSP_VERSION_PATCH 0                                                  CACHE STRING "Third version number component of the ``PROJECT_VERSION`` variable as set by the ``project()`` command." FORCE)
+set (STONEYDSP_VERSION_TWEAK "${STONEYDSP_GIT_COMMIT_REF}"                      CACHE STRING "Fourth version number component of the ``PROJECT_VERSION`` variable as set by the ``project()`` command." FORCE)
 
 set (STONEYDSP_VERSION ${STONEYDSP_VERSION_MAJOR}.${STONEYDSP_VERSION_MINOR}.${STONEYDSP_VERSION_PATCH} CACHE STRING "StoneyDSP Version Number." FORCE)
+
+stoneydsp_write_version_file ()
 
 string (TOLOWER "${PROJECT_NAME}" PROJECT_NAME_LOWER)
 string (TOUPPER "${PROJECT_NAME}" PROJECT_NAME_UPPER)
