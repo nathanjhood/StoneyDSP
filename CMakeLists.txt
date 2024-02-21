@@ -11,7 +11,11 @@ endif ()
 list (APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/share/cmake/Modules")
 
 
-option(BUILD_TESTS "Build tests" ON)
+option (BUILD_TESTS "Build tests" ON)
+
+# IDE support
+set (JUCE_ENABLE_MODULE_SOURCE_GROUPS ON)
+set_property(GLOBAL PROPERTY USE_FOLDERS YES)
 
 project (
     StoneyDSP
