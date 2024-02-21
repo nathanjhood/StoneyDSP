@@ -3,9 +3,14 @@
 build
 package-lock.json
 yarn.lock
-.vscode
 !*.ico
 !public/**/*.png
+
+!.vscode/c_cpp_properties.json
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/settings.json
+!.vscode/tasks.json
 
 # https://github.com/github/gitignore/blob/main/C%2B%2B.gitignore
 

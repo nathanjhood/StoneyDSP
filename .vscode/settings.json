@@ -1,0 +1,102 @@
+{
+	"C_Cpp.autoAddFileAssociations": true,
+
+	"cmake.sourceDirectory": "${workspaceFolder}",
+	"cmake.buildDirectory": "${workspaceFolder}/build",
+	"cmake.installPrefix": "${workspaceFolder}/install",
+	"cmake.configureOnEdit": false,
+	"cmake.configureOnOpen": false,
+	"cmake.automaticReconfigure": false,
+
+	"cmake.debugConfig": {
+    "cwd": "${workspaceFolder}",
+    "symbolSearchPath": "${workspaceFolder}",
+    "miDebuggerPath": "/usr/bin/gdb",
+    "MIMode": "gdb",
+    "console": "newExternalWindow",
+    "stopAtEntry": false,
+    "logging": {
+      "engineLogging": false,
+      "exceptions": true,
+      "moduleLoad": true,
+      "trace": false,
+      "traceResponse": false,
+      "programOutput": true
+    }
+  },
+
+	"json.format.enable": true,
+	"json.schemaDownload.enable": true,
+	"json.validate.enable": true,
+	"json.schemas": [
+		{
+			"fileMatch": [
+				"vcpkg.json"
+			],
+			"url": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json"
+		},
+		{
+			"fileMatch": [
+				"vcpkg-configuration.json"
+			],
+			"url": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg-configuration.schema.json"
+		}
+	],
+
+	"doxdocgen.generic.useGitUserName": true,
+  "doxdocgen.generic.useGitUserEmail": true,
+
+	"terminal.integrated.profiles.windows": {
+		"MSYS2 UCRT64": {
+			"path": "cmd.exe",
+			"args": [
+				"/c",
+				"C:\\msys64\\msys2_shell.cmd -defterm -here -no-start -ucrt64"
+			]
+		},
+		"MSYS2 MINGW64": {
+			"path": "cmd.exe",
+			"args": [
+				"/c",
+				"C:\\msys64\\msys2_shell.cmd -defterm -here -no-start -mingw64"
+			]
+		},
+		"MSYS2 CLANG64": {
+			"path": "cmd.exe",
+			"args": [
+				"/c",
+				"C:\\msys64\\msys2_shell.cmd -defterm -here -no-start -clang64"
+			]
+		},
+		"MSYS2 MINGW32": {
+			"path": "cmd.exe",
+			"args": [
+				"/c",
+				"C:\\msys64\\msys2_shell.cmd -defterm -here -no-start -mingw32"
+			]
+		},
+		"MSYS2 CLANG32": {
+			"path": "cmd.exe",
+			"args": [
+				"/c",
+				"C:\\msys64\\msys2_shell.cmd -defterm -here -no-start -clang32"
+			]
+		},
+		"MSYS2 CLANGARM64": {
+			"path": "cmd.exe",
+			"args": [
+				"/c",
+				"C:\\msys64\\msys2_shell.cmd -defterm -here -no-start -clangarm64"
+			]
+		},
+		"MSYS2 MSYS64": {
+			"path": "cmd.exe",
+			"args": [
+				"/c",
+				"C:\\msys64\\msys2_shell.cmd -defterm -here -no-start -msys2"
+			]
+		}
+  },
+
+	"files.associations": {},
+}
