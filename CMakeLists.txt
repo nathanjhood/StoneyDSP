@@ -288,6 +288,12 @@ juce_add_module(
     ALIAS_NAMESPACE StoneyDSP
     INSTALL_PATH "include/StoneyDSP-${STONEYDSP_VERSION}/modules"
 )
+juce_add_module(
+    # StoneyDSP::stoneydsp_graphics
+    modules/stoneydsp_graphics
+    ALIAS_NAMESPACE StoneyDSP
+    INSTALL_PATH "include/StoneyDSP-${STONEYDSP_VERSION}/modules"
+)
 
 add_library (StoneyDSP INTERFACE)
 add_library (StoneyDSP::StoneyDSP ALIAS StoneyDSP)
@@ -295,6 +301,7 @@ target_link_libraries (StoneyDSP
     INTERFACE
     StoneyDSP::stoneydsp_core
     StoneyDSP::stoneydsp_audio
+    StoneyDSP::stoneydsp_graphics
 )
 
 add_executable (Main "src/main.cpp")
