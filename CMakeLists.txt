@@ -10,11 +10,14 @@ endif ()
 
 list (APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/share/cmake/Modules")
 
+include (CMakePackageConfigHelpers)
 include (GetGitRef)
 include (WriteVersionFile)
 
 get_git_ref ()
 write_version_file ()
+
+option(BUILD_TESTS "Build tests" ON)
 
 project (
     StoneyDSP
@@ -24,13 +27,21 @@ project (
     LANGUAGES C;CXX
 )
 
-set (PROJECT_VERSION_MAJOR 1                  CACHE STRING "First version number component of the ``PROJECT_VERSION`` variable as set by the ``project()`` command." FORCE)
-set (PROJECT_VERSION_MINOR 0                  CACHE STRING "Second version number component of the ``PROJECT_VERSION`` variable as set by the ``project()`` command." FORCE)
-set (PROJECT_VERSION_PATCH 0                  CACHE STRING "Third version number component of the ``PROJECT_VERSION`` variable as set by the ``project()`` command." FORCE)
-set (PROJECT_VERSION_TWEAK "${git_revision}"  CACHE STRING "Fourth version number component of the ``PROJECT_VERSION`` variable as set by the ``project()`` command." FORCE)
+set (STONEYDSP_VERSION_MAJOR 1                  CACHE STRING "First version number component of the ``PROJECT_VERSION`` variable as set by the ``project()`` command." FORCE)
+set (STONEYDSP_VERSION_MINOR 0                  CACHE STRING "Second version number component of the ``PROJECT_VERSION`` variable as set by the ``project()`` command." FORCE)
+set (STONEYDSP_VERSION_PATCH 0                  CACHE STRING "Third version number component of the ``PROJECT_VERSION`` variable as set by the ``project()`` command." FORCE)
+set (STONEYDSP_VERSION_TWEAK "${git_revision}"  CACHE STRING "Fourth version number component of the ``PROJECT_VERSION`` variable as set by the ``project()`` command." FORCE)
+
+set (STONEYDSP_VERSION ${STONEYDSP_VERSION_MAJOR}.${STONEYDSP_VERSION_MINOR}.${STONEYDSP_VERSION_PATCH} CACHE STRING "StoneyDSP Version Number." FORCE)
 
 string (TOLOWER "${PROJECT_NAME}" PROJECT_NAME_LOWER)
 string (TOUPPER "${PROJECT_NAME}" PROJECT_NAME_UPPER)
+
+
+if (PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+endif ()
+if (StoneyDSP_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+endif ()
 
 set (StoneyDSP_INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/include/StoneyDSP")
 
@@ -40,27 +51,48 @@ list (APPEND STONEYDSP_SHARED_HEADERS
     "StoneyDSP.h"
     "resources.h"
 )
-
-foreach (STONEYDSP_SHARED_HEADER IN LISTS STONEYDSP_SHARED_HEADERS)
-  configure_file (
-      "include/StoneyDSP/${STONEYDSP_SHARED_HEADER}"
-      "include/StoneyDSP/${STONEYDSP_SHARED_HEADER}"
-  )
-endforeach ()
-
-add_library (shared SHARED)
-add_library (StoneyDSP::shared ALIAS shared)
-target_sources (shared
-    PRIVATE
-    "src/StoneyDSP/resources.cpp"
-    "src/StoneyDSP/shared.cpp"
+set (STONEYDSP_SHARED_SOURCES "")
+list (APPEND STONEYDSP_SHARED_SOURCES
+    "resources.cpp"
+    "shared.cpp"
 )
-target_include_directories (shared
+
+add_library (Shared SHARED)
+add_library (StoneyDSP::shared ALIAS Shared)
+# directories
+target_include_directories (Shared
     PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include/StoneyDSP>
     $<INSTALL_INTERFACE:include/StoneyDSP>
 )
-set_target_properties (shared
+# files
+foreach (STONEYDSP_SHARED_HEADER IN LISTS STONEYDSP_SHARED_HEADERS)
+    configure_file (
+        "include/StoneyDSP/${STONEYDSP_SHARED_HEADER}" # SRC_DIR
+        "include/StoneyDSP/${STONEYDSP_SHARED_HEADER}" # BIN_DIR
+		@ONLY
+    )
+    target_sources (Shared
+        PUBLIC
+        FILE_SET stoneydsp_Shared_PUBLIC_HEADERS
+        TYPE HEADERS
+        BASE_DIRS
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include/StoneyDSP>
+        $<INSTALL_INTERFACE:include/StoneyDSP>
+        FILES
+        # include/pacman/common/ini.h
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include/StoneyDSP/${STONEYDSP_SHARED_HEADER}>
+        $<INSTALL_INTERFACE:include/StoneyDSP/${STONEYDSP_SHARED_HEADER}>
+    )
+endforeach ()
+foreach (STONEYDSP_SHARED_SOURCE IN LISTS STONEYDSP_SHARED_SOURCES)
+    target_sources (Shared
+        PRIVATE
+        "src/StoneyDSP/${STONEYDSP_SHARED_SOURCE}"
+    )
+endforeach ()
+# properties
+set_target_properties (Shared
   PROPERTIES
   ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib"
   LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib"
@@ -69,23 +101,23 @@ set_target_properties (shared
   POSITION_INDEPENDENT_CODE ON
 )
 
-find_package(OpenSSL REQUIRED)
-target_link_libraries(shared PRIVATE OpenSSL::SSL OpenSSL::Crypto)
+find_package (OpenSSL REQUIRED)
+target_link_libraries (Shared PRIVATE OpenSSL::SSL OpenSSL::Crypto)
 
 find_package (CURL CONFIG REQUIRED)
-target_link_libraries (shared PRIVATE CURL::libcurl)
+target_link_libraries (Shared PRIVATE CURL::libcurl)
 
 find_package (CMakeRC CONFIG REQUIRED)
 # Create a CMakeRC library
 # See https://github.com/vector-of-bool/cmrc/blob/master/README.md#usage
-cmrc_add_resource_library (resources
-	ALIAS StoneyDSP::resources
-	NAMESPACE StoneyDSP::resources
-  # Resources to compile...
-  "LICENSE"
-  "VERSION"
+cmrc_add_resource_library (Resources
+	ALIAS StoneyDSP::Resources
+	NAMESPACE StoneyDSP::Resources
+    # Resources to compile...
+    "LICENSE"
+    "VERSION"
 )
-set_target_properties (resources
+set_target_properties (Resources
   PROPERTIES
   ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib"
   LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib"
@@ -94,7 +126,94 @@ set_target_properties (resources
   POSITION_INDEPENDENT_CODE ON
 )
 
-target_link_libraries (shared PRIVATE StoneyDSP::resources)
+# include (public/images/CMakeLists.txt)
+if (NOT DEFINED CMakeRC_DIR)
+    find_package (CMakeRC)
+	if (NOT DEFINED CMakeRC_DIR)
+		message (FATAL_ERROR "Cannot find CMakeRC?")
+		return ()
+	endif ()
+endif ()
+
+set (STONEYDSP_ICONS_PNG_WIDE "")
+list (APPEND STONEYDSP_ICONS_PNG_WIDE
+	public/images/w_icon__1024x768.png
+	public/images/w_icon__196x128.png
+	public/images/w_icon__384x256.png
+	public/images/w_icon__768x512.png
+)
+
+cmrc_add_resource_library (Icons
+
+	ALIAS StoneyDSP::Icons
+	NAMESPACE StoneyDSP::Icons
+	WHENCE public/images
+	PREFIX StoneyDSP/Icons
+
+    # SOURCES
+	public/images/favicon.ico
+	${STONEYDSP_ICONS_PNG_WIDE}
+)
+
+set (STONEYDSP_ICONS_PNG "")
+list (APPEND STONEYDSP_ICONS_PNG
+	public/images/favicon/android-chrome-192x192.png
+	public/images/favicon/android-chrome-512x512.png
+	public/images/favicon/android-icon-144x144.png
+	public/images/favicon/android-icon-192x192.png
+	public/images/favicon/android-icon-36x36.png
+	public/images/favicon/android-icon-48x48.png
+	public/images/favicon/android-icon-72x72.png
+	public/images/favicon/android-icon-96x96.png
+	public/images/favicon/favicon-144x144.png
+	public/images/favicon/favicon-168x168.png
+	public/images/favicon/favicon-256x256.png
+	public/images/favicon/favicon-32x32.png
+	public/images/favicon/favicon-48x48.png
+	public/images/favicon/favicon-512x512.png
+	public/images/favicon/favicon-64x64.png
+	public/images/favicon/favicon-96x96.png
+	public/images/favicon/ms-icon-150x150.png
+	public/images/favicon/ms-icon-310x310.png
+	public/images/favicon/ms-icon-70x70.png
+)
+cmrc_add_resources (Icons
+
+	WHENCE public/images/favicon
+	PREFIX StoneyDSP/Icons
+
+	${STONEYDSP_ICONS_PNG}
+)
+
+set (STONEYDSP_ICONS_ICO "")
+list (APPEND STONEYDSP_ICONS_ICO
+	public/images/favicon/favicon__144x144.ico
+	public/images/favicon/favicon__168x168.ico
+	public/images/favicon/favicon__256x256.ico
+	public/images/favicon/favicon__32x32.ico
+	public/images/favicon/favicon__48x48.ico
+	public/images/favicon/favicon__64x64.ico
+	public/images/favicon/favicon__96x96.ico
+)
+cmrc_add_resources (Icons
+
+	WHENCE public/images/favicon
+	PREFIX StoneyDSP/Icons
+
+	${STONEYDSP_ICONS_ICO}
+)
+
+set_target_properties (Icons
+  PROPERTIES
+  ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib"
+  LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib"
+  RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin"
+  PDB_OUTPUT_DIRECTORY     "${CMAKE_CURRENT_BINARY_DIR}/bin"
+  POSITION_INDEPENDENT_CODE ON
+)
+
+
+
 
 # if (EXISTS "${CMAKE_CURRENT_LIST_DIR}/ext/juce-framework/JUCE/CMakeLists.txt")
 if (FALSE)
@@ -105,119 +224,135 @@ else ()
     find_package (JUCE CONFIG REQUIRED)
 endif ()
 
-target_link_libraries(shared PRIVATE
-  juce::juce_core
-  juce::juce_audio_basics
-  juce::juce_events
-  juce::juce_audio_devices
-)
-
 #[==[
 juce provides the following common CMake targets:
 
 find_package(JUCE CONFIG REQUIRED)
 target_link_libraries(main PRIVATE
-juce::juce_core
-juce::juce_audio_basics
-juce::juce_events
-juce::juce_audio_devices
-juce::juce_recommended_config_flags
-juce::juce_recommended_lto_flags
-juce::juce_recommended_warning_flags)
+    juce::juce_core
+    juce::juce_audio_basics
+    juce::juce_events
+    juce::juce_audio_devices
+    juce::juce_graphics
+    juce::juce_gui_basics
+    juce::juce_gui_extra
+    juce::juce_opengl
+    juce::juce_analytics
+    juce::juce_audio_formats
+    juce::juce_audio_plugin_client
+    juce::juce_audio_processors
+    juce::juce_audio_utils
+    juce::juce_box2d
+    juce::juce_cryptography
+    juce::juce_data_structures
+    juce::juce_dsp
+    juce::juce_osc
+    juce::juce_product_unlocking
+    juce::juce_video
 
-See the Juce CMake API documentation and the License for details on how to create targets. Here are other available targets:
+    juce::juce_recommended_config_flags
+    juce::juce_recommended_lto_flags
+    juce::juce_recommended_warning_flags
+)
 
-juce::juce_graphics
-juce::juce_gui_basics
-juce::juce_gui_extra
-juce::juce_opengl
-juce::juce_analytics
-juce::juce_audio_formats
-juce::juce_audio_plugin_client
-juce::juce_audio_processors
-juce::juce_audio_utils
-juce::juce_box2d
-juce::juce_cryptography
-juce::juce_data_structures
-juce::juce_dsp
-juce::juce_osc
-juce::juce_product_unlocking
-juce::juce_video
 ]==]#
 
-#[=============================================================================[
-Create a static library that embeds the contents of the files passed as
-arguments to this function. Adds a library target called <name> which can be
-linked into other targets using target_link_libraries.
-
-The HEADER_NAME argument is optional. If provided, the generated header will be
-given the requested name, otherwise the generated header will be named
-"BinaryData.h". In completely new projects, you should provide a unique name
-here, so that projects containing more than one binary data target are able to
-include the binary data headers without ambiguity.
-
-The NAMESPACE argument is also optional. If not provided, the generated files
-will use the default namespace BinaryData. Each of the files located at the
-paths following SOURCES will be encoded and embedded in the resulting static
-library. This library can be linked as normal using
-target_link_libraries(<otherTarget> PRIVATE <name>), and the header can be
-included using #include <BinaryData.h>.
-]=============================================================================]#
-juce_add_binary_data (binary_data
-    # [HEADER_NAME ...]
-    # [NAMESPACE ...]
-    # NAMESPACE StoneyDSP
-    SOURCES "VERSION"
+target_link_libraries (Shared
+    PRIVATE
+    juce::juce_core
+    juce::juce_audio_basics
+    juce::juce_events
+    juce::juce_audio_devices
+    PUBLIC
+    juce::juce_recommended_warning_flags
+    juce::juce_recommended_config_flags
+    juce::juce_recommended_lto_flags
 )
-set_target_properties (binary_data
-  PROPERTIES
-  ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib"
-  LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib"
-  RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin"
-  PDB_OUTPUT_DIRECTORY     "${CMAKE_CURRENT_BINARY_DIR}/bin"
-  POSITION_INDEPENDENT_CODE ON
+target_compile_definitions (Shared PUBLIC DONT_SET_USING_JUCE_NAMESPACE)
+
+target_link_libraries (Shared
+    PRIVATE
+    StoneyDSP::Resources
+    StoneyDSP::Icons
 )
-target_link_libraries (shared PRIVATE binary_data)
 
-#[=============================================================================[
-This is a target which can be linked to other targets using
-target_link_libraries, in order to enable the recommended JUCE warnings when
-building them.
+juce_add_module(
+    # StoneyDSP::stoneydsp_core
+    modules/stoneydsp_core
+    ALIAS_NAMESPACE StoneyDSP
+    INSTALL_PATH "include/StoneyDSP-${STONEYDSP_VERSION}/modules"
+)
+juce_add_module(
+    # StoneyDSP::stoneydsp_audio
+    modules/stoneydsp_audio
+    ALIAS_NAMESPACE StoneyDSP
+    INSTALL_PATH "include/StoneyDSP-${STONEYDSP_VERSION}/modules"
+)
 
-This target just sets compiler and linker flags, and doesn't have any associated
-libraries or include directories. When building plugins, it's probably desirable
-to link this to the shared code target with PUBLIC visibility, so that all the
-plugin wrappers inherit the same compile/link flags.
-]=============================================================================]#
-target_link_libraries (shared PUBLIC juce::juce_recommended_warning_flags)
+add_library (StoneyDSP INTERFACE)
+add_library (StoneyDSP::StoneyDSP ALIAS StoneyDSP)
+target_link_libraries (StoneyDSP
+    INTERFACE
+    StoneyDSP::stoneydsp_core
+    StoneyDSP::stoneydsp_audio
+)
 
-#[=============================================================================[
-This is a target which can be linked to other targets using
-target_link_libraries, in order to enable the recommended JUCE optimisation and
-debug flags.
+add_executable (Main "src/main.cpp")
+target_link_libraries (Main PRIVATE StoneyDSP::StoneyDSP)
+set_target_properties (Main
+    PROPERTIES
+    ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib"
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib"
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin"
+    PDB_OUTPUT_DIRECTORY     "${CMAKE_CURRENT_BINARY_DIR}/bin"
+    # POSITION_INDEPENDENT_CODE ON
+)
 
-This target just sets compiler and linker flags, and doesn't have any associated
-libraries or include directories. When building plugins, it's probably desirable
-to link this to the shared code target with PUBLIC visibility, so that all the
-plugin wrappers inherit the same compile/link flags.
-]=============================================================================]#
-target_link_libraries (shared PUBLIC juce::juce_recommended_config_flags)
+file (WRITE "${StoneyDSP_BINARY_DIR}/StoneyDSPConfig.cmake.in" [[
+@PACKAGE_INIT@
 
-#[=============================================================================[
-This is a target which can be linked to other targets using
-target_link_libraries, in order to enable the recommended JUCE link time
-optimisation settings.
+include(CMakeFindDependencyMacro)
+if(@USE_CURL@)
+	find_dependency(libcurl @CURL_VERSION_MAJOR@)
+endif()
+if(@USE_OPENSSL@)
+	find_dependency(OpenSSL @OPENSSL_VERSION_MAJOR@)
+endif()
+if(@USE_ZLIB@)
+	find_dependency(ZLIB @ZLIB_VERSION_MAJOR@)
+endif()
 
-This target just sets compiler and linker flags, and doesn't have any associated
-libraries or include directories. When building plugins, it's probably desirable
-to link this to the shared code target with PUBLIC visibility, so that all the
-plugin wrappers inherit the same compile/link flags.
-]=============================================================================]#
-target_link_libraries (shared PUBLIC juce::juce_recommended_lto_flags)
+include("${CMAKE_CURRENT_LIST_DIR}/@TARGETS_EXPORT_NAME@.cmake")
+check_required_components("@PROJECT_NAME@")
 
-if (BUILD_TESTS)
-  enable_testing ()
-endif ()
+# Alias for either shared or static library
+if(NOT TARGET ${PROJECT_NAME}::Shared)
+	add_library(${PROJECT_NAME}::Shared ALIAS ${PROJECT_NAME}::${LIB_SELECTED})
+endif()
+]])
+
+# create cmake config file
+configure_package_config_file (
+    ${PROJECT_BINARY_DIR}/StoneyDSPConfig.cmake.in
+    ${PROJECT_BINARY_DIR}/share/cmake/StoneyDSPConfig.cmake
+  INSTALL_DESTINATION
+    ${CMAKE_INSTALL_LIBDIR}/cmake/StoneyDSP
+)
+
+# generate the version file for the cmake config file
+write_basic_package_version_file (
+	${PROJECT_BINARY_DIR}/share/cmake/StoneyDSPConfigVersion.cmake
+	VERSION ${STONEYDSP_VERSION}
+	COMPATIBILITY AnyNewerVersion
+)
+
+if(BUILD_TESTS AND (StoneyDSP_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR))
+    enable_testing()
+    # if(NOT MSVC)
+    #     add_compile_options(-Wall -Wextra)
+    # endif()
+    # add_subdirectory(tests)
+endif()
 
 if (StoneyDSP_IS_INSTALLABLE)
     include (GNUInstallDirs)
