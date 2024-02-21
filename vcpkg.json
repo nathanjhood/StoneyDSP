@@ -8,6 +8,14 @@
   ],
   "license": "MIT",
   "dependencies": [
+		{
+      "name": "vcpkg-cmake",
+      "host": true
+    },
+		{
+      "name": "vcpkg-cmake-config",
+      "host": true
+    },
     {
       "name": "cmakerc"
     },
@@ -20,6 +28,12 @@
     {
       "name": "vcpkg-tool-nodejs"
     },
+		{
+			"name": "node-addon-api"
+		},
+		{
+			"name": "node-api-headers"
+		},
     {
       "name": "juce",
       "features": [
