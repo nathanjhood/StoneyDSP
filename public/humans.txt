@@ -1,0 +1,19 @@
+/* TEAM */
+
+	StoneyDSP is: Nathan J. Hood
+	LinkedIn: https://www.linkedin.com/in/nathan-hood-ab219111b/
+	From: Bristol, UK
+
+
+/* THANKS */
+
+	Rodrigo, Karlos & team @ Supabase support
+	Christopher Carroll Smith - thanks for the additional support
+
+
+/* SITE */
+
+	Last update:2023/10/13
+	Language: English
+	Doctype:HTML5
+	IDE: VSCode
