@@ -2,3 +2,30 @@
 *.{cmd,[cC][mM][dD]} text eol=crlf
 *.{bat,[bB][aA][tT]} text eol=crlf
 *.{sln,[sS][lL][nN]} text eol=crlf
+
+*.py diff=python
+
+# All source files should have unix line-endings in the repository, but convert to native line-endings on checkout
+# Keep the include header(s) with LFs to make sure it is uploaded, hashed etc with LF
+*.{c,h} text
+*.{cc,hh} text
+*.{cpp,hpp} text
+*.{c++,h++} text
+*.{cxx,hxx} text
+*.{cppm,inl,ipp,ixx,tlh,tli} text
+
+*.{json,js,jsx,ts,tsx} text
+*.md text
+*.cmake text
+CMakeLists.txt text
+
+# Keep these with LFs to make sure uploaded, hashed etc with LF
+LICENSE eol=lf
+COPYING eol=lf
+HACKING eol=lf
+AUTHORS eol=lf
+
+*.bin binary
+*.pfx binary
+*.png binary
+*.ico binary
