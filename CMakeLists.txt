@@ -317,6 +317,34 @@ set_target_properties (Main
     # POSITION_INDEPENDENT_CODE ON
 )
 
+set (STONEYDSP_MODULES "")
+list (APPEND STONEYDSP_MODULES
+    stoneydsp_core
+    stoneydsp_audio
+    stoneydsp_graphics
+)
+
+# export (
+#     TARGETS ${STONEYDSP_MODULES}
+#     FILE ${CMAKE_BINARY_DIR}/share/cmake/StoneyDSPTargets.cmake
+#     NAMESPACE StoneyDSP::
+# )
+
+# install(
+#     EXPORT StoneyDSPTargets
+#     FILE StoneyDSPTargets.cmake
+#     NAMESPACE StoneyDSP::
+#     DESTINATION lib/cmake/StoneyDSP
+# )
+
+# install(TARGETS ${STONEYDSP_MODULES}
+#     EXPORT StoneyDSPTargets
+#     LIBRARY DESTINATION  "${CMAKE_INSTALL_LIBDIR}"
+#     ARCHIVE DESTINATION  "${CMAKE_INSTALL_LIBDIR}"
+#     RUNTIME DESTINATION  "${CMAKE_INSTALL_BINDIR}"
+#     INCLUDES DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
+# )
+
 file (WRITE "${StoneyDSP_BINARY_DIR}/StoneyDSPConfig.cmake.in" [[
 @PACKAGE_INIT@
 
