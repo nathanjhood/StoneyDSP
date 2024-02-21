@@ -14,7 +14,7 @@
  ******************************************************************************/
 #pragma once
 
-#define __STONEYDSP_CORE_VERSION_H__
+#define STONEYDSP_CORE_VERSION_H_INCLUDED
 
 #ifndef STRINGIFY
 # define STRINGIFY_HELPER(n) #n

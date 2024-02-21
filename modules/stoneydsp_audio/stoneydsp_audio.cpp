@@ -1,28 +1,16 @@
 /**
  * @file stoneydsp_audio.cpp
- * @author your name (you@domain.com)
+ * @author Nathan J. Hood <nathanjhood@googlemail.com>
  * @brief
- * @version 0.1
+ * @version 1.0.0
  * @date 2024-02-21
  *
  * @copyright Copyright (c) 2024
  *
  */
 
-#ifdef __STONEYDSP_AUDIO_HPP__
+#ifdef STONEYDSP_AUDIO_H_INCLUDED
  #error "Incorrect usage of 'stoneydsp_audio.cpp'!"
 #endif
-
-namespace StoneyDSP
-{
-/**
- * @brief The 'StoneyDSP::Audio' namespace.
- *
- */
-namespace Audio
-{
-
-} // namespace Audio
-} // namespace StoneyDSP
 
 #include "stoneydsp_audio.h"

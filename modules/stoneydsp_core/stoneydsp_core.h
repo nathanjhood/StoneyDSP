@@ -1,17 +1,37 @@
 /**
  * @file stoneydsp_core.h
- * @author your name (you@domain.com)
+ * @author Nathan J. Hood <nathanjhood@googlemail.com>
  * @brief
- * @version 0.1
+ * @version 1.0.0
  * @date 2024-02-21
  *
  * @copyright Copyright (c) 2024
  *
  */
 
+
+/*******************************************************************************
+
+ BEGIN_JUCE_MODULE_DECLARATION
+
+  ID:                 stoneydsp_core
+  vendor:             stoneydsp
+  version:            1.0.0
+  name:               StoneyDSP core classes
+  description:        The essential set of basic StoneyDSP classes, as required by all the other StoneyDSP modules.
+  website:            http://stoneydsp.com
+  license:            MIT
+  minimumCppStandard: 17
+
+  dependencies:       juce_core
+
+ END_JUCE_MODULE_DECLARATION
+
+*******************************************************************************/
+
 #pragma once
 
-#define __STONEYDSP_CORE_H__
+#define STONEYDSP_CORE_H_INCLUDED
 
 #include "version/stoneydsp_version.h"
 
@@ -228,3 +248,15 @@ const Versions stoneydsp_version = {
 const Versions Version = stoneydsp_version;
 
 STONEYDSP_END_NAMESPACE
+
+namespace StoneyDSP
+{
+/**
+ * @brief The ```StoneyDSP::Core``` namespace.
+ *
+ */
+namespace Core
+{
+
+} // namespace Core
+} // namespace StoneyDSP

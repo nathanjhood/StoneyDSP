@@ -1,8 +1,8 @@
 /**
  * @file stoneydsp_types.h
- * @author StoneyDSP (nathanjhood@googlemail.com)
+ * @author Nathan J. Hood <nathanjhood@googlemail.com>
  * @brief
- * @version 0.1
+ * @version 1.0.0
  * @date 2024-02-21
  *
  * @copyright Copyright (c) 2024
@@ -11,4 +11,4 @@
 
 #pragma once
 
-#define __STONEYDSP_TYPES_H__
+#define STONEYDSP_TYPES_H_INCLUDED

@@ -1,28 +1,16 @@
 /**
  * @file stoneydsp_core.cpp
- * @author your name (you@domain.com)
+ * @author Nathan J. Hood <nathanjhood@googlemail.com>
  * @brief
- * @version 0.1
+ * @version 1.0.0
  * @date 2024-02-21
  *
  * @copyright Copyright (c) 2024
  *
  */
 
-#ifdef __STONEYDSP_CORE_HPP__
+#ifdef STONEYDSP_CORE_H_INCLUDED
  #error "Incorrect usage of 'stoneydsp_core.cpp'!"
 #endif
-
-namespace StoneyDSP
-{
-/**
- * @brief The 'StoneyDSP::Core' namespace.
- *
- */
-namespace Core
-{
-
-} // namespace Core
-} // namespace StoneyDSP
 
 #include "stoneydsp_core.h"
