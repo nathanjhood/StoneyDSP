@@ -10,13 +10,6 @@ endif ()
 
 list (APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/share/cmake/Modules")
 
-
-option (BUILD_TESTS "Build tests" ON)
-
-# IDE support
-set (JUCE_ENABLE_MODULE_SOURCE_GROUPS ON)
-set_property(GLOBAL PROPERTY USE_FOLDERS YES)
-
 project (
     StoneyDSP
     # VERSION 1.0.0
@@ -25,7 +18,21 @@ project (
     LANGUAGES C;CXX
 )
 
-include (CMakePackageConfigHelpers)
+option (BUILD_TESTS "Build tests" ON)
+
+# IDE support
+set (JUCE_ENABLE_MODULE_SOURCE_GROUPS ON)
+set_property(GLOBAL PROPERTY USE_FOLDERS YES)
+
+set (STONEYDSP_MODULES_DIR "${StoneyDSP_SOURCE_DIR}/modules" CACHE INTERNAL "The path to StoneyDSP modules")
+
+set_directory_properties(PROPERTIES
+    StoneyDSP_COMPANY_NAME       "StoneyDSP"
+    StoneyDSP_COMPANY_WEBSITE    "https://stoneydsp.com"
+    StoneyDSP_COMPANY_EMAIL      "nathanjhood@googlemail.com"
+    StoneyDSP_COMPANY_COPYRIGHT  "Copyright (c) 2024 - Nathan J. Hood"
+)
+
 include (GetGitRef)
 include (WriteVersionFile)
 
@@ -328,27 +335,6 @@ list (APPEND STONEYDSP_MODULES
     stoneydsp_graphics
 )
 
-# export (
-#     TARGETS ${STONEYDSP_MODULES}
-#     FILE ${CMAKE_BINARY_DIR}/share/cmake/StoneyDSPTargets.cmake
-#     NAMESPACE StoneyDSP::
-# )
-
-# install(
-#     EXPORT StoneyDSPTargets
-#     FILE StoneyDSPTargets.cmake
-#     NAMESPACE StoneyDSP::
-#     DESTINATION lib/cmake/StoneyDSP
-# )
-
-# install(TARGETS ${STONEYDSP_MODULES}
-#     EXPORT StoneyDSPTargets
-#     LIBRARY DESTINATION  "${CMAKE_INSTALL_LIBDIR}"
-#     ARCHIVE DESTINATION  "${CMAKE_INSTALL_LIBDIR}"
-#     RUNTIME DESTINATION  "${CMAKE_INSTALL_BINDIR}"
-#     INCLUDES DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
-# )
-
 file (WRITE "${StoneyDSP_BINARY_DIR}/StoneyDSPConfig.cmake.in" [[
 @PACKAGE_INIT@
 
@@ -366,25 +352,89 @@ endif()
 include("${CMAKE_CURRENT_LIST_DIR}/@TARGETS_EXPORT_NAME@.cmake")
 check_required_components("@PROJECT_NAME@")
 
+
+set(STONEYDSP_MODULES_DIR "@PACKAGE_STONEYDSP_MODULE_PATH@" CACHE INTERNAL "The path to StoneyDSP modules")
+
+set(_stoneydsp_modules
+    stoneydsp_audio
+    stoneydsp_core
+    stoneydsp_graphics
+)
+
+set(_targets_defined)
+set(_targets_expected)
+
+foreach(_stoneydsp_module IN LISTS _stoneydsp_modules)
+    list(APPEND _targets_expected ${_stoneydsp_module} StoneyDSP::${_stoneydsp_modules})
+    if(TARGET ${_stoneydsp_module})
+        list(APPEND _targets_defined ${_stoneydsp_module})
+    endif()
+
+    if(TARGET StoneyDSP::${_stoneydsp_module})
+        list(APPEND _targets_defined StoneyDSP::${_stoneydsp_module})
+    endif()
+endforeach()
+
+if("${_targets_defined}" STREQUAL "${_targets_expected}")
+    unset(_targets_defined)
+    unset(_targets_expected)
+    return()
+endif()
+
+if(NOT "${_targets_defined}" STREQUAL "")
+    message(FATAL_ERROR "Some targets in this export set were already defined.")
+endif()
+
+unset(_targets_defined)
+unset(_targets_expected)
+
+foreach(_stoneydsp_module IN LISTS _stoneydsp_modules)
+    juce_add_module("@PACKAGE_STONEYDSP_MODULE_PATH@/${_stoneydsp_module}" ALIAS_NAMESPACE StoneyDSP)
+endforeach()
+
+unset(_stoneydsp_modules)
+
 # Alias for either shared or static library
 if(NOT TARGET ${PROJECT_NAME}::Shared)
 	add_library(${PROJECT_NAME}::Shared ALIAS ${PROJECT_NAME}::${LIB_SELECTED})
 endif()
 ]])
 
-# create cmake config file
-configure_package_config_file (
-    ${PROJECT_BINARY_DIR}/StoneyDSPConfig.cmake.in
-    ${PROJECT_BINARY_DIR}/share/cmake/StoneyDSPConfig.cmake
-  INSTALL_DESTINATION
-    ${CMAKE_INSTALL_LIBDIR}/cmake/StoneyDSP
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file(
+    "${StoneyDSP_BINARY_DIR}/StoneyDSPConfigVersion.cmake"
+    VERSION ${STONEYDSP_VERSION}
+    COMPATIBILITY ExactVersion
 )
 
-# generate the version file for the cmake config file
-write_basic_package_version_file (
-	${PROJECT_BINARY_DIR}/share/cmake/StoneyDSPConfigVersion.cmake
-	VERSION ${STONEYDSP_VERSION}
-	COMPATIBILITY AnyNewerVersion
+set(STONEYDSP_INSTALL_DESTINATION "lib/cmake/StoneyDSP-${STONEYDSP_VERSION}" CACHE STRING "The location, relative to the install prefix, where the StoneyDSP config file will be installed")
+
+set(STONEYDSP_MODULE_PATH "include/StoneyDSP-${STONEYDSP_VERSION}/modules")
+set(STONEYDSP_UTILS_INSTALL_DIR "${STONEYDSP_INSTALL_DESTINATION}")
+# set(JUCEAIDE_PATH "${JUCE_TOOL_INSTALL_DIR}/${JUCE_JUCEAIDE_NAME}")
+
+configure_package_config_file(
+    "${StoneyDSP_BINARY_DIR}/StoneyDSPConfig.cmake.in"
+    "${StoneyDSP_BINARY_DIR}/StoneyDSPConfig.cmake"
+    PATH_VARS STONEYDSP_UTILS_INSTALL_DIR STONEYDSP_MODULE_PATH # JUCEAIDE_PATH
+    INSTALL_DESTINATION "${STONEYDSP_INSTALL_DESTINATION}"
+)
+
+set(STONEYDSP_MODULE_PATH "${STONEYDSP_MODULES_DIR}")
+set(STONEYDSP_UTILS_INSTALL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/share/cmake/StoneyDSP")
+# get_target_property(JUCEAIDE_PATH juceaide IMPORTED_LOCATION)
+configure_package_config_file(
+    "${StoneyDSP_BINARY_DIR}/StoneyDSPConfig.cmake.in"
+    "${StoneyDSP_BINARY_DIR}/StoneyDSPExportConfig.cmake"
+    PATH_VARS STONEYDSP_UTILS_INSTALL_DIR STONEYDSP_MODULE_PATH # JUCEAIDE_PATH
+    INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}"
+    INSTALL_DESTINATION "${CMAKE_CURRENT_BINARY_DIR}"
+)
+
+install(FILES
+    "${StoneyDSP_BINARY_DIR}/StoneyDSPConfigVersion.cmake"
+    "${StoneyDSP_BINARY_DIR}/StoneyDSPConfig.cmake"
+    DESTINATION "${STONEYDSP_INSTALL_DESTINATION}"
 )
 
 if(BUILD_TESTS AND (StoneyDSP_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR))
