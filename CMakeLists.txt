@@ -18,7 +18,6 @@ project (
     LANGUAGES C;CXX
 )
 
-option (BUILD_TESTS "Build tests" ON)
 
 # IDE support
 set (JUCE_ENABLE_MODULE_SOURCE_GROUPS ON)
@@ -234,6 +233,13 @@ juce_add_module(
     ALIAS_NAMESPACE StoneyDSP
     INSTALL_PATH "include/StoneyDSP-${STONEYDSP_VERSION}/modules"
 )
+juce_add_module(
+    # StoneyDSP::stoneydsp_web
+    modules/stoneydsp_web
+    ALIAS_NAMESPACE StoneyDSP
+    INSTALL_PATH "include/StoneyDSP-${STONEYDSP_VERSION}/modules"
+)
+
 
 # add_library (StoneyDSP INTERFACE)
 # add_library (StoneyDSP::StoneyDSP ALIAS StoneyDSP)
@@ -267,11 +273,25 @@ juce_add_module(
 #     # POSITION_INDEPENDENT_CODE ON
 # )
 
+option(STONEYDSP_BUILD_EXTRAS "Add build targets for the other StoneyDSP tools" OFF)
+
+if(STONEYDSP_BUILD_EXTRAS)
+    add_subdirectory(extras)
+endif()
+
+option(STONEYDSP_BUILD_EXAMPLES "Add build targets for the StoneyDSP example projects" OFF)
+
+if(STONEYDSP_BUILD_EXAMPLES)
+    add_subdirectory(examples)
+endif()
+
+
 set (STONEYDSP_MODULES "")
 list (APPEND STONEYDSP_MODULES
     stoneydsp_core
     stoneydsp_audio
     stoneydsp_graphics
+    stoneydsp_web
 )
 
 file (WRITE "${StoneyDSP_BINARY_DIR}/StoneyDSPConfig.cmake.in" [[
@@ -376,7 +396,8 @@ install(FILES
     DESTINATION "${STONEYDSP_INSTALL_DESTINATION}"
 )
 
-if(BUILD_TESTS AND (StoneyDSP_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR))
+option (STONEYDSP_BUILD_TESTS "Build tests" ON)
+if(STONEYDSP_BUILD_TESTS AND (StoneyDSP_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR))
     enable_testing()
     # if(NOT MSVC)
     #     add_compile_options(-Wall -Wextra)
