@@ -1,8 +1,8 @@
 cmake_minimum_required (VERSION 3.22...3.28 FATAL_ERROR)
 
-if (DEFINED VCPKG_ROOT)
+if (DEFINED ENV{VCPKG_ROOT})
     # global install...
-    set (CMAKE_TOOLCHAIN_FILE "${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE FILEPATH "" FORCE)
+    set (CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE FILEPATH "" FORCE)
 elseif (EXISTS "${CMAKE_CURRENT_LIST_DIR}/ext/microsoft/vcpkg/scripts/buildsystems/vcpkg.cmake")
     # submodule...
     set (CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_LIST_DIR}/ext/microsoft/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE FILEPATH "" FORCE)
@@ -47,79 +47,6 @@ set (STONEYDSP_VERSION ${STONEYDSP_VERSION_MAJOR}.${STONEYDSP_VERSION_MINOR}.${S
 
 stoneydsp_write_version_file ()
 
-string (TOLOWER "${PROJECT_NAME}" PROJECT_NAME_LOWER)
-string (TOUPPER "${PROJECT_NAME}" PROJECT_NAME_UPPER)
-
-
-if (PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
-endif ()
-if (StoneyDSP_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
-endif ()
-
-set (StoneyDSP_INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/include/StoneyDSP")
-
-set (STONEYDSP_SHARED_HEADERS "")
-list (APPEND STONEYDSP_SHARED_HEADERS
-    "version.h"
-    "StoneyDSP.h"
-    "resources.h"
-)
-set (STONEYDSP_SHARED_SOURCES "")
-list (APPEND STONEYDSP_SHARED_SOURCES
-    "resources.cpp"
-    "shared.cpp"
-)
-
-add_library (Shared SHARED)
-add_library (StoneyDSP::shared ALIAS Shared)
-# directories
-target_include_directories (Shared
-    PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include/StoneyDSP>
-    $<INSTALL_INTERFACE:include/StoneyDSP>
-)
-# files
-foreach (STONEYDSP_SHARED_HEADER IN LISTS STONEYDSP_SHARED_HEADERS)
-    configure_file (
-        "include/StoneyDSP/${STONEYDSP_SHARED_HEADER}" # SRC_DIR
-        "include/StoneyDSP/${STONEYDSP_SHARED_HEADER}" # BIN_DIR
-		@ONLY
-    )
-    target_sources (Shared
-        PUBLIC
-        FILE_SET stoneydsp_Shared_PUBLIC_HEADERS
-        TYPE HEADERS
-        BASE_DIRS
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include/StoneyDSP>
-        $<INSTALL_INTERFACE:include/StoneyDSP>
-        FILES
-        # include/pacman/common/ini.h
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include/StoneyDSP/${STONEYDSP_SHARED_HEADER}>
-        $<INSTALL_INTERFACE:include/StoneyDSP/${STONEYDSP_SHARED_HEADER}>
-    )
-endforeach ()
-foreach (STONEYDSP_SHARED_SOURCE IN LISTS STONEYDSP_SHARED_SOURCES)
-    target_sources (Shared
-        PRIVATE
-        "src/StoneyDSP/${STONEYDSP_SHARED_SOURCE}"
-    )
-endforeach ()
-# properties
-set_target_properties (Shared
-  PROPERTIES
-  ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib"
-  LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib"
-  RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin"
-  PDB_OUTPUT_DIRECTORY     "${CMAKE_CURRENT_BINARY_DIR}/bin"
-  POSITION_INDEPENDENT_CODE ON
-)
-
-find_package (OpenSSL REQUIRED)
-target_link_libraries (Shared PRIVATE OpenSSL::SSL OpenSSL::Crypto)
-
-find_package (CURL CONFIG REQUIRED)
-target_link_libraries (Shared PRIVATE CURL::libcurl)
-
 find_package (CMakeRC CONFIG REQUIRED)
 # Create a CMakeRC library
 # See https://github.com/vector-of-bool/cmrc/blob/master/README.md#usage
@@ -131,12 +58,12 @@ cmrc_add_resource_library (Resources
     "VERSION"
 )
 set_target_properties (Resources
-  PROPERTIES
-  ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib"
-  LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib"
-  RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin"
-  PDB_OUTPUT_DIRECTORY     "${CMAKE_CURRENT_BINARY_DIR}/bin"
-  POSITION_INDEPENDENT_CODE ON
+    PROPERTIES
+    ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib"
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib"
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin"
+    PDB_OUTPUT_DIRECTORY     "${CMAKE_CURRENT_BINARY_DIR}/bin"
+    POSITION_INDEPENDENT_CODE ON
 )
 
 # include (public/images/CMakeLists.txt)
@@ -217,24 +144,24 @@ cmrc_add_resources (Icons
 )
 
 set_target_properties (Icons
-  PROPERTIES
-  ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib"
-  LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib"
-  RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin"
-  PDB_OUTPUT_DIRECTORY     "${CMAKE_CURRENT_BINARY_DIR}/bin"
-  POSITION_INDEPENDENT_CODE ON
+    PROPERTIES
+    ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib"
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib"
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin"
+    PDB_OUTPUT_DIRECTORY     "${CMAKE_CURRENT_BINARY_DIR}/bin"
+    POSITION_INDEPENDENT_CODE ON
 )
 
 
 
 
 # if (EXISTS "${CMAKE_CURRENT_LIST_DIR}/ext/juce-framework/JUCE/CMakeLists.txt")
-if (FALSE)
+if (TRUE)
+    # if JUCE is installed globally...
+    find_package (JUCE 7.0.10 CONFIG REQUIRED)
+else ()
     # if JUCE is a submodule...
     add_subdirectory (JUCE)
-else ()
-    # if JUCE is installed globally...
-    find_package (JUCE CONFIG REQUIRED)
 endif ()
 
 #[==[
@@ -270,24 +197,24 @@ target_link_libraries(main PRIVATE
 
 ]==]#
 
-target_link_libraries (Shared
-    PRIVATE
-    juce::juce_core
-    juce::juce_audio_basics
-    juce::juce_events
-    juce::juce_audio_devices
-    PUBLIC
-    juce::juce_recommended_warning_flags
-    juce::juce_recommended_config_flags
-    juce::juce_recommended_lto_flags
-)
-target_compile_definitions (Shared PUBLIC DONT_SET_USING_JUCE_NAMESPACE)
+# target_link_libraries (Shared
+#     PRIVATE
+#     juce::juce_core
+#     juce::juce_audio_basics
+#     juce::juce_events
+#     juce::juce_audio_devices
+#     PUBLIC
+#     juce::juce_recommended_warning_flags
+#     juce::juce_recommended_config_flags
+#     juce::juce_recommended_lto_flags
+# )
+# target_compile_definitions (Shared PUBLIC DONT_SET_USING_JUCE_NAMESPACE)
 
-target_link_libraries (Shared
-    PRIVATE
-    StoneyDSP::Resources
-    StoneyDSP::Icons
-)
+# target_link_libraries (Shared
+#     PRIVATE
+#     StoneyDSP::Resources
+#     StoneyDSP::Icons
+# )
 
 juce_add_module(
     # StoneyDSP::stoneydsp_core
@@ -308,25 +235,37 @@ juce_add_module(
     INSTALL_PATH "include/StoneyDSP-${STONEYDSP_VERSION}/modules"
 )
 
-add_library (StoneyDSP INTERFACE)
-add_library (StoneyDSP::StoneyDSP ALIAS StoneyDSP)
-target_link_libraries (StoneyDSP
-    INTERFACE
-    StoneyDSP::stoneydsp_core
-    StoneyDSP::stoneydsp_audio
-    StoneyDSP::stoneydsp_graphics
-)
+# add_library (StoneyDSP INTERFACE)
+# add_library (StoneyDSP::StoneyDSP ALIAS StoneyDSP)
+# target_link_libraries (StoneyDSP
+#     INTERFACE
+#     StoneyDSP::stoneydsp_core
+#     StoneyDSP::stoneydsp_audio
+#     StoneyDSP::stoneydsp_graphics
+# )
+# target_link_libraries (StoneyDSP
+#     PRIVATE
+#     juce::juce_core
+#     juce::juce_audio_basics
+#     juce::juce_events
+#     juce::juce_audio_devices
+#     PUBLIC
+#     juce::juce_recommended_warning_flags
+#     juce::juce_recommended_config_flags
+#     juce::juce_recommended_lto_flags
+# )
+# target_compile_definitions (StoneyDSP PUBLIC DONT_SET_USING_JUCE_NAMESPACE)
 
-add_executable (Main "src/main.cpp")
-target_link_libraries (Main PRIVATE StoneyDSP::StoneyDSP)
-set_target_properties (Main
-    PROPERTIES
-    ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib"
-    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib"
-    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin"
-    PDB_OUTPUT_DIRECTORY     "${CMAKE_CURRENT_BINARY_DIR}/bin"
-    # POSITION_INDEPENDENT_CODE ON
-)
+# add_executable (Main "src/main.cpp")
+# target_link_libraries (Main PRIVATE StoneyDSP::StoneyDSP)
+# set_target_properties (Main
+#     PROPERTIES
+#     ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib"
+#     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib"
+#     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin"
+#     PDB_OUTPUT_DIRECTORY     "${CMAKE_CURRENT_BINARY_DIR}/bin"
+#     # POSITION_INDEPENDENT_CODE ON
+# )
 
 set (STONEYDSP_MODULES "")
 list (APPEND STONEYDSP_MODULES
