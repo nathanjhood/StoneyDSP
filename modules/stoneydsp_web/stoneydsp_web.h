@@ -69,4 +69,4 @@ namespace Web
 } // namespace StoneyDSP
 
 #include "http/stoneydsp_get.h"
-// #include "http/stoneydsp_post.h"
+#include "http/stoneydsp_post.h"
