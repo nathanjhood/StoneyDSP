@@ -1,11 +1,10 @@
 {
   "configurations": [
     {
-      "name": "X64 Linux GNU",
+      "name": "x64 Linux GNU",
       "includePath": [
         "${workspaceFolder}/include",
         "${workspaceFolder}/modules",
-        "${workspaceFolder}/ext/**",
         "${vcpkgRoot}/x64-linux/include"
       ],
       "defines": [],
@@ -16,11 +15,10 @@
       "configurationProvider": "ms-vscode.cmake-tools"
     },
     {
-      "name": "X86 Linux GNU",
+      "name": "x86 Linux GNU",
       "includePath": [
         "${workspaceFolder}/include",
         "${workspaceFolder}/modules",
-        "${workspaceFolder}/ext/**",
         "${vcpkgRoot}/x86-linux/include"
       ],
       "defines": [],
