@@ -1,4 +1,6 @@
 # Custom
+vcpkg_installed
+install
 !lib
 build
 package-lock.json
