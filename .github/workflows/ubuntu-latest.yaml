@@ -1,0 +1,127 @@
+name: CMake-Ubuntu-latest
+
+on:
+  push:
+    branches: [ "development", "dev" ]
+  pull_request:
+    branches: [ "main" ]
+
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  CMAKE_CONFIGURATION_TYPES: Debug;Release;RelWithDebInfo;MinSizeRel
+  BUILD_TYPE: Debug
+
+jobs:
+  cmake:
+    name: Test on ${{ matrix.os }} with ${{ matrix.node_version }}
+    # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
+    # You can convert this to a matrix build if you need cross-platform coverage.
+    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        node_version: ['18']
+        os: [ubuntu-latest]
+        triplet: [ x64-linux ]
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: vcpkg-action
+      # You may pin to the exact commit or the version.
+      # uses: johnwason/vcpkg-action@7c4b562bb35ef5a01d9d728acc90100b107dee4d
+      uses: johnwason/vcpkg-action@v6
+      with:
+        # List of packages to build, separated by spaces. Cannot be used with manifest-dir
+        # pkgs: # optional
+        # vcpkg triplet to use
+        triplet: ${{ matrix.triplet }}
+        # Extra vcpkg command line args (optional)
+        # extra-args: # optional
+        # Additional cache key component (optional)
+        # cache-key: # optional
+        # Disable cache (useful for release builds)
+        # disable-cache: # optional, default is false
+        # vcpkg revision to checkout.
+        # revision: # optional, default is 
+        # GitHub token to authenticate API requests. Recommended to use  github.token 
+        token: ${{ github.token }} 
+        # Directory containing vcpkg.json manifest file. Cannot be used with pkgs.
+        # manifest-dir: # optional, default is 
+        # Use vcpkg built-in GitHub binary caching. If not specified, will use the dry-run based file cache.
+        github-binarycache: true
+        # Fetch depth for vcpkg checkout
+        # fetch-depth: # optional, default is 1
+
+          
+    - name: Use Node.js ${{ matrix.node_version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node_version }}
+
+    - name: npm install, build, test
+      run: npm install
+
+    - name: Cache
+      uses: actions/cache@v4.0.0
+      with:
+        # A list of files, directories, and wildcard patterns to cache and restore
+        path: ${{github.workspace}}/build/x64-linux
+        # An explicit key for restoring and saving the cache
+        # key: 
+        # An ordered list of keys to use for restoring stale cache if no cache hit occurred for key. Note `cache-hit` returns false in this case.
+        # restore-keys: # optional
+        # The chunk size used to split up large files during upload, in bytes
+        # upload-chunk-size: # optional
+        # An optional boolean when enabled, allows windows runners to save or restore caches that can be restored or saved respectively on other platforms
+        # enableCrossOsArchive: # optional, default is false
+        # Fail the workflow if cache entry is not found
+        # fail-on-cache-miss: # optional, default is false
+        # Check if a cache entry exists for the given input(s) (key, restore-keys) without downloading the cache
+        # lookup-only: # optional, default is false
+        # Run the post step to save the cache even if another step before fails
+        # save-always: # optional, default is false
+          
+
+    - name: Configure
+      working-directory: ${{github.workspace}}
+      # Configure CMake in a 'bin' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
+      # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
+      run: cmake -B ${{github.workspace}}/build/x64-linux -DSTONEYDSP_BUILD_TESTS:BOOL=TRUE -DSTONEYDSP_BUILD_EXTRAS:BOOL=TRUE -DSTONEYDSP_BUILD_EXAMPLES:BOOL=TRUE -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+
+    - name: Build
+      working-directory: ${{github.workspace}}
+      # Build StoneyDSO with the given configuration
+      run: cmake --build ${{github.workspace}}/build/x64-linux --config ${{env.BUILD_TYPE}} --target all
+
+    - name: Test
+      working-directory: ${{github.workspace}}
+      # Execute tests defined by the CMake configuration.
+      # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
+      run: ctest --test-dir ${{github.workspace}}/build/x64-linux -C ${{env.BUILD_TYPE}} --rerun-failed --output-on-failure --verbose 
+
+    - name: Install
+      working-directory: ${{github.workspace}}
+      # Install StoneyDSP with the given configuration
+      run: cmake --install ${{github.workspace}}/build/x64-linux --config ${{env.BUILD_TYPE}} -B ${{github.workspace}}/install/x64-linux --target all
+
+    - name: Zip Source
+      working-directory: ${{github.workspace}}
+      # Pack the StoneyDSP source code with the given configuration
+      run: cpack --config ${{github.workspace}}/build/x64-linux/CPackSourceConfig.cmake -B ${{github.workspace}}/install/x64-linux -G ZIP -C ${{env.BUILD_TYPE}}
+
+    - name: Tar Source
+      working-directory: ${{github.workspace}}
+      # Pack the StoneyDSP source code with the given configuration
+      run: cpack --config ${{github.workspace}}/build/x64-linux/CPackSourceConfig.cmake -B ${{github.workspace}}/install/x64-linux -G TAR -C ${{env.BUILD_TYPE}}
+
+    - name: Zip Build
+      working-directory: ${{github.workspace}}
+      # Pack the StoneyDSP source code with the given configuration
+      run: cpack --config ${{github.workspace}}/build/x64-linux/CPackConfig.cmake -B ${{github.workspace}}/install/x64-linux -G ZIP -C ${{env.BUILD_TYPE}}
+
+    - name: Tar Build
+      working-directory: ${{github.workspace}}
+      # Pack the StoneyDSP source code with the given configuration
+      run: cpack --config ${{github.workspace}}/build/x64-linux/CPackConfig.cmake -B ${{github.workspace}}/install/x64-linux -G TAR -C ${{env.BUILD_TYPE}}
