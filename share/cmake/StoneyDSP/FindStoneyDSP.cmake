@@ -52,7 +52,7 @@ if(NOT DEFINED _STONEYDSP_JUCE_VERSION)
     set(_STONEYDSP_JUCE_VERSION 7.0.10 CACHE INTERNAL "Current 'StoneyDSP.cmake' JUCE version.")
 endif()
 
-message (STATUS "\n-- StoneyDSP.cmake v${_STONEYDSP_VERSION}")
+message (STATUS "\n-- StoneyDSP.cmake v${_STONEYDSP_VERSION} - Configuring...")
 
 #[=============================================================================[
  FUNCTIONS & MACROS
@@ -309,7 +309,7 @@ Set ``StoneyDSP_NO_BOOST_CMAKE`` to ``ON``, to disable the search for stoneydsp-
 ]=============================================================================]#
 
 # if (EXISTS "${CMAKE_CURRENT_LIST_DIR}/ext/juce-framework/JUCE/CMakeLists.txt")
-if (TRUE)
+if (NOT DEFINED JUCE_VERSION)
     stoneydsp_find_juce(${_STONEYDSP_JUCE_VERSION})
 endif ()
 
@@ -327,25 +327,25 @@ juce_add_module(
     # StoneyDSP::stoneydsp_core
     "${STONEYDSP_MODULE_PATH}/stoneydsp_core"
     ALIAS_NAMESPACE StoneyDSP
-    INSTALL_PATH "include/StoneyDSP/v${STONEYDSP_VERSION}/modules"
+    INSTALL_PATH "include/StoneyDSP/v${StoneyDSP_VERSION}/modules"
 )
 juce_add_module(
     # StoneyDSP::stoneydsp_audio
     "${STONEYDSP_MODULE_PATH}/stoneydsp_audio"
     ALIAS_NAMESPACE StoneyDSP
-    INSTALL_PATH "include/StoneyDSP/v${STONEYDSP_VERSION}/modules"
+    INSTALL_PATH "include/StoneyDSP/v${StoneyDSP_VERSION}/modules"
 )
 juce_add_module(
     # StoneyDSP::stoneydsp_graphics
     "${STONEYDSP_MODULE_PATH}/stoneydsp_graphics"
     ALIAS_NAMESPACE StoneyDSP
-    INSTALL_PATH "include/StoneyDSP/v${STONEYDSP_VERSION}/modules"
+    INSTALL_PATH "include/StoneyDSP/v${StoneyDSP_VERSION}/modules"
 )
 juce_add_module(
     # StoneyDSP::stoneydsp_web
     "${STONEYDSP_MODULE_PATH}/stoneydsp_web"
     ALIAS_NAMESPACE StoneyDSP
-    INSTALL_PATH "include/StoneyDSP/v${STONEYDSP_VERSION}/modules"
+    INSTALL_PATH "include/StoneyDSP/v${StoneyDSP_VERSION}/modules"
 )
 
 #[=============================================================================[
@@ -353,3 +353,5 @@ juce_add_module(
 ]=============================================================================]#
 
 unset(_stoneydsp_cmake_version)
+
+message (STATUS "\n-- StoneyDSP.cmake v${_STONEYDSP_VERSION} - Done.")

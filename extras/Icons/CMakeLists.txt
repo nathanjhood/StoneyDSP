@@ -36,79 +36,97 @@ if (NOT DEFINED CMakeRC_DIR)
 	endif ()
 endif ()
 
-set (STONEYDSP_ICONS_PNG_WIDE "")
-list (APPEND STONEYDSP_ICONS_PNG_WIDE
-	public/images/w_icon__1024x768.png
-	public/images/w_icon__196x128.png
-	public/images/w_icon__384x256.png
-	public/images/w_icon__768x512.png
+file(COPY "${StoneyDSP_SOURCE_DIR}/public/images"
+    DESTINATION "${StoneyDSP_BINARY_DIR}/public"
 )
 
 cmrc_add_resource_library (Icons
-
 	ALIAS StoneyDSP::Icons
 	NAMESPACE StoneyDSP::Icons
-	WHENCE public/images
+)
+
+cmrc_add_resources (Icons
+
+	WHENCE ${StoneyDSP_BINARY_DIR}/public/images
 	PREFIX StoneyDSP/Icons
 
-    # SOURCES
-	public/images/favicon.ico
-	${STONEYDSP_ICONS_PNG_WIDE}
+	${StoneyDSP_BINARY_DIR}/public/images/favicon.ico
 )
+
+set (STONEYDSP_ICONS_PNG_WIDE "")
+list (APPEND STONEYDSP_ICONS_PNG_WIDE
+	w_icon__1024x768.png
+	w_icon__196x128.png
+	w_icon__384x256.png
+	w_icon__768x512.png
+)
+
+foreach (STONEYDSP_ICON_PNG_WIDE IN LISTS STONEYDSP_ICONS_PNG_WIDE)
+    cmrc_add_resources (Icons
+
+        WHENCE ${StoneyDSP_BINARY_DIR}/public/images
+        PREFIX StoneyDSP/Icons
+
+        ${StoneyDSP_BINARY_DIR}/public/images/${STONEYDSP_ICON_PNG_WIDE}
+    )
+endforeach ()
 
 set (STONEYDSP_ICONS_PNG "")
 list (APPEND STONEYDSP_ICONS_PNG
-	public/images/favicon/android-chrome-192x192.png
-	public/images/favicon/android-chrome-512x512.png
-	public/images/favicon/android-icon-144x144.png
-	public/images/favicon/android-icon-192x192.png
-	public/images/favicon/android-icon-36x36.png
-	public/images/favicon/android-icon-48x48.png
-	public/images/favicon/android-icon-72x72.png
-	public/images/favicon/android-icon-96x96.png
-	public/images/favicon/favicon-144x144.png
-	public/images/favicon/favicon-168x168.png
-	public/images/favicon/favicon-256x256.png
-	public/images/favicon/favicon-32x32.png
-	public/images/favicon/favicon-48x48.png
-	public/images/favicon/favicon-512x512.png
-	public/images/favicon/favicon-64x64.png
-	public/images/favicon/favicon-96x96.png
-	public/images/favicon/ms-icon-150x150.png
-	public/images/favicon/ms-icon-310x310.png
-	public/images/favicon/ms-icon-70x70.png
+	android-chrome-192x192.png
+	android-chrome-512x512.png
+	android-icon-144x144.png
+	android-icon-192x192.png
+	android-icon-36x36.png
+	android-icon-48x48.png
+	android-icon-72x72.png
+	android-icon-96x96.png
+	favicon-144x144.png
+	favicon-168x168.png
+	favicon-256x256.png
+	favicon-32x32.png
+	favicon-48x48.png
+	favicon-512x512.png
+	favicon-64x64.png
+	favicon-96x96.png
+	ms-icon-150x150.png
+	ms-icon-310x310.png
+	ms-icon-70x70.png
 )
-cmrc_add_resources (Icons
+foreach (STONEYDSP_ICON_PNG IN LISTS STONEYDSP_ICONS_PNG)
+    cmrc_add_resources (Icons
 
-	WHENCE public/images/favicon
-	PREFIX StoneyDSP/Icons
+        WHENCE ${StoneyDSP_BINARY_DIR}/public/images
+        PREFIX StoneyDSP/Icons
 
-	${STONEYDSP_ICONS_PNG}
-)
+        ${StoneyDSP_BINARY_DIR}/public/images/favicon/${STONEYDSP_ICON_PNG}
+    )
+endforeach ()
 
 set (STONEYDSP_ICONS_ICO "")
 list (APPEND STONEYDSP_ICONS_ICO
-	public/images/favicon/favicon__144x144.ico
-	public/images/favicon/favicon__168x168.ico
-	public/images/favicon/favicon__256x256.ico
-	public/images/favicon/favicon__32x32.ico
-	public/images/favicon/favicon__48x48.ico
-	public/images/favicon/favicon__64x64.ico
-	public/images/favicon/favicon__96x96.ico
-)
-cmrc_add_resources (Icons
-
-	WHENCE public/images/favicon
-	PREFIX StoneyDSP/Icons
-
-	${STONEYDSP_ICONS_ICO}
+	favicon__144x144.ico
+	favicon__168x168.ico
+	favicon__256x256.ico
+	favicon__32x32.ico
+	favicon__48x48.ico
+	favicon__64x64.ico
+	favicon__96x96.ico
 )
 
-set_target_properties (Icons
-    PROPERTIES
-    ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib"
-    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib"
-    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin"
-    PDB_OUTPUT_DIRECTORY     "${CMAKE_CURRENT_BINARY_DIR}/bin"
-    POSITION_INDEPENDENT_CODE ON
-)
+foreach (STONEYDSP_ICON_ICO IN LISTS STONEYDSP_ICONS_ICO)
+    cmrc_add_resources (Icons
+
+        WHENCE ${StoneyDSP_BINARY_DIR}/public/images
+        PREFIX StoneyDSP/Icons
+
+        ${StoneyDSP_BINARY_DIR}/public/images/favicon/${STONEYDSP_ICON_ICO}
+    )
+endforeach ()
+
+if (UNIX)
+    set_target_properties (Icons
+        PROPERTIES
+        POSITION_INDEPENDENT_CODE ON
+    )
+endif()

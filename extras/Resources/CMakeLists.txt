@@ -39,23 +39,27 @@ if (NOT DEFINED CMakeRC_DIR)
 	endif ()
 endif ()
 
+file(COPY
+    "${StoneyDSP_SOURCE_DIR}/AUTHORS"
+    "${StoneyDSP_SOURCE_DIR}/LICENSE"
+    "${StoneyDSP_SOURCE_DIR}/VERSION"
+    "${StoneyDSP_SOURCE_DIR}/README.md"
+    DESTINATION "${StoneyDSP_BINARY_DIR}/public"
+)
+
 cmrc_add_resource_library (Resources
 	ALIAS StoneyDSP::Resources
 	NAMESPACE StoneyDSP::Resources
 )
 
 cmrc_add_resources (Resources
+    WHENCE ${StoneyDSP_BINARY_DIR}/public
+	PREFIX StoneyDSP/Resources
     # Resources to compile...
-    "LICENSE"
-    "VERSION"
-)
-
-set_target_properties (Resources
-    PROPERTIES
-    ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib"
-    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib"
-    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin"
-    PDB_OUTPUT_DIRECTORY     "${CMAKE_CURRENT_BINARY_DIR}/bin"
+    ${StoneyDSP_BINARY_DIR}/public/AUTHORS
+    ${StoneyDSP_BINARY_DIR}/public/LICENSE
+    ${StoneyDSP_BINARY_DIR}/public/VERSION
+    ${StoneyDSP_BINARY_DIR}/public/README.md
 )
 
 if (UNIX)

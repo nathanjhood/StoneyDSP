@@ -14,8 +14,8 @@
 	"readme": "https://github.com/StoneyDSP/StoneyDSP/README.md",
   "license": "MIT",
   "scripts": {
-    "configure":    "cmake         -S . -B ./build -DSTONEYDSP_BUILD_TESTS:BOOL=FALSE -DSTONEYDSP_BUILD_EXTRAS:BOOL=TRUE -DSTONEYDSP_BUILD_EXAMPLES:BOOL=FALSE -DCMAKE_INSTALL_PREFIX:PATH=./install -G Ninja",
-    "reconfigure":  "cmake --fresh -S . -B ./build -DSTONEYDSP_BUILD_TESTS:BOOL=FALSE -DSTONEYDSP_BUILD_EXTRAS:BOOL=TRUE -DSTONEYDSP_BUILD_EXAMPLES:BOOL=FALSE -DCMAKE_INSTALL_PREFIX:PATH=./install -G Ninja",
+    "configure":    "cmake         -S . -B ./build -DSTONEYDSP_BUILD_TESTS:BOOL=FALSE -DSTONEYDSP_BUILD_EXTRAS:BOOL=TRUE -DSTONEYDSP_BUILD_EXAMPLES:BOOL=TRUE -GNinja",
+    "reconfigure":  "cmake --fresh -S . -B ./build -DSTONEYDSP_BUILD_TESTS:BOOL=FALSE -DSTONEYDSP_BUILD_EXTRAS:BOOL=TRUE -DSTONEYDSP_BUILD_EXAMPLES:BOOL=TRUE -GNinja",
     "build":        "cmake --build         ./build",
     "postbuild":    "cmake --install       ./build",
     "ctest":        "ctest --test-dir      ./build --rerun-failed --output-on-failure --verbose",
