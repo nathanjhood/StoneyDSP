@@ -41,7 +41,6 @@ elseif (EXISTS "${CMAKE_CURRENT_LIST_DIR}/ext/microsoft/vcpkg/scripts/buildsyste
 endif ()
 
 list (APPEND CMAKE_MODULE_PATH
-    # "${CMAKE_CURRENT_LIST_DIR}/share/cmake/StoneyDSP"
     "${CMAKE_CURRENT_LIST_DIR}/share/cmake/Modules"
 )
 
@@ -53,7 +52,7 @@ endif()
 
 project (
     StoneyDSP
-    VERSION 1.0.0
+    VERSION 0.0.1
     DESCRIPTION "The StoneyDSP library for JUCE."
     HOMEPAGE_URL "https://github.com/StoneyDSP/StoneyDSP/blob/production/README.md"
     LANGUAGES C;CXX
@@ -180,3 +179,61 @@ install(FILES
     "${STONEYDSP_CMAKE_UTILS_DIR}/JoinPaths.cmake"
     DESTINATION "${STONEYDSP_INSTALL_DESTINATION}"
 )
+
+# offer a basic/messy CPack
+  # If it's distracting from the simplicity of the demo, remove it if you wish;
+  # it isn't part of the proposed API-to-be-shipped itself at all.
+
+  # set(CPACK_PACKAGE_CHECKSUM "${PROJECT_VERSION_TWEAK}") # git rev-parse is a good idea for this...
+  set(CPACK_PACKAGE_VENDOR "StoneyDSP")
+  set(CPACK_PACKAGE_NAME              "${PROJECT_NAME}-${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}-${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}-JUCE_${JUCE_VERSION}")
+  set(CPACK_PACKAGE_FILE_NAME         "${PROJECT_NAME}-${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}-${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}-JUCE_${JUCE_VERSION}") # Multi-platform CMake API distribution
+  set(CPACK_SOURCE_PACKAGE_FILE_NAME  "${PROJECT_NAME}-${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}-Source") # No system spec as this is un-compiled source file distribution (i.e., the Javascript API)
+  set(CPACK_PACKAGE_DESCRIPTION_SUMMARY ${PROJECT_DESCRIPTION})
+  set(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
+  set(CPACK_PACKAGE_VERSION_MINOR ${PROJECT_VERSION_VERSION_MINOR})
+  set(CPACK_PACKAGE_VERSION_PATCH ${PROJECT_VERSION_VERSION_PATCH})
+  set(CPACK_PACKAGE_VERSION_TWEAK ${PROJECT_VERSION_VERSION_TWEAK})
+  set(CPACK_RESOURCE_FILE_LICENSE ${PROJECT_SOURCE_DIR}/LICENSE)
+  set(CPACK_RESOURCE_FILE_README  ${PROJECT_SOURCE_DIR}/README.md)
+  set(CPACK_INCLUDE_TOPLEVEL_DIRECTORY ON)
+  set(CPACK_COMPONENT_INCLUDE_TOPLEVEL_DIRECTORY ON)
+  set(CPACK_SOURCE_GENERATOR "TGZ;ZIP") # Check out CPack's 'NSIS' installer for Win32, and the others!
+  set(CPACK_SOURCE_IGNORE_FILES
+      _CPack_Packages
+      /*.zip
+      /*.tar
+      /*.tar.*
+      /.env*
+      /.git/*
+      /.cmake
+      /.github
+      /.vs
+      /.vscode
+      /.cache
+      /.config
+      /.local
+      /dist
+      /doc
+      /docs
+      #/bin
+      #/lib
+      /usr
+      /out
+      #/build
+      /Release
+      /Debug
+      /MinSizeRel
+      /RelWithDebInfo
+      /downloads
+      /installed
+      /install
+      /node_modules
+      /vcpkg
+      /vcpkg_installed
+      /.*build.*
+      /package-lock.json
+      /yarn.lock
+      /\\\\.DS_Store
+  )
+  include(CPack)
