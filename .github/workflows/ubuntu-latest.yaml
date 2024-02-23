@@ -54,7 +54,7 @@ jobs:
     
     - name: linux-deps-upgrade
       run:
-        sudo apt ugrade -y
+        sudo apt upgrade -y
         
     - name: linux-deps-install
       run:
