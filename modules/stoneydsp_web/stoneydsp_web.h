@@ -1,5 +1,5 @@
 /***************************************************************************//**
- * @file stoneydsp_core.h
+ * @file stoneydsp_web.h
  * @author Nathan J. Hood <nathanjhood@googlemail.com>
  * @brief
  * @version 1.0.0
@@ -29,25 +29,20 @@
  *
  ******************************************************************************/
 
-
 /*******************************************************************************
 
  BEGIN_JUCE_MODULE_DECLARATION
 
-  ID:                 stoneydsp_core
+  ID:                 stoneydsp_web
   vendor:             stoneydsp
   version:            1.0.0
-  name:               StoneyDSP core classes
-  description:        The essential set of basic StoneyDSP classes, as required by all the other StoneyDSP modules.
+  name:               StoneyDSP web classes
+  description:        The StoneyDSP Web modules.
   website:            http://stoneydsp.com
   license:            MIT
   minimumCppStandard: 17
 
-  dependencies:       juce_core
-  OSXFrameworks:      Cocoa Foundation IOKit Security
-  iOSFrameworks:      Foundation
-  linuxLibs:          rt dl pthread
-  mingwLibs:          uuid wsock32 wininet version ole32 ws2_32 oleaut32 imm32 comdlg32 shlwapi rpcrt4 winmm
+  dependencies:       stoneydsp_core
 
  END_JUCE_MODULE_DECLARATION
 
@@ -55,54 +50,23 @@
 
 #pragma once
 
-#define STONEYDSP_CORE_H_INCLUDED
-
-/**
- * @brief The ```StoneyDSP``` namespace.
- * @author Nathan J. Hood (nathanjhood@googlemail.com)
- * @copyright Copyright (c) 2024
- * @namespace StoneyDSP
- *
- */
-namespace StoneyDSP
-{
-/** @addtogroup StoneyDSP
- *  @{
- */
-  /// @} group StoneyDSP
-} // namespace StoneyDSP
-
-#include "version/stoneydsp_version.h"
-
-#ifndef STRINGIFY
-# define STRINGIFY_HELPER(n) #n
-# define STRINGIFY(n) STRINGIFY_HELPER(n)
-#endif
-
-
-#include "res/stoneydsp_resource.h"
-#include "types/stoneydsp_types.h"
-
-
+#define STONEYDSP_WEB_H_INCLUDED
 
 namespace StoneyDSP
 {
-/** @addtogroup StoneyDSP
- *  @{
- */
-
 /**
- * @brief The ```StoneyDSP::Core``` namespace.
+ * @brief The ```StoneyDSP::Web``` namespace.
  *
  */
-namespace Core
+namespace Web
 {
-/** @addtogroup Core
+/** @addtogroup Web
  *  @{
  */
 
-  /// @} group Core
-} // namespace Core
-
-  /// @} group StoneyDSP
+  /// @} group Web
+} // namespace Web
 } // namespace StoneyDSP
+
+#include "http/stoneydsp_get.h"
+#include "http/stoneydsp_post.h"
