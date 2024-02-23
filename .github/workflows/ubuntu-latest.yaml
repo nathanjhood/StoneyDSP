@@ -2,9 +2,9 @@ name: CMake-Ubuntu-latest
 
 on:
   push:
-    branches: [ "development", "dev" ]
+    branches: [ "production", "preview", "development" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "production", "preview", "development"  ]
 
 
 env:
