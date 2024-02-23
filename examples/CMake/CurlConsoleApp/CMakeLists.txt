@@ -18,7 +18,7 @@ configure_file (
 )
 target_include_directories (CurlConsoleAppExample
     PUBLIC
-        $<BUILD_INTERFACE:${CURL_CONSOLE_APP_EXAMPLE_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${CURL_CONSOLE_APP_EXAMPLE_BINARY_DIR}/include>
         $<INSTALL_INTERFACE:include>
 )
 
