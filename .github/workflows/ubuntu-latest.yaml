@@ -51,6 +51,10 @@ jobs:
     - name: linux-deps-update
       run:
         sudo apt update 
+    
+    - name: linux-deps-upgrade
+      run:
+        sudo apt ugrade -y
         
     - name: linux-deps-install
       run:
