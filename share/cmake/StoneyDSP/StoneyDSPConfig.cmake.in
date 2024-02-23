@@ -14,6 +14,12 @@ endif()
 include("${CMAKE_CURRENT_LIST_DIR}/@TARGETS_EXPORT_NAME@.cmake")
 check_required_components("@PROJECT_NAME@")
 
+set_directory_properties (PROPERTIES
+    STONEYDSP_COMPANY_NAME       "StoneyDSP"
+    STONEYDSP_COMPANY_WEBSITE    "https://stoneydsp.com"
+    STONEYDSP_COMPANY_EMAIL      "nathanjhood@googlemail.com"
+    STONEYDSP_COMPANY_COPYRIGHT  "Copyright (c) 2024 - Nathan J. Hood"
+)
 
 set(STONEYDSP_MODULES_DIR "@PACKAGE_STONEYDSP_MODULE_PATH@" CACHE INTERNAL "The path to StoneyDSP modules")
 

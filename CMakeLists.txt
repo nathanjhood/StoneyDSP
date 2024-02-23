@@ -35,7 +35,7 @@ project (
     HOMEPAGE_URL "https://stoneydsp.com"
     LANGUAGES C;CXX
 )
-set_directory_properties(PROPERTIES
+set_directory_properties (PROPERTIES
     StoneyDSP_COMPANY_NAME       "StoneyDSP"
     StoneyDSP_COMPANY_WEBSITE    "https://stoneydsp.com"
     StoneyDSP_COMPANY_EMAIL      "nathanjhood@googlemail.com"
@@ -56,43 +56,7 @@ set (STONEYDSP_VERSION ${STONEYDSP_VERSION_MAJOR}.${STONEYDSP_VERSION_MINOR}.${S
 
 stoneydsp_write_version_file ()
 
-
-# # IDE support
-# set (JUCE_ENABLE_MODULE_SOURCE_GROUPS ON)
-# set_property(GLOBAL PROPERTY USE_FOLDERS YES)
-
 # set (STONEYDSP_MODULES_DIR "${StoneyDSP_SOURCE_DIR}/modules" CACHE INTERNAL "The path to StoneyDSP modules")
-
-# # if (EXISTS "${CMAKE_CURRENT_LIST_DIR}/ext/juce-framework/JUCE/CMakeLists.txt")
-# if (TRUE)
-#     # if JUCE is installed globally...
-#     find_package (JUCE 7.0.10 CONFIG REQUIRED)
-# else ()
-#     # if JUCE is a submodule...
-#     add_subdirectory (JUCE)
-# endif ()
-
-
-# add_library (StoneyDSP INTERFACE)
-# add_library (StoneyDSP::StoneyDSP ALIAS StoneyDSP)
-# target_link_libraries (StoneyDSP
-#     INTERFACE
-#     StoneyDSP::stoneydsp_core
-#     StoneyDSP::stoneydsp_audio
-#     StoneyDSP::stoneydsp_graphics
-# )
-# target_link_libraries (StoneyDSP
-#     PRIVATE
-#     juce::juce_core
-#     juce::juce_audio_basics
-#     juce::juce_events
-#     juce::juce_audio_devices
-#     PUBLIC
-#     juce::juce_recommended_warning_flags
-#     juce::juce_recommended_config_flags
-#     juce::juce_recommended_lto_flags
-# )
-# target_compile_definitions (StoneyDSP PUBLIC DONT_SET_USING_JUCE_NAMESPACE)
 
 option(STONEYDSP_BUILD_EXTRAS "Add build targets for the other StoneyDSP tools" OFF)
 
@@ -141,6 +105,12 @@ endif()
 include("${CMAKE_CURRENT_LIST_DIR}/@TARGETS_EXPORT_NAME@.cmake")
 check_required_components("@PROJECT_NAME@")
 
+set_directory_properties (PROPERTIES
+    STONEYDSP_COMPANY_NAME       "StoneyDSP"
+    STONEYDSP_COMPANY_WEBSITE    "https://stoneydsp.com"
+    STONEYDSP_COMPANY_EMAIL      "nathanjhood@googlemail.com"
+    STONEYDSP_COMPANY_COPYRIGHT  "Copyright (c) 2024 - Nathan J. Hood"
+)
 
 set(STONEYDSP_MODULES_DIR "@PACKAGE_STONEYDSP_MODULE_PATH@" CACHE INTERNAL "The path to StoneyDSP modules")
 

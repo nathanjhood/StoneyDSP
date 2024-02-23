@@ -41,6 +41,9 @@ Calls ```find_package(JUCE ${VERSION} CONFIG REQUIRED)```.
 ]=============================================================================]#
 macro(stoneydsp_find_juce _stoneydsp_juce_version)
     # Do some validation...
+    # IDE support
+    set (JUCE_ENABLE_MODULE_SOURCE_GROUPS ON)
+    set_property(GLOBAL PROPERTY USE_FOLDERS YES)
     find_package (JUCE ${_stoneydsp_juce_version} CONFIG REQUIRED)
 endmacro()
 
