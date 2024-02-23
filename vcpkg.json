@@ -37,7 +37,18 @@
     {
       "name": "juce",
       "features": [
-        "curl"
+				"curl",
+				"extras",
+				"freetype",
+				"jack",
+				"ladspa",
+				"opengl",
+				"web-browser",
+				"xcursor",
+				"xinerama",
+				"xrandr",
+				"xrender"
+
       ]
     }
   ]
