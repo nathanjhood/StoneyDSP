@@ -59,8 +59,7 @@ jobs:
     - name: linux-deps-install
       run:
         sudo apt install -y libasound2-dev libjack-jackd2-dev \
-        libxcomposite-dev libxcursor-dev libxcursor-dev libxext-dev libxinerama-dev libxrandr-dev libxrender-dev \
-        mesa-common-dev
+        libxcursor-dev libxcursor-dev libxext-dev libxinerama-dev libxrandr-dev libxrender-dev
     
     - name: vcpkg-action
       # You may pin to the exact commit or the version.
