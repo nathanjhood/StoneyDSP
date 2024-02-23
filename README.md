@@ -20,7 +20,8 @@
 | |
 | <p>*we = just <a href="https://github.com/nathanjhood">me</a>, for now! </p> |
 | |
-| The StoneyDSP Library
+
+The StoneyDSP Library
 
 Copyright (C) 2024 Nathan J. Hood <nathanjhood@googlemail.com>
 
@@ -48,4 +49,3 @@ For more information, visit the website:
 FULL STONEYDSP TERMS:
 - [STONEYDSP END-USER LICENSE AGREEMENT](https://www.stoneydsp.com/licence)
 - [STONEYDSP PRIVACY POLICY](https://www.stoneydsp.com/privacy-policy)
-|
