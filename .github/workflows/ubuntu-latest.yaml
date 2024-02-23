@@ -27,6 +27,37 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+
+    - name: Cache
+      uses: actions/cache@v4.0.0
+      with:
+        # A list of files, directories, and wildcard patterns to cache and restore
+        path: ${{github.workspace}}/build/x64-linux
+        # An explicit key for restoring and saving the cache
+        # key: 
+        # An ordered list of keys to use for restoring stale cache if no cache hit occurred for key. Note `cache-hit` returns false in this case.
+        # restore-keys: # optional
+        # The chunk size used to split up large files during upload, in bytes
+        # upload-chunk-size: # optional
+        # An optional boolean when enabled, allows windows runners to save or restore caches that can be restored or saved respectively on other platforms
+        # enableCrossOsArchive: # optional, default is false
+        # Fail the workflow if cache entry is not found
+        # fail-on-cache-miss: # optional, default is false
+        # Check if a cache entry exists for the given input(s) (key, restore-keys) without downloading the cache
+        # lookup-only: # optional, default is false
+        # Run the post step to save the cache even if another step before fails
+        save-always: true
+        
+    - name: linux-deps
+      run:
+        sudo apt update 
+        sudo apt install -y libasound2-dev libjack-jackd2-dev \
+        ladspa-sdk \
+        libcurl4-openssl-dev  \
+        libfreetype6-dev \
+        libx11-dev libxcomposite-dev libxcursor-dev libxcursor-dev libxext-dev libxinerama-dev libxrandr-dev libxrender-dev \
+        libwebkit2gtk-4.0-dev \
+        libglu1-mesa-dev mesa-common-dev
     
     - name: vcpkg-action
       # You may pin to the exact commit or the version.
@@ -53,7 +84,6 @@ jobs:
         github-binarycache: true
         # Fetch depth for vcpkg checkout
         # fetch-depth: # optional, default is 1
-
           
     - name: Use Node.js ${{ matrix.node_version }}
       uses: actions/setup-node@v1
@@ -62,27 +92,6 @@ jobs:
 
     - name: npm install, build, test
       run: npm install
-
-    - name: Cache
-      uses: actions/cache@v4.0.0
-      with:
-        # A list of files, directories, and wildcard patterns to cache and restore
-        path: ${{github.workspace}}/build/x64-linux
-        # An explicit key for restoring and saving the cache
-        # key: 
-        # An ordered list of keys to use for restoring stale cache if no cache hit occurred for key. Note `cache-hit` returns false in this case.
-        # restore-keys: # optional
-        # The chunk size used to split up large files during upload, in bytes
-        # upload-chunk-size: # optional
-        # An optional boolean when enabled, allows windows runners to save or restore caches that can be restored or saved respectively on other platforms
-        # enableCrossOsArchive: # optional, default is false
-        # Fail the workflow if cache entry is not found
-        # fail-on-cache-miss: # optional, default is false
-        # Check if a cache entry exists for the given input(s) (key, restore-keys) without downloading the cache
-        # lookup-only: # optional, default is false
-        # Run the post step to save the cache even if another step before fails
-        # save-always: # optional, default is false
-          
 
     - name: Configure
       working-directory: ${{github.workspace}}
