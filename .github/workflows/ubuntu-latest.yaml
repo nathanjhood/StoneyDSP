@@ -1,10 +1,13 @@
-name: CMake-Ubuntu-latest
+name: Ubuntu-latest
 
 on:
+  workflow_dispatch: # lets you run a build from the UI
   push:
-    branches: [ "production", "preview", "development" ]
-  pull_request:
-    branches: [ "production", "preview", "development"  ]
+
+# When pushing new commits, cancel any running builds on that branch
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
 
 
 env:
@@ -17,7 +20,7 @@ env:
 
 jobs:
   cmake:
-    name: Test on ${{ matrix.os }} with ${{ matrix.node_version }}
+    name: Test on ${{ matrix.os }} with Node ${{ matrix.node_version }}
     # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
     # You can convert this to a matrix build if you need cross-platform coverage.
     # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
@@ -25,32 +28,30 @@ jobs:
     strategy:
       matrix:
         node_version: ['18']
-        os: [ 'ubuntu-latest' ]
+        os: [ 'ubuntu-22.04' ]
         triplet: [ 'x64-linux' ]
 
     steps:
-    - uses: actions/checkout@v3
 
-    - name: Cache
-      uses: actions/cache@v4.0.0
+    # This also starts up our "fake" display Xvfb, needed for pluginval
+    - name: Install JUCE's Linux Deps
+      # if: runner.os == 'Linux'
+      # Thanks to McMartin & co https://forum.juce.com/t/list-of-juce-dependencies-under-linux/15121/44
+      run: |
+        sudo apt-get update && sudo apt install libasound2-dev libx11-dev libxinerama-dev libxext-dev libfreetype6-dev libwebkit2gtk-4.0-dev libglu1-mesa-dev xvfb ninja-build
+        # downgrade gcc to workaround 22.04 and C++20 issue 
+        # see: https://github.com/actions/runner-images/issues/8659
+        sudo apt-get install -y --allow-downgrades libc6=2.35-0ubuntu3.6 libc6-dev=2.35-0ubuntu3.6 libstdc++6=12.3.0-1ubuntu1~22.04 libgcc-s1=12.3.0-1ubuntu1~22.04
+        sudo /usr/bin/Xvfb $DISPLAY &
+        
+    - name: Checkout code
+      uses: actions/checkout@v3
       with:
-        # A list of files, directories, and wildcard patterns to cache and restore
-        path: ${{github.workspace}}/build
-        # An explicit key for restoring and saving the cache
-        # key: 
-        # An ordered list of keys to use for restoring stale cache if no cache hit occurred for key. Note `cache-hit` returns false in this case.
-        # restore-keys: # optional
-        # The chunk size used to split up large files during upload, in bytes
-        # upload-chunk-size: # optional
-        # An optional boolean when enabled, allows windows runners to save or restore caches that can be restored or saved respectively on other platforms
-        # enableCrossOsArchive: # optional, default is false
-        # Fail the workflow if cache entry is not found
-        # fail-on-cache-miss: # optional, default is false
-        # Check if a cache entry exists for the given input(s) (key, restore-keys) without downloading the cache
-        # lookup-only: # optional, default is false
-        # Run the post step to save the cache even if another step before fails
-        save-always: true
-    
+        submodules: true # Get JUCE populated (if used)
+
+    - name: Cache the build
+      uses: mozilla-actions/sccache-action@v0.0.3
+        
     - name: vcpkg-action
       # You may pin to the exact commit or the version.
       # uses: johnwason/vcpkg-action@7c4b562bb35ef5a01d9d728acc90100b107dee4d
@@ -69,7 +70,7 @@ jobs:
         # vcpkg revision to checkout.
         # revision: # optional, default is 
         # GitHub token to authenticate API requests. Recommended to use  github.token 
-        token: ${{ github.token }} 
+        token: ${{env.GITHUB_TOKEN}}
         # Directory containing vcpkg.json manifest file. Cannot be used with pkgs.
         # manifest-dir: # optional, default is 
         # Use vcpkg built-in GitHub binary caching. If not specified, will use the dry-run based file cache.
@@ -87,42 +88,50 @@ jobs:
 
     - name: Configure
       working-directory: ${{github.workspace}}
+      shell: bash
       # Configure CMake in a 'bin' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-      run: cmake -B ${{github.workspace}}/build -DSTONEYDSP_BUILD_TESTS:BOOL=TRUE -DSTONEYDSP_BUILD_EXTRAS:BOOL=TRUE -DSTONEYDSP_BUILD_EXAMPLES:BOOL=TRUE -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      run: cmake -B ${{github.workspace}}/build/${{matrix.triplet}} -DSTONEYDSP_BUILD_TESTS:BOOL=TRUE -DSTONEYDSP_BUILD_EXTRAS:BOOL=TRUE -DSTONEYDSP_BUILD_EXAMPLES:BOOL=TRUE -DCMAKE_INSTALL_PREFIX:PATH=${{github.workspace}}/install/${{matrix.triplet}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
     - name: Build
       working-directory: ${{github.workspace}}
+      shell: bash 
       # Build StoneyDSO with the given configuration
-      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target all
+      run: cmake --build ${{github.workspace}}/build/${{matrix.triplet}} --config ${{env.BUILD_TYPE}} --parallel 4
 
     - name: Test
       working-directory: ${{github.workspace}}
+      shell: bash
       # Execute tests defined by the CMake configuration.
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-      run: ctest --test-dir ${{github.workspace}}/build -C ${{env.BUILD_TYPE}} --rerun-failed --output-on-failure --verbose 
+      run: ctest --test-dir ${{github.workspace}}/build/${{matrix.triplet}} -j4 --rerun-failed --output-on-failure --verbose 
 
     - name: Install
+      shell: bash
       working-directory: ${{github.workspace}}
       # Install StoneyDSP with the given configuration
-      run: cmake --install ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -B ${{github.workspace}}/install --target all
+      run: cmake --install ${{github.workspace}}/build/${{matrix.triplet}} -B ${{github.workspace}}/install/${{matrix.triplet}} --target all
 
-    - name: Zip Source
+    - name: Zip Source 
+      shell: bash
       working-directory: ${{github.workspace}}
       # Pack the StoneyDSP source code with the given configuration
-      run: cpack --config ${{github.workspace}}/build/CPackSourceConfig.cmake -B ${{github.workspace}}/install -G ZIP -C ${{env.BUILD_TYPE}}
+      run: cpack --config ${{github.workspace}}/build/${{matrix.triplet}}/CPackSourceConfig.cmake -B ${{github.workspace}}/install/${{matrix.triplet}} -G ZIP
 
     - name: Tar Source
+      shell: bash
       working-directory: ${{github.workspace}}
       # Pack the StoneyDSP source code with the given configuration
-      run: cpack --config ${{github.workspace}}/build/CPackSourceConfig.cmake -B ${{github.workspace}}/install -G TAR -C ${{env.BUILD_TYPE}}
+      run: cpack --config ${{github.workspace}}/build/${{matrix.triplet}}/CPackSourceConfig.cmake -B ${{github.workspace}}/install/${{matrix.triplet}} -G TAR
 
     - name: Zip Build
+      shell: bash
       working-directory: ${{github.workspace}}
       # Pack the StoneyDSP source code with the given configuration
-      run: cpack --config ${{github.workspace}}/build/CPackConfig.cmake -B ${{github.workspace}}/install -G ZIP -C ${{env.BUILD_TYPE}}
+      run: cpack --config ${{github.workspace}}/build/${{matrix.triplet}}/CPackConfig.cmake -B ${{github.workspace}}/install/${{matrix.triplet}} -G ZIP
 
     - name: Tar Build
+      shell: bash
       working-directory: ${{github.workspace}}
       # Pack the StoneyDSP source code with the given configuration
-      run: cpack --config ${{github.workspace}}/build/CPackConfig.cmake -B ${{github.workspace}}/install -G TAR -C ${{env.BUILD_TYPE}}
+      run: cpack --config ${{github.workspace}}/build/${{matrix.triplet}}/CPackConfig.cmake -B ${{github.workspace}}/install/${{matrix.triplet}} -G TAR
