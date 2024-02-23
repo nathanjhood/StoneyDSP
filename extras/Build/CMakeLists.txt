@@ -26,7 +26,4 @@ EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
 DISCLAIMED.
 ]=============================================================================]#
 
-set(CMAKE_FOLDER extras)
-
-add_subdirectory(Icons)
-add_subdirectory(Resources)
+add_subdirectory(stoneyhelper)
