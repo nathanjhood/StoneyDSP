@@ -51,7 +51,7 @@ jobs:
     - name: linux-deps
       run:
         sudo apt update && \
-        sudo apt -y install libasound2-dev libjack-jackd2-dev \
+        apt -y install libasound2-dev libjack-jackd2-dev \
         ladspa-sdk \
         libcurl4-openssl-dev  \
         libfreetype6-dev \
