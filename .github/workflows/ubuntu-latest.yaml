@@ -22,8 +22,8 @@ jobs:
     strategy:
       matrix:
         node_version: ['18']
-        os: [ubuntu-latest]
-        triplet: [ x64-linux ]
+        os: [ 'ubuntu-latest' ]
+        triplet: [ 'x64-linux' ]
 
     steps:
     - uses: actions/checkout@v3
@@ -32,7 +32,7 @@ jobs:
       uses: actions/cache@v4.0.0
       with:
         # A list of files, directories, and wildcard patterns to cache and restore
-        path: ${{github.workspace}}/build/x64-linux
+        path: ${{github.workspace}}/build
         # An explicit key for restoring and saving the cache
         # key: 
         # An ordered list of keys to use for restoring stale cache if no cache hit occurred for key. Note `cache-hit` returns false in this case.
@@ -47,19 +47,6 @@ jobs:
         # lookup-only: # optional, default is false
         # Run the post step to save the cache even if another step before fails
         save-always: true
-
-    # - name: linux-deps-update
-    #   run:
-    #     sudo apt update 
-    # 
-    # - name: linux-deps-upgrade
-    #   run:
-    #     sudo apt upgrade -y
-    #     
-    # - name: linux-deps-install
-    #   run:
-    #     sudo apt install -y libasound2-dev libjack-jackd2-dev \
-    #     libxcursor-dev libxcursor-dev libxext-dev libxinerama-dev libxrandr-dev libxrender-dev
     
     - name: vcpkg-action
       # You may pin to the exact commit or the version.
@@ -99,40 +86,40 @@ jobs:
       working-directory: ${{github.workspace}}
       # Configure CMake in a 'bin' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-      run: cmake -B ${{github.workspace}}/build/x64-linux -DSTONEYDSP_BUILD_TESTS:BOOL=TRUE -DSTONEYDSP_BUILD_EXTRAS:BOOL=TRUE -DSTONEYDSP_BUILD_EXAMPLES:BOOL=TRUE -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      run: cmake -B ${{github.workspace}}/build -DSTONEYDSP_BUILD_TESTS:BOOL=TRUE -DSTONEYDSP_BUILD_EXTRAS:BOOL=TRUE -DSTONEYDSP_BUILD_EXAMPLES:BOOL=TRUE -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
     - name: Build
       working-directory: ${{github.workspace}}
       # Build StoneyDSO with the given configuration
-      run: cmake --build ${{github.workspace}}/build/x64-linux --config ${{env.BUILD_TYPE}} --target all
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target all
 
     - name: Test
       working-directory: ${{github.workspace}}
       # Execute tests defined by the CMake configuration.
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-      run: ctest --test-dir ${{github.workspace}}/build/x64-linux -C ${{env.BUILD_TYPE}} --rerun-failed --output-on-failure --verbose 
+      run: ctest --test-dir ${{github.workspace}}/build -C ${{env.BUILD_TYPE}} --rerun-failed --output-on-failure --verbose 
 
     - name: Install
       working-directory: ${{github.workspace}}
       # Install StoneyDSP with the given configuration
-      run: cmake --install ${{github.workspace}}/build/x64-linux --config ${{env.BUILD_TYPE}} -B ${{github.workspace}}/install/x64-linux --target all
+      run: cmake --install ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} -B ${{github.workspace}}/install --target all
 
     - name: Zip Source
       working-directory: ${{github.workspace}}
       # Pack the StoneyDSP source code with the given configuration
-      run: cpack --config ${{github.workspace}}/build/x64-linux/CPackSourceConfig.cmake -B ${{github.workspace}}/install/x64-linux -G ZIP -C ${{env.BUILD_TYPE}}
+      run: cpack --config ${{github.workspace}}/build/CPackSourceConfig.cmake -B ${{github.workspace}}/install -G ZIP -C ${{env.BUILD_TYPE}}
 
     - name: Tar Source
       working-directory: ${{github.workspace}}
       # Pack the StoneyDSP source code with the given configuration
-      run: cpack --config ${{github.workspace}}/build/x64-linux/CPackSourceConfig.cmake -B ${{github.workspace}}/install/x64-linux -G TAR -C ${{env.BUILD_TYPE}}
+      run: cpack --config ${{github.workspace}}/build/CPackSourceConfig.cmake -B ${{github.workspace}}/install -G TAR -C ${{env.BUILD_TYPE}}
 
     - name: Zip Build
       working-directory: ${{github.workspace}}
       # Pack the StoneyDSP source code with the given configuration
-      run: cpack --config ${{github.workspace}}/build/x64-linux/CPackConfig.cmake -B ${{github.workspace}}/install/x64-linux -G ZIP -C ${{env.BUILD_TYPE}}
+      run: cpack --config ${{github.workspace}}/build/CPackConfig.cmake -B ${{github.workspace}}/install -G ZIP -C ${{env.BUILD_TYPE}}
 
     - name: Tar Build
       working-directory: ${{github.workspace}}
       # Pack the StoneyDSP source code with the given configuration
-      run: cpack --config ${{github.workspace}}/build/x64-linux/CPackConfig.cmake -B ${{github.workspace}}/install/x64-linux -G TAR -C ${{env.BUILD_TYPE}}
+      run: cpack --config ${{github.workspace}}/build/CPackConfig.cmake -B ${{github.workspace}}/install -G TAR -C ${{env.BUILD_TYPE}}
