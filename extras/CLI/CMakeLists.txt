@@ -26,24 +26,13 @@ EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
 DISCLAIMED.
 ]=============================================================================]#
 
-include (GetGitRef)
-
-if (NOT DEFINED STONEYDSP_GIT_COMMIT_REF)
-    stoneydsp_get_git_ref ()
-endif ()
-
-#[=============================================================================[
-Provides:
-
-    STONEYDSP_VERSION_FILE
-
-]=============================================================================]#
-macro (stoneydsp_write_version_file)
-    set(STONEYDSP_VERSION_FILE "${StoneyDSP_SOURCE_DIR}/VERSION")
-    file(WRITE "${STONEYDSP_VERSION_FILE}.tmp" "${StoneyDSP_VERSION_MAJOR}.${StoneyDSP_VERSION_MINOR}.${StoneyDSP_VERSION_PATCH}.${StoneyDSP_VERSION_TWEAK}\n")
-
-    #Copy the file only if it has changed.
-    execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different "${STONEYDSP_VERSION_FILE}.tmp" "${STONEYDSP_VERSION_FILE}")
-    file(REMOVE "${STONEYDSP_VERSION_FILE}.tmp")
-    set(STONEYDSP_VERSION_FILE "${STONEYDSP_VERSION_FILE}" CACHE INTERNAL "StoneyDSP current version file." FORCE)
-endmacro ()
+# add_executable (Main "src/main.cpp")
+# target_link_libraries (Main PRIVATE StoneyDSP::StoneyDSP)
+# set_target_properties (Main
+#     PROPERTIES
+#     ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib"
+#     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib"
+#     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin"
+#     PDB_OUTPUT_DIRECTORY     "${CMAKE_CURRENT_BINARY_DIR}/bin"
+#     # POSITION_INDEPENDENT_CODE ON
+# )

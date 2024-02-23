@@ -1,14 +1,14 @@
 /**
- * The 'addon' C++ addon interface.
+ * The 'StoneyDSP' C++ addon interface.
  */
 interface StoneyDSP {
   /**
-   * Returns a string, confirming the cmake-js addon is online.
+   * Returns a string, confirming the StoneyDSP addon is online.
    * @returns string
    */
   hello(): string;
   /**
-   * Returns a number, confirming the Napi Addon API version number.
+   * Returns a number, confirming the StoneyDSP API version number.
    * @returns number
    */
   version(): number;

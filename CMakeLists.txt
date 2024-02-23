@@ -1,277 +1,126 @@
+#[=============================================================================[
+This file is part of the StoneyDSP library.
+Copyright (c) 2024 - StoneyDSP
+Home: https://www.stoneydsp.com
+Source: https://github.com/StoneyDSP/StoneyDSP
+
+StoneyDSP is an open source library subject to open-source licensing.
+
+By using StoneyDSP, you agree to the terms of the StoneyDSP End-User License
+Agreement and also the StoneyDSP Privacy Policy.
+
+End User License Agreement: www.stoneydsp.com/LICENSE
+Privacy Policy: www.stoneydsp.com/privacy-policy
+
+By using StoneyDSP, you must also agree to the terms of both the JUCE 7 End-User
+License Agreement and JUCE Privacy Policy.
+
+End User License Agreement: www.juce.com/juce-7-licence
+Privacy Policy: www.juce.com/juce-privacy-policy
+
+Or: You may also use this code under the terms of the GPL v3 (see
+www.gnu.org/licenses).
+
+STONEYDSP IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+DISCLAIMED.
+]=============================================================================]#
+
 cmake_minimum_required (VERSION 3.22...3.28 FATAL_ERROR)
 
+# pick up vcpkg toolchain if around (otherwise, find packages locally)...
 if (DEFINED ENV{VCPKG_ROOT})
     # global install...
     set (CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE FILEPATH "" FORCE)
+elseif (EXISTS "${CMAKE_CURRENT_LIST_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake")
+    # submodule...
+    set (CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_LIST_DIR}/ext/microsoft/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE FILEPATH "" FORCE)
 elseif (EXISTS "${CMAKE_CURRENT_LIST_DIR}/ext/microsoft/vcpkg/scripts/buildsystems/vcpkg.cmake")
     # submodule...
     set (CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_LIST_DIR}/ext/microsoft/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE FILEPATH "" FORCE)
 endif ()
 
-list (APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/share/cmake/Modules")
+list (APPEND CMAKE_MODULE_PATH
+    "${CMAKE_CURRENT_LIST_DIR}/share/cmake/StoneyDSP"
+    "${CMAKE_CURRENT_LIST_DIR}/share/cmake/Modules"
+)
+
+# The default build type must be set before project()
+if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR AND NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+    set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
+    set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
+endif()
+
+if (NOT DEFINED StoneyDSP_SOURCE_DIR)
+    set (StoneyDSP_SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}")
+endif ()
+
+if (NOT DEFINED StoneyDSP_DIR)
+    set (StoneyDSP_DIR "${CMAKE_CURRENT_LIST_DIR}/share/cmake/StoneyDSP")
+endif ()
+
+find_package (StoneyDSP 1.0.0 CONFIG REQUIRED)
 
 project (
     StoneyDSP
-    # VERSION 1.0.0
+    VERSION 1.0.0
     DESCRIPTION ""
     HOMEPAGE_URL "https://stoneydsp.com"
     LANGUAGES C;CXX
 )
 
+include (CMakeDependentOption)
+include (GetGitRef)
+include (WriteVersionFile)
 
-# IDE support
-set (JUCE_ENABLE_MODULE_SOURCE_GROUPS ON)
+stoneydsp_get_git_ref ()
+
+set (StoneyDSP_VERSION_MAJOR 1                                                  CACHE STRING "First version number component of the ``PROJECT_VERSION`` variable as set by the ``project()`` command." FORCE)
+set (StoneyDSP_VERSION_MINOR 0                                                  CACHE STRING "Second version number component of the ``PROJECT_VERSION`` variable as set by the ``project()`` command." FORCE)
+set (StoneyDSP_VERSION_PATCH 0                                                  CACHE STRING "Third version number component of the ``PROJECT_VERSION`` variable as set by the ``project()`` command." FORCE)
+set (StoneyDSP_VERSION_TWEAK "${STONEYDSP_GIT_COMMIT_REF}"                      CACHE STRING "Fourth version number component of the ``PROJECT_VERSION`` variable as set by the ``project()`` command." FORCE)
+
+set (StoneyDSP_VERSION ${StoneyDSP_VERSION_MAJOR}.${StoneyDSP_VERSION_MINOR}.${StoneyDSP_VERSION_PATCH} CACHE STRING "StoneyDSP Version Number." FORCE)
+
+stoneydsp_write_version_file ()
+
 set_property(GLOBAL PROPERTY USE_FOLDERS YES)
 
 set (STONEYDSP_MODULES_DIR "${StoneyDSP_SOURCE_DIR}/modules" CACHE INTERNAL "The path to StoneyDSP modules")
 
-set_directory_properties(PROPERTIES
+# This option will disable most of the helper functions and tools. This option exists to
+# facilitate existing CMake builds which handle things like bundle creation, icons, plists, and
+# binary data independently of JUCE. This option is not recommended - use at your own risk!
+
+option(STONEYDSP_MODULES_ONLY "Only configure the StoneyDSP modules" OFF)
+
+# This option controls whether dummy targets are added to the build, where these targets contain all
+# of the source files for each JUCE module. If you're planning to use an IDE and want to be able to
+# browse all of JUCE's source files, this may be useful. However, it will increase the size of
+# generated IDE projects and might slow down configuration a bit. If you enable this, you should
+# probably also add `set_property(GLOBAL PROPERTY USE_FOLDERS YES)` to your top level CMakeLists,
+# otherwise the module sources will be added directly to the top level of the project, instead of in
+# a nice 'Modules' subfolder.
+
+cmake_dependent_option(STONEYDSP_ENABLE_MODULE_SOURCE_GROUPS
+    "Show all module sources in IDE projects" OFF
+    "NOT STONEYDSP_MODULES_ONLY" OFF
+)
+
+add_subdirectory(modules)
+
+if(JUCE_MODULES_ONLY)
+    return()
+endif()
+
+set_directory_properties (PROPERTIES
     StoneyDSP_COMPANY_NAME       "StoneyDSP"
     StoneyDSP_COMPANY_WEBSITE    "https://stoneydsp.com"
     StoneyDSP_COMPANY_EMAIL      "nathanjhood@googlemail.com"
     StoneyDSP_COMPANY_COPYRIGHT  "Copyright (c) 2024 - Nathan J. Hood"
 )
 
-include (GetGitRef)
-include (WriteVersionFile)
-
-stoneydsp_get_git_ref ()
-
-set (STONEYDSP_VERSION_MAJOR 1                                                  CACHE STRING "First version number component of the ``PROJECT_VERSION`` variable as set by the ``project()`` command." FORCE)
-set (STONEYDSP_VERSION_MINOR 0                                                  CACHE STRING "Second version number component of the ``PROJECT_VERSION`` variable as set by the ``project()`` command." FORCE)
-set (STONEYDSP_VERSION_PATCH 0                                                  CACHE STRING "Third version number component of the ``PROJECT_VERSION`` variable as set by the ``project()`` command." FORCE)
-set (STONEYDSP_VERSION_TWEAK "${STONEYDSP_GIT_COMMIT_REF}"                      CACHE STRING "Fourth version number component of the ``PROJECT_VERSION`` variable as set by the ``project()`` command." FORCE)
-
-set (STONEYDSP_VERSION ${STONEYDSP_VERSION_MAJOR}.${STONEYDSP_VERSION_MINOR}.${STONEYDSP_VERSION_PATCH} CACHE STRING "StoneyDSP Version Number." FORCE)
-
-stoneydsp_write_version_file ()
-
-find_package (CMakeRC CONFIG REQUIRED)
-# Create a CMakeRC library
-# See https://github.com/vector-of-bool/cmrc/blob/master/README.md#usage
-cmrc_add_resource_library (Resources
-	ALIAS StoneyDSP::Resources
-	NAMESPACE StoneyDSP::Resources
-    # Resources to compile...
-    "LICENSE"
-    "VERSION"
-)
-set_target_properties (Resources
-    PROPERTIES
-    ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib"
-    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib"
-    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin"
-    PDB_OUTPUT_DIRECTORY     "${CMAKE_CURRENT_BINARY_DIR}/bin"
-    POSITION_INDEPENDENT_CODE ON
-)
-
-# include (public/images/CMakeLists.txt)
-if (NOT DEFINED CMakeRC_DIR)
-    find_package (CMakeRC)
-	if (NOT DEFINED CMakeRC_DIR)
-		message (FATAL_ERROR "Cannot find CMakeRC?")
-		return ()
-	endif ()
-endif ()
-
-set (STONEYDSP_ICONS_PNG_WIDE "")
-list (APPEND STONEYDSP_ICONS_PNG_WIDE
-	public/images/w_icon__1024x768.png
-	public/images/w_icon__196x128.png
-	public/images/w_icon__384x256.png
-	public/images/w_icon__768x512.png
-)
-
-cmrc_add_resource_library (Icons
-
-	ALIAS StoneyDSP::Icons
-	NAMESPACE StoneyDSP::Icons
-	WHENCE public/images
-	PREFIX StoneyDSP/Icons
-
-    # SOURCES
-	public/images/favicon.ico
-	${STONEYDSP_ICONS_PNG_WIDE}
-)
-
-set (STONEYDSP_ICONS_PNG "")
-list (APPEND STONEYDSP_ICONS_PNG
-	public/images/favicon/android-chrome-192x192.png
-	public/images/favicon/android-chrome-512x512.png
-	public/images/favicon/android-icon-144x144.png
-	public/images/favicon/android-icon-192x192.png
-	public/images/favicon/android-icon-36x36.png
-	public/images/favicon/android-icon-48x48.png
-	public/images/favicon/android-icon-72x72.png
-	public/images/favicon/android-icon-96x96.png
-	public/images/favicon/favicon-144x144.png
-	public/images/favicon/favicon-168x168.png
-	public/images/favicon/favicon-256x256.png
-	public/images/favicon/favicon-32x32.png
-	public/images/favicon/favicon-48x48.png
-	public/images/favicon/favicon-512x512.png
-	public/images/favicon/favicon-64x64.png
-	public/images/favicon/favicon-96x96.png
-	public/images/favicon/ms-icon-150x150.png
-	public/images/favicon/ms-icon-310x310.png
-	public/images/favicon/ms-icon-70x70.png
-)
-cmrc_add_resources (Icons
-
-	WHENCE public/images/favicon
-	PREFIX StoneyDSP/Icons
-
-	${STONEYDSP_ICONS_PNG}
-)
-
-set (STONEYDSP_ICONS_ICO "")
-list (APPEND STONEYDSP_ICONS_ICO
-	public/images/favicon/favicon__144x144.ico
-	public/images/favicon/favicon__168x168.ico
-	public/images/favicon/favicon__256x256.ico
-	public/images/favicon/favicon__32x32.ico
-	public/images/favicon/favicon__48x48.ico
-	public/images/favicon/favicon__64x64.ico
-	public/images/favicon/favicon__96x96.ico
-)
-cmrc_add_resources (Icons
-
-	WHENCE public/images/favicon
-	PREFIX StoneyDSP/Icons
-
-	${STONEYDSP_ICONS_ICO}
-)
-
-set_target_properties (Icons
-    PROPERTIES
-    ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib"
-    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib"
-    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin"
-    PDB_OUTPUT_DIRECTORY     "${CMAKE_CURRENT_BINARY_DIR}/bin"
-    POSITION_INDEPENDENT_CODE ON
-)
-
-
-
-
-# if (EXISTS "${CMAKE_CURRENT_LIST_DIR}/ext/juce-framework/JUCE/CMakeLists.txt")
-if (TRUE)
-    # if JUCE is installed globally...
-    find_package (JUCE 7.0.10 CONFIG REQUIRED)
-else ()
-    # if JUCE is a submodule...
-    add_subdirectory (JUCE)
-endif ()
-
-#[==[
-juce provides the following common CMake targets:
-
-find_package(JUCE CONFIG REQUIRED)
-target_link_libraries(main PRIVATE
-    juce::juce_core
-    juce::juce_audio_basics
-    juce::juce_events
-    juce::juce_audio_devices
-    juce::juce_graphics
-    juce::juce_gui_basics
-    juce::juce_gui_extra
-    juce::juce_opengl
-    juce::juce_analytics
-    juce::juce_audio_formats
-    juce::juce_audio_plugin_client
-    juce::juce_audio_processors
-    juce::juce_audio_utils
-    juce::juce_box2d
-    juce::juce_cryptography
-    juce::juce_data_structures
-    juce::juce_dsp
-    juce::juce_osc
-    juce::juce_product_unlocking
-    juce::juce_video
-
-    juce::juce_recommended_config_flags
-    juce::juce_recommended_lto_flags
-    juce::juce_recommended_warning_flags
-)
-
-]==]#
-
-# target_link_libraries (Shared
-#     PRIVATE
-#     juce::juce_core
-#     juce::juce_audio_basics
-#     juce::juce_events
-#     juce::juce_audio_devices
-#     PUBLIC
-#     juce::juce_recommended_warning_flags
-#     juce::juce_recommended_config_flags
-#     juce::juce_recommended_lto_flags
-# )
-# target_compile_definitions (Shared PUBLIC DONT_SET_USING_JUCE_NAMESPACE)
-
-# target_link_libraries (Shared
-#     PRIVATE
-#     StoneyDSP::Resources
-#     StoneyDSP::Icons
-# )
-
-juce_add_module(
-    # StoneyDSP::stoneydsp_core
-    modules/stoneydsp_core
-    ALIAS_NAMESPACE StoneyDSP
-    INSTALL_PATH "include/StoneyDSP-${STONEYDSP_VERSION}/modules"
-)
-juce_add_module(
-    # StoneyDSP::stoneydsp_audio
-    modules/stoneydsp_audio
-    ALIAS_NAMESPACE StoneyDSP
-    INSTALL_PATH "include/StoneyDSP-${STONEYDSP_VERSION}/modules"
-)
-juce_add_module(
-    # StoneyDSP::stoneydsp_graphics
-    modules/stoneydsp_graphics
-    ALIAS_NAMESPACE StoneyDSP
-    INSTALL_PATH "include/StoneyDSP-${STONEYDSP_VERSION}/modules"
-)
-juce_add_module(
-    # StoneyDSP::stoneydsp_web
-    modules/stoneydsp_web
-    ALIAS_NAMESPACE StoneyDSP
-    INSTALL_PATH "include/StoneyDSP-${STONEYDSP_VERSION}/modules"
-)
-
-
-# add_library (StoneyDSP INTERFACE)
-# add_library (StoneyDSP::StoneyDSP ALIAS StoneyDSP)
-# target_link_libraries (StoneyDSP
-#     INTERFACE
-#     StoneyDSP::stoneydsp_core
-#     StoneyDSP::stoneydsp_audio
-#     StoneyDSP::stoneydsp_graphics
-# )
-# target_link_libraries (StoneyDSP
-#     PRIVATE
-#     juce::juce_core
-#     juce::juce_audio_basics
-#     juce::juce_events
-#     juce::juce_audio_devices
-#     PUBLIC
-#     juce::juce_recommended_warning_flags
-#     juce::juce_recommended_config_flags
-#     juce::juce_recommended_lto_flags
-# )
-# target_compile_definitions (StoneyDSP PUBLIC DONT_SET_USING_JUCE_NAMESPACE)
-
-# add_executable (Main "src/main.cpp")
-# target_link_libraries (Main PRIVATE StoneyDSP::StoneyDSP)
-# set_target_properties (Main
-#     PROPERTIES
-#     ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib"
-#     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib"
-#     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin"
-#     PDB_OUTPUT_DIRECTORY     "${CMAKE_CURRENT_BINARY_DIR}/bin"
-#     # POSITION_INDEPENDENT_CODE ON
-# )
+add_subdirectory(extras/Build)
 
 option(STONEYDSP_BUILD_EXTRAS "Add build targets for the other StoneyDSP tools" OFF)
 
@@ -285,34 +134,41 @@ if(STONEYDSP_BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif()
 
+option (STONEYDSP_BUILD_TESTS "Build tests" ON)
+if(STONEYDSP_BUILD_TESTS AND (StoneyDSP_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR))
+    enable_testing()
+    # if(NOT MSVC)
+    #     add_compile_options(-Wall -Wextra)
+    # endif()
+    # add_subdirectory(tests)
+endif()
 
-set (STONEYDSP_MODULES "")
-list (APPEND STONEYDSP_MODULES
-    stoneydsp_core
-    stoneydsp_audio
-    stoneydsp_graphics
-    stoneydsp_web
-)
+if (StoneyDSP_IS_INSTALLABLE) # StoneyDSP_IS_INSTALLABLE
+    set (StoneyDSP_MODULES "")
+    list (APPEND StoneyDSP_MODULES
+        stoneydsp_core
+        stoneydsp_audio
+        stoneydsp_graphics
+        stoneydsp_web
+    )
 
-file (WRITE "${StoneyDSP_BINARY_DIR}/StoneyDSPConfig.cmake.in" [[
+    file (WRITE "${StoneyDSP_BINARY_DIR}/StoneyDSPConfig.cmake.in" [[
 @PACKAGE_INIT@
 
-include(CMakeFindDependencyMacro)
-if(@USE_CURL@)
-	find_dependency(libcurl @CURL_VERSION_MAJOR@)
-endif()
-if(@USE_OPENSSL@)
-	find_dependency(OpenSSL @OPENSSL_VERSION_MAJOR@)
-endif()
-if(@USE_ZLIB@)
-	find_dependency(ZLIB @ZLIB_VERSION_MAJOR@)
+if(NOT TARGET StoneyDSP::CLI)
+    add_executable(StoneyDSP::CLI IMPORTED)
+    set_target_properties(StoneyDSP::CLI PROPERTIES
+        IMPORTED_LOCATION "@PACKAGE_STONEYDSP_CLI_PATH@")
 endif()
 
-include("${CMAKE_CURRENT_LIST_DIR}/@TARGETS_EXPORT_NAME@.cmake")
+# include("${CMAKE_CURRENT_LIST_DIR}/@TARGETS_EXPORT_NAME@.cmake")
 check_required_components("@PROJECT_NAME@")
 
+set(STONEYDSP_MODULES_DIR "@PACKAGE_STONEYDSP_MODULE_PATH@" CACHE INTERNAL "The path to STONEYDSP modules")
 
-set(STONEYDSP_MODULES_DIR "@PACKAGE_STONEYDSP_MODULE_PATH@" CACHE INTERNAL "The path to StoneyDSP modules")
+include(CMakeFindDependencyMacro)
+
+find_package (JUCE 7.0.10 CONFIG REQUIRED)
 
 set(_stoneydsp_modules
     stoneydsp_audio
@@ -353,59 +209,49 @@ endforeach()
 
 unset(_stoneydsp_modules)
 
-# Alias for either shared or static library
-if(NOT TARGET ${PROJECT_NAME}::Shared)
-	add_library(${PROJECT_NAME}::Shared ALIAS ${PROJECT_NAME}::${LIB_SELECTED})
-endif()
+# # Alias for either shared or static library
+# if(NOT TARGET ${PROJECT_NAME}::Shared)
+# 	add_library(${PROJECT_NAME}::Shared ALIAS ${PROJECT_NAME}::${LIB_SELECTED})
+# endif()
 ]])
 
-include(CMakePackageConfigHelpers)
-write_basic_package_version_file(
-    "${StoneyDSP_BINARY_DIR}/StoneyDSPConfigVersion.cmake"
-    VERSION ${STONEYDSP_VERSION}
-    COMPATIBILITY ExactVersion
-)
+    include(CMakePackageConfigHelpers)
+    write_basic_package_version_file(
+        "${StoneyDSP_BINARY_DIR}/StoneyDSPConfigVersion.cmake"
+        VERSION ${StoneyDSP_VERSION}
+        COMPATIBILITY ExactVersion
+    )
 
-set(STONEYDSP_INSTALL_DESTINATION "lib/cmake/StoneyDSP-${STONEYDSP_VERSION}" CACHE STRING "The location, relative to the install prefix, where the StoneyDSP config file will be installed")
+    set(STONEYDSP_INSTALL_DESTINATION "lib/cmake/StoneyDSP/${StoneyDSP_VERSION}" CACHE STRING "The location, relative to the install prefix, where the StoneyDSP config file will be installed")
 
-set(STONEYDSP_MODULE_PATH "include/StoneyDSP-${STONEYDSP_VERSION}/modules")
-set(STONEYDSP_UTILS_INSTALL_DIR "${STONEYDSP_INSTALL_DESTINATION}")
-# set(JUCEAIDE_PATH "${JUCE_TOOL_INSTALL_DIR}/${JUCE_JUCEAIDE_NAME}")
+    set(STONEYDSP_MODULE_PATH "include/StoneyDSP-${StoneyDSP_VERSION}/modules")
+    set(STONEYDSP_UTILS_INSTALL_DIR "${STONEYDSP_INSTALL_DESTINATION}")
+    # set(JUCEAIDE_PATH "${JUCE_TOOL_INSTALL_DIR}/${JUCE_JUCEAIDE_NAME}")
 
-configure_package_config_file(
-    "${StoneyDSP_BINARY_DIR}/StoneyDSPConfig.cmake.in"
-    "${StoneyDSP_BINARY_DIR}/StoneyDSPConfig.cmake"
-    PATH_VARS STONEYDSP_UTILS_INSTALL_DIR STONEYDSP_MODULE_PATH # JUCEAIDE_PATH
-    INSTALL_DESTINATION "${STONEYDSP_INSTALL_DESTINATION}"
-)
+    configure_package_config_file(
+        "${StoneyDSP_BINARY_DIR}/StoneyDSPConfig.cmake.in"
+        "${StoneyDSP_BINARY_DIR}/StoneyDSPConfig.cmake"
+        PATH_VARS STONEYDSP_UTILS_INSTALL_DIR STONEYDSP_MODULE_PATH # JUCEAIDE_PATH
+        INSTALL_DESTINATION "${STONEYDSP_INSTALL_DESTINATION}"
+    )
 
-set(STONEYDSP_MODULE_PATH "${STONEYDSP_MODULES_DIR}")
-set(STONEYDSP_UTILS_INSTALL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/share/cmake/StoneyDSP")
-# get_target_property(JUCEAIDE_PATH juceaide IMPORTED_LOCATION)
-configure_package_config_file(
-    "${StoneyDSP_BINARY_DIR}/StoneyDSPConfig.cmake.in"
-    "${StoneyDSP_BINARY_DIR}/StoneyDSPExportConfig.cmake"
-    PATH_VARS STONEYDSP_UTILS_INSTALL_DIR STONEYDSP_MODULE_PATH # JUCEAIDE_PATH
-    INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}"
-    INSTALL_DESTINATION "${CMAKE_CURRENT_BINARY_DIR}"
-)
+    set(STONEYDSP_MODULE_PATH "${STONEYDSP_MODULES_DIR}")
+    set(STONEYDSP_UTILS_INSTALL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/share/cmake/StoneyDSP")
+    # get_target_property(JUCEAIDE_PATH juceaide IMPORTED_LOCATION)
+    configure_package_config_file(
+        "${StoneyDSP_BINARY_DIR}/StoneyDSPConfig.cmake.in"
+        "${StoneyDSP_BINARY_DIR}/StoneyDSPExportConfig.cmake"
+        PATH_VARS STONEYDSP_UTILS_INSTALL_DIR STONEYDSP_MODULE_PATH # JUCEAIDE_PATH
+        INSTALL_PREFIX "${CMAKE_CURRENT_BINARY_DIR}"
+        INSTALL_DESTINATION "${CMAKE_CURRENT_BINARY_DIR}"
+    )
 
-install(FILES
-    "${StoneyDSP_BINARY_DIR}/StoneyDSPConfigVersion.cmake"
-    "${StoneyDSP_BINARY_DIR}/StoneyDSPConfig.cmake"
-    DESTINATION "${STONEYDSP_INSTALL_DESTINATION}"
-)
+    install(FILES
+        "${StoneyDSP_BINARY_DIR}/StoneyDSPConfigVersion.cmake"
+        "${StoneyDSP_BINARY_DIR}/StoneyDSPConfig.cmake"
+        DESTINATION "${STONEYDSP_INSTALL_DESTINATION}"
+    )
 
-option (STONEYDSP_BUILD_TESTS "Build tests" ON)
-if(STONEYDSP_BUILD_TESTS AND (StoneyDSP_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR))
-    enable_testing()
-    # if(NOT MSVC)
-    #     add_compile_options(-Wall -Wextra)
-    # endif()
-    # add_subdirectory(tests)
-endif()
-
-if (StoneyDSP_IS_INSTALLABLE)
     include (GNUInstallDirs)
-    set (StoneyDSP_INCLUDE_DIR "${CMAKE_INSTALL_INCLUDEDIR}/StoneyDSP" CACHE PATH "StoneyDSP include directory." FORCE)
+    set (STONEYDSP_INCLUDE_DIR "${CMAKE_INSTALL_INCLUDEDIR}/StoneyDSP" CACHE PATH "StoneyDSP include directory." FORCE)
 endif ()

@@ -26,24 +26,41 @@ EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
 DISCLAIMED.
 ]=============================================================================]#
 
-include (GetGitRef)
+# Create a CMakeRC library
+# See https://github.com/vector-of-bool/cmrc/blob/master/README.md#usage
 
-if (NOT DEFINED STONEYDSP_GIT_COMMIT_REF)
-    stoneydsp_get_git_ref ()
+find_package (CMakeRC CONFIG REQUIRED)
+# include (public/images/CMakeLists.txt)
+if (NOT DEFINED CMakeRC_DIR)
+    find_package (CMakeRC)
+	if (NOT DEFINED CMakeRC_DIR)
+		message (FATAL_ERROR "Cannot find CMakeRC?")
+		return ()
+	endif ()
 endif ()
 
-#[=============================================================================[
-Provides:
+cmrc_add_resource_library (Resources
+	ALIAS StoneyDSP::Resources
+	NAMESPACE StoneyDSP::Resources
+)
 
-    STONEYDSP_VERSION_FILE
+cmrc_add_resources (Resources
+    # Resources to compile...
+    "LICENSE"
+    "VERSION"
+)
 
-]=============================================================================]#
-macro (stoneydsp_write_version_file)
-    set(STONEYDSP_VERSION_FILE "${StoneyDSP_SOURCE_DIR}/VERSION")
-    file(WRITE "${STONEYDSP_VERSION_FILE}.tmp" "${StoneyDSP_VERSION_MAJOR}.${StoneyDSP_VERSION_MINOR}.${StoneyDSP_VERSION_PATCH}.${StoneyDSP_VERSION_TWEAK}\n")
+set_target_properties (Resources
+    PROPERTIES
+    ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib"
+    LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib"
+    RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/bin"
+    PDB_OUTPUT_DIRECTORY     "${CMAKE_CURRENT_BINARY_DIR}/bin"
+)
 
-    #Copy the file only if it has changed.
-    execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different "${STONEYDSP_VERSION_FILE}.tmp" "${STONEYDSP_VERSION_FILE}")
-    file(REMOVE "${STONEYDSP_VERSION_FILE}.tmp")
-    set(STONEYDSP_VERSION_FILE "${STONEYDSP_VERSION_FILE}" CACHE INTERNAL "StoneyDSP current version file." FORCE)
-endmacro ()
+if (UNIX)
+    set_target_properties (Resources
+        PROPERTIES
+        POSITION_INDEPENDENT_CODE ON
+    )
+endif ()
