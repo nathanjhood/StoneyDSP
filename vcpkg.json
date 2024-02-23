@@ -23,8 +23,32 @@
       "name": "openssl"
     },
     {
-      "name": "curl"
+      "name": "curl",
+			"features": [
+        "ssl"
+      ]
     },
+		{
+			"name": "freetype"
+		},
+		{
+			"name": "libx11"
+		},
+		{
+			"name": "libxcomposite"
+		},
+		{
+			"name": "libxext"
+		},
+		{
+			"name": "libxinerama"
+		},
+		{
+			"name": "libxrender"
+		},
+		{
+			"name": "libxrandr"
+		},
     {
       "name": "vcpkg-tool-nodejs"
     },
