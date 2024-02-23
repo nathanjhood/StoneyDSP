@@ -68,6 +68,35 @@ if (TRUE)
 endif ()
 
 #[=============================================================================[
+ MODULES
+]=============================================================================]#
+
+juce_add_module(
+    # StoneyDSP::stoneydsp_core
+    "${STONEYDSP_DIR}/modules/stoneydsp_core"
+    ALIAS_NAMESPACE StoneyDSP
+    INSTALL_PATH "include/StoneyDSP-${STONEYDSP_VERSION}/modules"
+)
+juce_add_module(
+    # StoneyDSP::stoneydsp_audio
+    "${STONEYDSP_DIR}/modules/stoneydsp_audio"
+    ALIAS_NAMESPACE StoneyDSP
+    INSTALL_PATH "include/StoneyDSP-${STONEYDSP_VERSION}/modules"
+)
+juce_add_module(
+    # StoneyDSP::stoneydsp_graphics
+    "${STONEYDSP_DIR}/modules/stoneydsp_graphics"
+    ALIAS_NAMESPACE StoneyDSP
+    INSTALL_PATH "include/StoneyDSP-${STONEYDSP_VERSION}/modules"
+)
+juce_add_module(
+    # StoneyDSP::stoneydsp_web
+    "${STONEYDSP_DIR}/modules/stoneydsp_web"
+    ALIAS_NAMESPACE StoneyDSP
+    INSTALL_PATH "include/StoneyDSP-${STONEYDSP_VERSION}/modules"
+)
+
+#[=============================================================================[
  CLEANUP
 ]=============================================================================]#
 

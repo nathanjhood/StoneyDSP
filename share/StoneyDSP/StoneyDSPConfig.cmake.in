@@ -1,0 +1,62 @@
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+if(@USE_CURL@)
+	find_dependency(libcurl @CURL_VERSION_MAJOR@)
+endif()
+if(@USE_OPENSSL@)
+	find_dependency(OpenSSL @OPENSSL_VERSION_MAJOR@)
+endif()
+if(@USE_ZLIB@)
+	find_dependency(ZLIB @ZLIB_VERSION_MAJOR@)
+endif()
+
+include("${CMAKE_CURRENT_LIST_DIR}/@TARGETS_EXPORT_NAME@.cmake")
+check_required_components("@PROJECT_NAME@")
+
+
+set(STONEYDSP_MODULES_DIR "@PACKAGE_STONEYDSP_MODULE_PATH@" CACHE INTERNAL "The path to StoneyDSP modules")
+
+set(_stoneydsp_modules
+    stoneydsp_audio
+    stoneydsp_core
+    stoneydsp_graphics
+)
+
+set(_targets_defined)
+set(_targets_expected)
+
+foreach(_stoneydsp_module IN LISTS _stoneydsp_modules)
+    list(APPEND _targets_expected ${_stoneydsp_module} StoneyDSP::${_stoneydsp_modules})
+    if(TARGET ${_stoneydsp_module})
+        list(APPEND _targets_defined ${_stoneydsp_module})
+    endif()
+
+    if(TARGET StoneyDSP::${_stoneydsp_module})
+        list(APPEND _targets_defined StoneyDSP::${_stoneydsp_module})
+    endif()
+endforeach()
+
+if("${_targets_defined}" STREQUAL "${_targets_expected}")
+    unset(_targets_defined)
+    unset(_targets_expected)
+    return()
+endif()
+
+if(NOT "${_targets_defined}" STREQUAL "")
+    message(FATAL_ERROR "Some targets in this export set were already defined.")
+endif()
+
+unset(_targets_defined)
+unset(_targets_expected)
+
+foreach(_stoneydsp_module IN LISTS _stoneydsp_modules)
+    juce_add_module("@PACKAGE_STONEYDSP_MODULE_PATH@/${_stoneydsp_module}" ALIAS_NAMESPACE StoneyDSP)
+endforeach()
+
+unset(_stoneydsp_modules)
+
+# Alias for either shared or static library
+if(NOT TARGET ${PROJECT_NAME}::Shared)
+	add_library(${PROJECT_NAME}::Shared ALIAS ${PROJECT_NAME}::${LIB_SELECTED})
+endif()
