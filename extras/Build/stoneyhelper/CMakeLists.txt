@@ -165,7 +165,7 @@ else()
 
     add_executable(stoneydsp_tools::stoneyhelper ALIAS stoneyhelper)
 
-    set(STONEYDSP_TOOL_INSTALL_DIR "bin/StoneyDSP/v${StoneyDSP_VERSION}" CACHE STRING
+    set(STONEYDSP_TOOL_INSTALL_DIR "bin/StoneyDSP-v${StoneyDSP_VERSION}" CACHE STRING
         "The location, relative to the install prefix, where stoneyhelper will be installed")
 
     install(PROGRAMS "${imported_location}" DESTINATION "${STONEYDSP_TOOL_INSTALL_DIR}")

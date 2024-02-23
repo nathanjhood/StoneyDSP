@@ -23,10 +23,7 @@
     "cdist":        "cpack --config        ./build/CPackConfig.cmake       -B ./install"
   },
   "dependencies": {
-    "clang-format": "^1.8.0",
-		"cmake-js": "https://github.com/nathanjhood/cmake-js",
-    "node-addon-api": "^7.1.0",
-    "node-api-headers": "^1.1.0"
+    "clang-format": "^1.8.0"
   },
   "devDependencies": {
     "@types/node": "^20.11.14",

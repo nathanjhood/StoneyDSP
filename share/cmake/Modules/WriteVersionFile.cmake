@@ -39,11 +39,17 @@ Provides:
 
 ]=============================================================================]#
 macro (stoneydsp_write_version_file)
+    set(_stoneydsp_tweak "")
+    set(_stoneydsp_tweak ${STONEYDSP_GIT_COMMIT_REF})
+    if(DEFINED StoneyDSP_VERSION_TWEAK AND (NOT StoneyDSP_VERSION_TWEAK STREQUAL ""))
+        set(_stoneydsp_tweak ${StoneyDSP_VERSION_TWEAK})
+    endif()
     set(STONEYDSP_VERSION_FILE "${StoneyDSP_SOURCE_DIR}/VERSION")
-    file(WRITE "${STONEYDSP_VERSION_FILE}.tmp" "${StoneyDSP_VERSION_MAJOR}.${StoneyDSP_VERSION_MINOR}.${StoneyDSP_VERSION_PATCH}.${StoneyDSP_VERSION_TWEAK}\n")
+    file(WRITE "${STONEYDSP_VERSION_FILE}.tmp" "${StoneyDSP_VERSION_MAJOR}.${StoneyDSP_VERSION_MINOR}.${StoneyDSP_VERSION_PATCH}.${_stoneydsp_tweak}\n")
 
     #Copy the file only if it has changed.
     execute_process(COMMAND ${CMAKE_COMMAND} -E copy_if_different "${STONEYDSP_VERSION_FILE}.tmp" "${STONEYDSP_VERSION_FILE}")
     file(REMOVE "${STONEYDSP_VERSION_FILE}.tmp")
     set(STONEYDSP_VERSION_FILE "${STONEYDSP_VERSION_FILE}" CACHE INTERNAL "StoneyDSP current version file." FORCE)
+    unset(_stoneydsp_tweak)
 endmacro ()

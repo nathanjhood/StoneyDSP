@@ -114,7 +114,7 @@ unset(_targets_defined)
 unset(_targets_expected)
 
 foreach(_stoneydsp_module IN LISTS _stoneydsp_modules)
-    juce_add_module("${PACKAGE_PREFIX_DIR}/include/StoneyDSP/1.0.0/modules/${_stoneydsp_module}" ALIAS_NAMESPACE StoneyDSP)
+    juce_add_module("${PACKAGE_PREFIX_DIR}/include/StoneyDSP-v1.0.0/modules/${_stoneydsp_module}" ALIAS_NAMESPACE StoneyDSP)
 endforeach()
 
 unset(_stoneydsp_modules)

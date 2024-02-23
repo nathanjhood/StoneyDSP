@@ -41,7 +41,7 @@ elseif (EXISTS "${CMAKE_CURRENT_LIST_DIR}/ext/microsoft/vcpkg/scripts/buildsyste
 endif ()
 
 list (APPEND CMAKE_MODULE_PATH
-    "${CMAKE_CURRENT_LIST_DIR}/share/cmake/StoneyDSP"
+    # "${CMAKE_CURRENT_LIST_DIR}/share/cmake/StoneyDSP"
     "${CMAKE_CURRENT_LIST_DIR}/share/cmake/Modules"
 )
 
@@ -51,21 +51,11 @@ if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR AND NOT CMAKE_BUILD_TYPE A
     set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 endif()
 
-# if (NOT DEFINED StoneyDSP_SOURCE_DIR)
-#     set (StoneyDSP_SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}")
-# endif ()
-
-# if (NOT DEFINED StoneyDSP_DIR)
-#     set (StoneyDSP_DIR "${CMAKE_CURRENT_LIST_DIR}/share/cmake/StoneyDSP")
-# endif ()
-
-# find_package (StoneyDSP 1.0.0 CONFIG REQUIRED)
-
 project (
     StoneyDSP
     VERSION 1.0.0
-    DESCRIPTION ""
-    HOMEPAGE_URL "https://stoneydsp.com"
+    DESCRIPTION "The StoneyDSP library for JUCE."
+    HOMEPAGE_URL "https://github.com/StoneyDSP/StoneyDSP/blob/production/README.md"
     LANGUAGES C;CXX
 )
 
@@ -79,12 +69,7 @@ include (WriteVersionFile)
 
 stoneydsp_get_git_ref ()
 
-set (StoneyDSP_VERSION_MAJOR 1                                                  CACHE STRING "First version number component of the ``PROJECT_VERSION`` variable as set by the ``project()`` command." FORCE)
-set (StoneyDSP_VERSION_MINOR 0                                                  CACHE STRING "Second version number component of the ``PROJECT_VERSION`` variable as set by the ``project()`` command." FORCE)
-set (StoneyDSP_VERSION_PATCH 0                                                  CACHE STRING "Third version number component of the ``PROJECT_VERSION`` variable as set by the ``project()`` command." FORCE)
 set (StoneyDSP_VERSION_TWEAK "${STONEYDSP_GIT_COMMIT_REF}"                      CACHE STRING "Fourth version number component of the ``PROJECT_VERSION`` variable as set by the ``project()`` command." FORCE)
-
-set (StoneyDSP_VERSION ${StoneyDSP_VERSION_MAJOR}.${StoneyDSP_VERSION_MINOR}.${StoneyDSP_VERSION_PATCH} CACHE STRING "StoneyDSP Version Number." FORCE)
 
 stoneydsp_write_version_file ()
 
@@ -162,9 +147,9 @@ write_basic_package_version_file(
     COMPATIBILITY ExactVersion
 )
 
-set(STONEYDSP_INSTALL_DESTINATION "lib/cmake/StoneyDSP/v${StoneyDSP_VERSION}" CACHE STRING "The location, relative to the install prefix, where the StoneyDSP config file will be installed")
+set(STONEYDSP_INSTALL_DESTINATION "lib/cmake/StoneyDSP-v${StoneyDSP_VERSION}" CACHE STRING "The location, relative to the install prefix, where the StoneyDSP config file will be installed")
 
-set(STONEYDSP_MODULE_PATH "include/StoneyDSP/v${StoneyDSP_VERSION}/modules")
+set(STONEYDSP_MODULE_PATH "include/StoneyDSP-v${StoneyDSP_VERSION}/modules")
 set(STONEYDSP_UTILS_INSTALL_DIR "${STONEYDSP_INSTALL_DESTINATION}")
 # set(JUCEAIDE_PATH "${JUCE_TOOL_INSTALL_DIR}/${JUCE_JUCEAIDE_NAME}")
 set(STONEYDSP_STONEYHELPER_PATH "${STONEYDSP_TOOL_INSTALL_DIR}/${STONEYDSP_STONEYHELPER_NAME}")
