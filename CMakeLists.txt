@@ -47,7 +47,7 @@ project (
 )
 
 if (NOT DEFINED JUCE_VERSION)
-    find_package (JUCE 7.0.10 CONFIG REQUIRED)
+    find_package (JUCE 7.0.9 CONFIG REQUIRED)
 endif ()
 
 include (CMakeDependentOption)
