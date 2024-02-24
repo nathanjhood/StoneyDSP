@@ -37,6 +37,10 @@ DISCLAIMED.
 #     # POSITION_INDEPENDENT_CODE ON
 # )
 
+if (NOT DEFINED JUCE_VERSION)
+    find_package (JUCE CONFIG REQUIRED)
+endif ()
+
 # The juceaide program generates intermediate build files including BinaryData sources, icons, and
 # plists. To ensure that we always build it for the host system, and not for, say, a device or
 # simulator if we're targeting iOS or Android, we reinvoke cmake here and build juceaide during the
