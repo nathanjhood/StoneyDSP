@@ -126,7 +126,7 @@ else()
 
     #string(CONFIGURE [[$<CMAKE_TOOLCHAIN_FILE:-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}>]] _maybe_toolchain)
     if(DEFINED CMAKE_TOOLCHAIN_FILE)
-        set(_maybe_toolchain "${CMAKE_TOOLCHAIN_FILE}")
+        set(_maybe_toolchain "-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}")
     endif()
 
     # Looks like we're bootstrapping, reinvoke CMake
