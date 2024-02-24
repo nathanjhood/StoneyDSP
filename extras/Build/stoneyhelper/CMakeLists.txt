@@ -129,6 +129,7 @@ else()
             "."
             "-B${StoneyDSP_BINARY_DIR}/tools"
             "-G${CMAKE_GENERATOR}"
+            "$<CMAKE_TOOLCHAIN_FILE:${CMAKE_TOOLCHAIN_FILE}>"
             "-DCMAKE_MAKE_PROGRAM=${CMAKE_MAKE_PROGRAM}"
             "-DCMAKE_BUILD_TYPE=Debug"
             "-DSTONEYDSP_BUILD_HELPER_TOOLS=ON"
