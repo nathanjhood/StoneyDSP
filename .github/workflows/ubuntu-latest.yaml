@@ -14,13 +14,15 @@ env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
   CMAKE_CONFIGURATION_TYPES: Debug;Release;RelWithDebInfo;MinSizeRel
   BUILD_TYPE: Release
+  BUILD_DIR: Builds
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   DISPLAY: :0 # linux pluginval needs this
   CMAKE_BUILD_PARALLEL_LEVEL: 3 # Use up to 3 cpus to build juceaide, etc
   VCPKG_ROOT: ${{ github.workspace }}/vcpkg
+  SCCACHE_GHA_ENABLED: "true"
 
 jobs:
-  cmake:
+  cmake_build:
     name: Test on ${{ matrix.os }} with Node ${{ matrix.node_version }}
     # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
     # You can convert this to a matrix build if you need cross-platform coverage.
@@ -28,7 +30,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        node_version: ['18']
+        node_version: ['16']
         os: [ 'ubuntu-22.04' ]
         triplet: [ 'x64-linux' ]
 
@@ -41,7 +43,7 @@ jobs:
       
     # This also starts up our "fake" display Xvfb, needed for pluginval
     - name: Install JUCE's Linux Deps
-      # if: runner.os == 'Linux'
+      if: runner.os == 'Linux'
       # Thanks to McMartin & co https://forum.juce.com/t/list-of-juce-dependencies-under-linux/15121/44
       run: |
         sudo apt-get update && sudo apt install libasound2-dev libx11-dev libxinerama-dev libxext-dev libfreetype6-dev libwebkit2gtk-4.0-dev libglu1-mesa-dev xvfb ninja-build
@@ -97,47 +99,70 @@ jobs:
       shell: bash
       # Configure CMake in a 'bin' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-      run: cmake -B ${{ github.workspace }}/build/${{ matrix.triplet }} -G Ninja -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DSTONEYDSP_BUILD_TESTS:BOOL=TRUE -DSTONEYDSP_BUILD_EXTRAS:BOOL=TRUE -DSTONEYDSP_BUILD_EXAMPLES:BOOL=TRUE -DCMAKE_INSTALL_PREFIX:PATH=${{ github.workspace }}/install/${{ matrix.triplet }} -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${{ env.VCPKG_ROOT }}/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET:STRING=${{ matrix.triplet }} -DVCPKG_MANIFEST_MODE:BOOL=ON -DCMAKE_C_COMPILER_LAUNCHER=${{ matrix.ccache }} -DCMAKE_CXX_COMPILER_LAUNCHER=${{ matrix.ccache }}
+      run: cmake -B ${{ env.BUILD_DIR }} -G Ninja -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DSTONEYDSP_BUILD_TESTS:BOOL=TRUE -DSTONEYDSP_BUILD_EXTRAS:BOOL=TRUE -DSTONEYDSP_BUILD_EXAMPLES:BOOL=TRUE -DCMAKE_INSTALL_PREFIX:PATH=install -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${{ env.VCPKG_ROOT }}/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET:STRING=${{ matrix.triplet }} -DVCPKG_MANIFEST_MODE:BOOL=ON -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache
 
     - name: Build
       working-directory: ${{ github.workspace }}
       shell: bash 
       # Build StoneyDSO with the given configuration
-      run: cmake --build ${{ github.workspace }}/build/${{ matrix.triplet }} --config ${{ env.BUILD_TYPE }} --parallel 4
+      run: cmake --build ${{ env.BUILD_DIR }} --config ${{ env.BUILD_TYPE }} --parallel 4
 
     - name: Test
       working-directory: ${{ github.workspace }}
       shell: bash
       # Execute tests defined by the CMake configuration.
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-      run: ctest --test-dir ${{ github.workspace }}/build/${{ matrix.triplet }} -j4 --rerun-failed --output-on-failure --verbose 
+      run: ctest --test-dir ${{ env.BUILD_DIR }} -j4 --rerun-failed --output-on-failure --verbose 
 
     - name: Install
       shell: bash
       working-directory: ${{ github.workspace }}
       # Install StoneyDSP with the given configuration
-      run: cmake --install ${{ github.workspace }}/build/${{ matrix.triplet }}
+      run: cmake --install ${{ env.BUILD_DIR }}
 
     - name: Zip Source 
       shell: bash
       working-directory: ${{ github.workspace }}
       # Pack the StoneyDSP source code with the given configuration
-      run: cpack --config ${{ github.workspace }}/build/${{ matrix.triplet }}/CPackSourceConfig.cmake -B ${{ github.workspace }}/install/${{ matrix.triplet }} -G ZIP
+      run: cpack --config ${{ env.BUILD_DIR }}/CPackSourceConfig.cmake -B install -G ZIP
 
     - name: Tar Source
+      if: ${{ matrix.name != 'Windows' }}
       shell: bash
       working-directory: ${{ github.workspace }}
       # Pack the StoneyDSP source code with the given configuration
-      run: cpack --config ${{ github.workspace }}/build/${{ matrix.triplet }}/CPackSourceConfig.cmake -B ${{ github.workspace }}/install/${{ matrix.triplet }} -G TGZ
+      run: cpack --config ${{ env.BUILD_DIR }}/CPackSourceConfig.cmake -B install -G TGZ
 
     - name: Zip Build
       shell: bash
       working-directory: ${{github.workspace}}
       # Pack the StoneyDSP source code with the given configuration
-      run: cpack --config ${{ github.workspace }}/build/${{ matrix.triplet }}/CPackConfig.cmake -B ${{ github.workspace }}/install/${{ matrix.triplet }} -G ZIP
+      run: cpack --config ${{ env.BUILD_DIR }}/CPackConfig.cmake -B install -G ZIP
 
     - name: Tar Build
+      if: ${{ matrix.name != 'Windows' }}
       shell: bash
       working-directory: ${{github.workspace}}
       # Pack the StoneyDSP source code with the given configuration
-      run: cpack --config ${{ github.workspace }}/build/${{ matrix.triplet }}/CPackConfig.cmake -B ${{ github.workspace }}/install/${{ matrix.triplet }} -G TGZ
+      run: cpack --config ${{ env.BUILD_DIR }}/CPackConfig.cmake -B install -G TGZ
+
+  release:
+    if: contains(github.ref, 'tags/v')
+    runs-on: ubuntu-latest
+    needs: cmake_build
+
+    steps:
+    - name: Get Artifacts
+      uses: actions/download-artifact@v3
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        prerelease: true
+        # download-artifact puts these files in their own dirs...
+        # Using globs sidesteps having to pass the version around
+        files: |
+          */*.exe
+          */*.zip
+          */*.tgz
+          */*.dmg
