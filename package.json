@@ -25,6 +25,9 @@
 		"sys:config":   "cmake --fresh -S . -B ./build -DSTONEYDSP_BUILD_TESTS:BOOL=FALSE -DSTONEYDSP_BUILD_EXTRAS:BOOL=TRUE -DSTONEYDSP_BUILD_EXAMPLES:BOOL=TRUE -GNinja",
 		"sys:install":  "cmake --build         ./build && cmake --build         ./build --target install"
   },
+	"engines": {
+		"node": ">=16.8.0"
+	},
   "dependencies": {
     "clang-format": "^1.8.0"
   },

@@ -6,6 +6,7 @@ build
 package-lock.json
 yarn.lock
 !*.ico
+!.npmrc
 !public/**/*.png
 
 !.vscode/c_cpp_properties.json
