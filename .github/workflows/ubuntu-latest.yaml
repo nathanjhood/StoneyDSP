@@ -116,7 +116,7 @@ jobs:
       shell: bash
       working-directory: ${{ github.workspace }}
       # Install StoneyDSP with the given configuration
-      run: cmake --install ${{ github.workspace }}/build/${{ matrix.triplet }} -B ${{ github.workspace }}/install/${{ matrix.triplet }} --target all
+      run: cmake --install ${{ github.workspace }}/build/${{ matrix.triplet }}
 
     - name: Zip Source 
       shell: bash
