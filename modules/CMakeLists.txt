@@ -39,5 +39,4 @@ juce_add_modules(
     stoneydsp_web
 )
 
-
 target_link_libraries(stoneydsp_core PRIVATE CURL::libcurl)
