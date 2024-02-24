@@ -28,6 +28,11 @@ DISCLAIMED.
 
 cmake_minimum_required (VERSION 3.22...3.28 FATAL_ERROR)
 
+if (DEFINED ENV{VCPKG_ROOT})
+    set (VCPKG_ROOT $ENV{VCPKG_ROOT} CACHE FILEPATH "Path to vcpkg toolchain." FORCE)
+    set (CMAKE_TOOLCHAIN_FILE "${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE FILEPATH "vcpkg toolchain file." FORCE)
+endif ()
+
 list (APPEND CMAKE_MODULE_PATH
     "${CMAKE_CURRENT_LIST_DIR}/share/cmake/Modules"
 )
