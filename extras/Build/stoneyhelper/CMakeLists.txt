@@ -38,7 +38,7 @@ DISCLAIMED.
 # )
 
 if (NOT DEFINED JUCE_VERSION)
-    find_package (JUCE CONFIG REQUIRED)
+    find_package (JUCE 7.0.10 CONFIG REQUIRED)
 endif ()
 
 # The juceaide program generates intermediate build files including BinaryData sources, icons, and
