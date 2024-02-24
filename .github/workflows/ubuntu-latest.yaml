@@ -33,6 +33,11 @@ jobs:
 
     steps:
 
+    # This is just easier than debugging different compilers on different platforms
+    - name: Set up Clang
+      if: ${{ matrix.name != 'macOS' }}
+      uses: egor-tensin/setup-clang@v1
+      
     # This also starts up our "fake" display Xvfb, needed for pluginval
     - name: Install JUCE's Linux Deps
       # if: runner.os == 'Linux'
@@ -64,15 +69,15 @@ jobs:
         # Extra vcpkg command line args (optional)
         # extra-args: # optional
         # Additional cache key component (optional)
-        # cache-key: # optional
+        cache-key: ${{ matrix.os }} # optional
         # Disable cache (useful for release builds)
         # disable-cache: # optional, default is false
         # vcpkg revision to checkout.
-        # revision: # optional, default is 
+        revision: master # optional, default is 
         # GitHub token to authenticate API requests. Recommended to use  github.token 
-        token: ${{env.GITHUB_TOKEN}}
+        token: ${{ github.token }}
         # Directory containing vcpkg.json manifest file. Cannot be used with pkgs.
-        # manifest-dir: # optional, default is 
+        manifest-dir: ${{ github.workspace }} # optional, default is 
         # Use vcpkg built-in GitHub binary caching. If not specified, will use the dry-run based file cache.
         github-binarycache: true
         # Fetch depth for vcpkg checkout
@@ -87,51 +92,51 @@ jobs:
       run: npm install
 
     - name: Configure
-      working-directory: ${{github.workspace}}
+      working-directory: ${{ github.workspace }}
       shell: bash
       # Configure CMake in a 'bin' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-      run: cmake -B ${{github.workspace}}/build/${{matrix.triplet}} -DSTONEYDSP_BUILD_TESTS:BOOL=TRUE -DSTONEYDSP_BUILD_EXTRAS:BOOL=TRUE -DSTONEYDSP_BUILD_EXAMPLES:BOOL=TRUE -DCMAKE_INSTALL_PREFIX:PATH=${{github.workspace}}/install/${{matrix.triplet}} -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${{env.VCPKG_INSTALLATION_ROOT}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      run: cmake -B ${{ github.workspace }}/build/${{ matrix.triplet }} -G Ninja -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DSTONEYDSP_BUILD_TESTS:BOOL=TRUE -DSTONEYDSP_BUILD_EXTRAS:BOOL=TRUE -DSTONEYDSP_BUILD_EXAMPLES:BOOL=TRUE -DCMAKE_INSTALL_PREFIX:PATH=${{ github.workspace }}/install/${{ matrix.triplet }} -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET:STRING=${{ matrix.triplet }} -DVCPKG_MANIFEST_MODE:BOOL=OFF -DCMAKE_C_COMPILER_LAUNCHER=${{ matrix.ccache }} -DCMAKE_CXX_COMPILER_LAUNCHER=${{ matrix.ccache }}
 
     - name: Build
-      working-directory: ${{github.workspace}}
+      working-directory: ${{ github.workspace }}
       shell: bash 
       # Build StoneyDSO with the given configuration
-      run: cmake --build ${{github.workspace}}/build/${{matrix.triplet}} --config ${{env.BUILD_TYPE}} --parallel 4
+      run: cmake --build ${{ github.workspace }}/build/${{ matrix.triplet }} --config ${{ env.BUILD_TYPE }} --parallel 4
 
     - name: Test
-      working-directory: ${{github.workspace}}
+      working-directory: ${{ github.workspace }}
       shell: bash
       # Execute tests defined by the CMake configuration.
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-      run: ctest --test-dir ${{github.workspace}}/build/${{matrix.triplet}} -j4 --rerun-failed --output-on-failure --verbose 
+      run: ctest --test-dir ${{ github.workspace }}/build/${{ matrix.triplet }} -j4 --rerun-failed --output-on-failure --verbose 
 
     - name: Install
       shell: bash
-      working-directory: ${{github.workspace}}
+      working-directory: ${{ github.workspace }}
       # Install StoneyDSP with the given configuration
-      run: cmake --install ${{github.workspace}}/build/${{matrix.triplet}} -B ${{github.workspace}}/install/${{matrix.triplet}} --target all
+      run: cmake --install ${{ github.workspace }}/build/${{ matrix.triplet }} -B ${{ github.workspace }}/install/${{ matrix.triplet }} --target all
 
     - name: Zip Source 
       shell: bash
-      working-directory: ${{github.workspace}}
+      working-directory: ${{ github.workspace }}
       # Pack the StoneyDSP source code with the given configuration
-      run: cpack --config ${{github.workspace}}/build/${{matrix.triplet}}/CPackSourceConfig.cmake -B ${{github.workspace}}/install/${{matrix.triplet}} -G ZIP
+      run: cpack --config ${{ github.workspace }}/build/${{ matrix.triplet }}/CPackSourceConfig.cmake -B ${{ github.workspace }}/install/${{ matrix.triplet }} -G ZIP
 
     - name: Tar Source
       shell: bash
-      working-directory: ${{github.workspace}}
+      working-directory: ${{ github.workspace }}
       # Pack the StoneyDSP source code with the given configuration
-      run: cpack --config ${{github.workspace}}/build/${{matrix.triplet}}/CPackSourceConfig.cmake -B ${{github.workspace}}/install/${{matrix.triplet}} -G TAR
+      run: cpack --config ${{ github.workspace }}/build/${{ matrix.triplet }}/CPackSourceConfig.cmake -B ${{ github.workspace }}/install/${{ matrix.triplet }} -G TAR
 
     - name: Zip Build
       shell: bash
       working-directory: ${{github.workspace}}
       # Pack the StoneyDSP source code with the given configuration
-      run: cpack --config ${{github.workspace}}/build/${{matrix.triplet}}/CPackConfig.cmake -B ${{github.workspace}}/install/${{matrix.triplet}} -G ZIP
+      run: cpack --config ${{ github.workspace }}/build/${{ matrix.triplet }}/CPackConfig.cmake -B ${{ github.workspace }}/install/${{ matrix.triplet }} -G ZIP
 
     - name: Tar Build
       shell: bash
       working-directory: ${{github.workspace}}
       # Pack the StoneyDSP source code with the given configuration
-      run: cpack --config ${{github.workspace}}/build/${{matrix.triplet}}/CPackConfig.cmake -B ${{github.workspace}}/install/${{matrix.triplet}} -G TAR
+      run: cpack --config ${{ github.workspace }}/build/${{ matrix.triplet }}/CPackConfig.cmake -B ${{ github.workspace }}/install/${{ matrix.triplet }} -G TAR
