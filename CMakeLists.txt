@@ -46,9 +46,9 @@ project (
     LANGUAGES C;CXX
 )
 
-if (NOT DEFINED JUCE_VERSION)
+# if (NOT DEFINED JUCE_VERSION)
     find_package (JUCE CONFIG REQUIRED)
-endif ()
+# endif ()
 
 include (CMakeDependentOption)
 include (GetGitRef)
