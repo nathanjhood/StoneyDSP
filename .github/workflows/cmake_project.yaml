@@ -113,6 +113,13 @@ jobs:
 
     - name: Cache the build
       uses: mozilla-actions/sccache-action@v0.0.3
+
+    - name: Import Certificates (macOS)
+      uses: apple-actions/import-codesign-certs@v2 # only exists as a tag right now
+      if: ${{ matrix.name == 'macOS' }}
+      with:
+        p12-file-base64: ${{ secrets.DEV_ID_APP_CERT }}
+        p12-password: ${{ secrets.DEV_ID_APP_PASSWORD }}
         
     - name: vcpkg-action
       # You may pin to the exact commit or the version.
