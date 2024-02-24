@@ -43,7 +43,7 @@ jobs:
           - name: macOS
             os: macos-14
             pluginval-binary: pluginval.app/Contents/MacOS/pluginval
-            triplet: x64-macos
+            triplet: x64-osx
           - name: Windows
             os: windows-latest
             pluginval-binary: ./pluginval.exe
@@ -140,10 +140,10 @@ jobs:
         # Fetch depth for vcpkg checkout
         # fetch-depth: # optional, default is 1
           
-    - name: Use Node.js 16
+    - name: Use Node.js 16.18.0
       uses: actions/setup-node@v1
       with:
-        node-version: 16
+        node-version: 16.18.0
 
     - name: npm install, build, test
       run: npm install
@@ -153,7 +153,7 @@ jobs:
       shell: bash
       # Configure CMake in a 'bin' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-      run: cmake -S . -B ${{ env.BUILD_DIR }} -G Ninja -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DSTONEYDSP_BUILD_TESTS:BOOL=TRUE -DSTONEYDSP_BUILD_EXTRAS:BOOL=TRUE -DSTONEYDSP_BUILD_EXAMPLES:BOOL=TRUE -DCMAKE_INSTALL_PREFIX:PATH=install -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${{ env.VCPKG_ROOT }}/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET:STRING=${{ matrix.triplet }} -DVCPKG_MANIFEST_MODE:BOOL=ON -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64"
+      run: cmake -S . -B ${{ env.BUILD_DIR }} -G Ninja -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DSTONEYDSP_BUILD_TESTS:BOOL=TRUE -DSTONEYDSP_BUILD_EXTRAS:BOOL=TRUE -DSTONEYDSP_BUILD_EXAMPLES:BOOL=TRUE -DCMAKE_INSTALL_PREFIX=install -DCMAKE_TOOLCHAIN_FILE=${{ env.VCPKG_ROOT }}/scripts/buildsystems/vcpkg.cmake -DVCPKG_TARGET_TRIPLET:STRING=${{ matrix.triplet }} -DVCPKG_MANIFEST_MODE:BOOL=ON -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64"
 
     - name: Build
       working-directory: ${{ github.workspace }}
