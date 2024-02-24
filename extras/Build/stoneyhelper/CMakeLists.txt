@@ -37,6 +37,10 @@ DISCLAIMED.
 #     # POSITION_INDEPENDENT_CODE ON
 # )
 
+if (NOT DEFINED JUCE_VERSION)
+    find_package (JUCE 7.0.10 CONFIG REQUIRED)
+endif ()
+
 # The juceaide program generates intermediate build files including BinaryData sources, icons, and
 # plists. To ensure that we always build it for the host system, and not for, say, a device or
 # simulator if we're targeting iOS or Android, we reinvoke cmake here and build juceaide during the
@@ -120,6 +124,11 @@ else()
         set(ENV{CMAKE_GENERATOR_PLATFORM} "${CMAKE_HOST_SYSTEM_PROCESSOR}")
     endif()
 
+    #string(CONFIGURE [[$<CMAKE_TOOLCHAIN_FILE:-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}>]] _maybe_toolchain)
+    if(DEFINED CMAKE_TOOLCHAIN_FILE)
+        set(_maybe_toolchain "-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}")
+    endif()
+
     # Looks like we're bootstrapping, reinvoke CMake
     execute_process(COMMAND "${CMAKE_COMMAND}"
             "."
@@ -129,12 +138,14 @@ else()
             "-DCMAKE_BUILD_TYPE=Debug"
             "-DSTONEYDSP_BUILD_HELPER_TOOLS=ON"
             "-DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}"
+            ${_maybe_toolchain}
             ${extra_compiler_flag_arguments}
         WORKING_DIRECTORY "${StoneyDSP_SOURCE_DIR}"
         OUTPUT_VARIABLE command_output
         ERROR_VARIABLE command_output
         RESULT_VARIABLE result_variable
     )
+    unset(_maybe_toolchain)
 
     if(result_variable)
         message(FATAL_ERROR "Failed to configure stoneyhelper\n${command_output}")
@@ -165,7 +176,7 @@ else()
 
     add_executable(stoneydsp_tools::stoneyhelper ALIAS stoneyhelper)
 
-    set(STONEYDSP_TOOL_INSTALL_DIR "bin/StoneyDSP/v${StoneyDSP_VERSION}" CACHE STRING
+    set(STONEYDSP_TOOL_INSTALL_DIR "bin/StoneyDSP-v${StoneyDSP_VERSION}" CACHE STRING
         "The location, relative to the install prefix, where stoneyhelper will be installed")
 
     install(PROGRAMS "${imported_location}" DESTINATION "${STONEYDSP_TOOL_INSTALL_DIR}")

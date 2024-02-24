@@ -1,6 +1,6 @@
 {
   "name": "@stoneydsp/stoneydsp",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "main": "index.js",
   "author": {
 		"email": "nathanjhood@googlemail.com",
@@ -14,19 +14,19 @@
 	"readme": "https://github.com/StoneyDSP/StoneyDSP/README.md",
   "license": "MIT",
   "scripts": {
-    "configure":    "cmake         -S . -B ./build -DSTONEYDSP_BUILD_TESTS:BOOL=FALSE -DSTONEYDSP_BUILD_EXTRAS:BOOL=TRUE -DSTONEYDSP_BUILD_EXAMPLES:BOOL=TRUE -GNinja",
-    "reconfigure":  "cmake --fresh -S . -B ./build -DSTONEYDSP_BUILD_TESTS:BOOL=FALSE -DSTONEYDSP_BUILD_EXTRAS:BOOL=TRUE -DSTONEYDSP_BUILD_EXAMPLES:BOOL=TRUE -GNinja",
+    "configure":    "cmake         -S . -B ./build -DSTONEYDSP_BUILD_TESTS:BOOL=FALSE -DSTONEYDSP_BUILD_EXTRAS:BOOL=TRUE -DSTONEYDSP_BUILD_EXAMPLES:BOOL=TRUE -DCMAKE_INSTALL_PREFIX:PATH=./install -GNinja",
+    "reconfigure":  "cmake --fresh -S . -B ./build -DSTONEYDSP_BUILD_TESTS:BOOL=FALSE -DSTONEYDSP_BUILD_EXTRAS:BOOL=TRUE -DSTONEYDSP_BUILD_EXAMPLES:BOOL=TRUE -DCMAKE_INSTALL_PREFIX:PATH=./install -GNinja",
     "build":        "cmake --build         ./build",
     "postbuild":    "cmake --install       ./build",
     "ctest":        "ctest --test-dir      ./build --rerun-failed --output-on-failure --verbose",
     "cpack":        "cpack --config        ./build/CPackSourceConfig.cmake -B ./install",
-    "cdist":        "cpack --config        ./build/CPackConfig.cmake       -B ./install"
+    "cdist":        "cpack --config        ./build/CPackConfig.cmake       -B ./install",
+
+		"sys:config":   "cmake --fresh -S . -B ./build -DSTONEYDSP_BUILD_TESTS:BOOL=FALSE -DSTONEYDSP_BUILD_EXTRAS:BOOL=TRUE -DSTONEYDSP_BUILD_EXAMPLES:BOOL=TRUE -GNinja",
+		"sys:install":  "cmake --build         ./build && cmake --build         ./build --target install"
   },
   "dependencies": {
-    "clang-format": "^1.8.0",
-		"cmake-js": "https://github.com/nathanjhood/cmake-js",
-    "node-addon-api": "^7.1.0",
-    "node-api-headers": "^1.1.0"
+    "clang-format": "^1.8.0"
   },
   "devDependencies": {
     "@types/node": "^20.11.14",

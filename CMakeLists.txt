@@ -28,20 +28,7 @@ DISCLAIMED.
 
 cmake_minimum_required (VERSION 3.22...3.28 FATAL_ERROR)
 
-# pick up vcpkg toolchain if around (otherwise, find packages locally)...
-if (DEFINED ENV{VCPKG_ROOT})
-    # global install...
-    set (CMAKE_TOOLCHAIN_FILE "$ENV{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE FILEPATH "" FORCE)
-elseif (EXISTS "${CMAKE_CURRENT_LIST_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake")
-    # submodule...
-    set (CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_LIST_DIR}/ext/microsoft/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE FILEPATH "" FORCE)
-elseif (EXISTS "${CMAKE_CURRENT_LIST_DIR}/ext/microsoft/vcpkg/scripts/buildsystems/vcpkg.cmake")
-    # submodule...
-    set (CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_LIST_DIR}/ext/microsoft/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE FILEPATH "" FORCE)
-endif ()
-
 list (APPEND CMAKE_MODULE_PATH
-    "${CMAKE_CURRENT_LIST_DIR}/share/cmake/StoneyDSP"
     "${CMAKE_CURRENT_LIST_DIR}/share/cmake/Modules"
 )
 
@@ -51,21 +38,11 @@ if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR AND NOT CMAKE_BUILD_TYPE A
     set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 endif()
 
-# if (NOT DEFINED StoneyDSP_SOURCE_DIR)
-#     set (StoneyDSP_SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}")
-# endif ()
-
-# if (NOT DEFINED StoneyDSP_DIR)
-#     set (StoneyDSP_DIR "${CMAKE_CURRENT_LIST_DIR}/share/cmake/StoneyDSP")
-# endif ()
-
-# find_package (StoneyDSP 1.0.0 CONFIG REQUIRED)
-
 project (
     StoneyDSP
-    VERSION 1.0.0
-    DESCRIPTION ""
-    HOMEPAGE_URL "https://stoneydsp.com"
+    VERSION 0.0.1
+    DESCRIPTION "The StoneyDSP library for JUCE."
+    HOMEPAGE_URL "https://github.com/StoneyDSP/StoneyDSP/blob/production/README.md"
     LANGUAGES C;CXX
 )
 
@@ -79,12 +56,7 @@ include (WriteVersionFile)
 
 stoneydsp_get_git_ref ()
 
-set (StoneyDSP_VERSION_MAJOR 1                                                  CACHE STRING "First version number component of the ``PROJECT_VERSION`` variable as set by the ``project()`` command." FORCE)
-set (StoneyDSP_VERSION_MINOR 0                                                  CACHE STRING "Second version number component of the ``PROJECT_VERSION`` variable as set by the ``project()`` command." FORCE)
-set (StoneyDSP_VERSION_PATCH 0                                                  CACHE STRING "Third version number component of the ``PROJECT_VERSION`` variable as set by the ``project()`` command." FORCE)
 set (StoneyDSP_VERSION_TWEAK "${STONEYDSP_GIT_COMMIT_REF}"                      CACHE STRING "Fourth version number component of the ``PROJECT_VERSION`` variable as set by the ``project()`` command." FORCE)
-
-set (StoneyDSP_VERSION ${StoneyDSP_VERSION_MAJOR}.${StoneyDSP_VERSION_MINOR}.${StoneyDSP_VERSION_PATCH} CACHE STRING "StoneyDSP Version Number." FORCE)
 
 stoneydsp_write_version_file ()
 
@@ -162,9 +134,9 @@ write_basic_package_version_file(
     COMPATIBILITY ExactVersion
 )
 
-set(STONEYDSP_INSTALL_DESTINATION "lib/cmake/StoneyDSP/v${StoneyDSP_VERSION}" CACHE STRING "The location, relative to the install prefix, where the StoneyDSP config file will be installed")
+set(STONEYDSP_INSTALL_DESTINATION "lib/cmake/StoneyDSP-v${StoneyDSP_VERSION}" CACHE STRING "The location, relative to the install prefix, where the StoneyDSP config file will be installed")
 
-set(STONEYDSP_MODULE_PATH "include/StoneyDSP/v${StoneyDSP_VERSION}/modules")
+set(STONEYDSP_MODULE_PATH "include/StoneyDSP-v${StoneyDSP_VERSION}/modules")
 set(STONEYDSP_UTILS_INSTALL_DIR "${STONEYDSP_INSTALL_DESTINATION}")
 # set(JUCEAIDE_PATH "${JUCE_TOOL_INSTALL_DIR}/${JUCE_JUCEAIDE_NAME}")
 set(STONEYDSP_STONEYHELPER_PATH "${STONEYDSP_TOOL_INSTALL_DIR}/${STONEYDSP_STONEYHELPER_NAME}")
@@ -195,3 +167,62 @@ install(FILES
     "${STONEYDSP_CMAKE_UTILS_DIR}/JoinPaths.cmake"
     DESTINATION "${STONEYDSP_INSTALL_DESTINATION}"
 )
+
+# offer a basic/messy CPack
+
+# set(CPACK_PACKAGE_CHECKSUM "${PROJECT_VERSION_TWEAK}") # git rev-parse is a good idea for this...
+set(CPACK_PACKAGE_VENDOR "StoneyDSP")
+set(CPACK_PACKAGE_NAME              "${PROJECT_NAME}-${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}-${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}-JUCE_${JUCE_VERSION}")
+set(CPACK_PACKAGE_FILE_NAME         "${PROJECT_NAME}-${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}-${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}-JUCE_${JUCE_VERSION}") # Multi-platform CMake API distribution
+set(CPACK_SOURCE_PACKAGE_FILE_NAME  "${PROJECT_NAME}-${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}-Source") # No system spec as this is un-compiled source file distribution (i.e., the Javascript API)
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY ${PROJECT_DESCRIPTION})
+set(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
+set(CPACK_PACKAGE_VERSION_MINOR ${PROJECT_VERSION_VERSION_MINOR})
+set(CPACK_PACKAGE_VERSION_PATCH ${PROJECT_VERSION_VERSION_PATCH})
+set(CPACK_PACKAGE_VERSION_TWEAK ${PROJECT_VERSION_VERSION_TWEAK})
+set(CPACK_RESOURCE_FILE_LICENSE ${PROJECT_SOURCE_DIR}/LICENSE)
+set(CPACK_RESOURCE_FILE_README  ${PROJECT_SOURCE_DIR}/README.md)
+set(CPACK_INCLUDE_TOPLEVEL_DIRECTORY ON)
+set(CPACK_COMPONENT_INCLUDE_TOPLEVEL_DIRECTORY ON)
+set(CPACK_SOURCE_GENERATOR "TGZ;ZIP") # Check out CPack's 'NSIS' installer for Win32, and the others!
+set(CPACK_SOURCE_IGNORE_FILES
+    _CPack_Packages
+    /*.zip
+    /*.tar
+    /*.tar.*
+    /.env*
+    /.git/*
+    /.bak
+    /.cmake
+    /.github
+    /.vs
+    /.vscode
+    /.cache
+    /.config
+    /.local
+    /dist
+    /_layouts
+    /doc
+    /docs
+    #/bin
+    #/lib
+    /usr
+    /out
+    #/build
+    /Release
+    /Debug
+    /MinSizeRel
+    /RelWithDebInfo
+    /downloads
+    /packages
+    /installed
+    /install
+    /node_modules
+    /vcpkg
+    /vcpkg_installed
+    /.*build.*
+    /package-lock.json
+    /yarn.lock
+    /\\\\.DS_Store
+)
+include(CPack)
