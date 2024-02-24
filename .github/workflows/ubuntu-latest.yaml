@@ -77,7 +77,7 @@ jobs:
         # GitHub token to authenticate API requests. Recommended to use  github.token 
         token: ${{ github.token }}
         # Directory containing vcpkg.json manifest file. Cannot be used with pkgs.
-        manifest-dir: ${{ github.workspace }} # optional, default is 
+        # manifest-dir: ${{ github.workspace }} # optional, default is 
         # Use vcpkg built-in GitHub binary caching. If not specified, will use the dry-run based file cache.
         github-binarycache: true
         # Fetch depth for vcpkg checkout
