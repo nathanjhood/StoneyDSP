@@ -124,7 +124,10 @@ else()
         set(ENV{CMAKE_GENERATOR_PLATFORM} "${CMAKE_HOST_SYSTEM_PROCESSOR}")
     endif()
 
-    string(CONFIGURE [[$<CMAKE_TOOLCHAIN_FILE:-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}>]] _maybe_toolchain)
+    #string(CONFIGURE [[$<CMAKE_TOOLCHAIN_FILE:-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}>]] _maybe_toolchain)
+    if(DEFINED CMAKE_TOOLCHAIN_FILE)
+        set(_maybe_toolchain "${CMAKE_TOOLCHAIN_FILE}")
+    endif()
 
     # Looks like we're bootstrapping, reinvoke CMake
     execute_process(COMMAND "${CMAKE_COMMAND}"
