@@ -129,11 +129,11 @@ else()
             "."
             "-B${StoneyDSP_BINARY_DIR}/tools"
             "-G${CMAKE_GENERATOR}"
-            "$<CMAKE_TOOLCHAIN_FILE:${CMAKE_TOOLCHAIN_FILE}>"
             "-DCMAKE_MAKE_PROGRAM=${CMAKE_MAKE_PROGRAM}"
             "-DCMAKE_BUILD_TYPE=Debug"
             "-DSTONEYDSP_BUILD_HELPER_TOOLS=ON"
             "-DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}"
+            $<CMAKE_TOOLCHAIN_FILE:-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}>
             ${extra_compiler_flag_arguments}
         WORKING_DIRECTORY "${StoneyDSP_SOURCE_DIR}"
         OUTPUT_VARIABLE command_output
