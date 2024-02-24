@@ -26,6 +26,10 @@ EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
 DISCLAIMED.
 ]=============================================================================]#
 
+if (NOT DEFINED CURL_VERSION_MAJOR)
+    find_package (CURL REQUIRED)
+endif ()
+
 juce_add_modules(
     INSTALL_PATH "include/StoneyDSP-v${StoneyDSP_VERSION}/modules"
     ALIAS_NAMESPACE StoneyDSP
@@ -34,3 +38,5 @@ juce_add_modules(
     stoneydsp_graphics
     stoneydsp_web
 )
+
+target_link_libraries(stoneydsp_core PRIVATE CURL::libcurl)

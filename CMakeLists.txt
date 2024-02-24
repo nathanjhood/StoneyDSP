@@ -49,9 +49,6 @@ project (
 if (NOT DEFINED JUCE_VERSION)
     find_package (JUCE 7.0.10 CONFIG REQUIRED)
 endif ()
-if (NOT DEFINED CURL_VERSION_MAJOR)
-    find_package (CURL 8 CONFIG REQUIRED)
-endif ()
 
 include (CMakeDependentOption)
 include (GetGitRef)
