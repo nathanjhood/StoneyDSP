@@ -128,7 +128,7 @@ jobs:
       shell: bash
       working-directory: ${{ github.workspace }}
       # Pack the StoneyDSP source code with the given configuration
-      run: cpack --config ${{ github.workspace }}/build/${{ matrix.triplet }}/CPackSourceConfig.cmake -B ${{ github.workspace }}/install/${{ matrix.triplet }} -G TAR
+      run: cpack --config ${{ github.workspace }}/build/${{ matrix.triplet }}/CPackSourceConfig.cmake -B ${{ github.workspace }}/install/${{ matrix.triplet }} -G TGZ
 
     - name: Zip Build
       shell: bash
@@ -140,4 +140,4 @@ jobs:
       shell: bash
       working-directory: ${{github.workspace}}
       # Pack the StoneyDSP source code with the given configuration
-      run: cpack --config ${{ github.workspace }}/build/${{ matrix.triplet }}/CPackConfig.cmake -B ${{ github.workspace }}/install/${{ matrix.triplet }} -G TAR
+      run: cpack --config ${{ github.workspace }}/build/${{ matrix.triplet }}/CPackConfig.cmake -B ${{ github.workspace }}/install/${{ matrix.triplet }} -G TGZ
