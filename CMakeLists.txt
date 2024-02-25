@@ -33,13 +33,6 @@ if (DEFINED ENV{VCPKG_ROOT} AND (NOT DEFINED CMAKE_TOOLCHAIN_FILE))
     set (CMAKE_TOOLCHAIN_FILE "${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE FILEPATH "vcpkg toolchain file." FORCE)
 endif ()
 
-message (STATUS "StoneyDSP CMAKE_BINARY_DIR: ${CMAKE_BINARY_DIR}")
-execute_process (COMMAND ${CMAKE_COMMAND} -E cat ${CMAKE_BINARY_DIR}/*)
-message (STATUS "StoneyDSP CMAKE_BINARY_DIR: ${CMAKE_BINARY_DIR}/vcpkg_installed")
-execute_process (COMMAND ${CMAKE_COMMAND} -E cat ${CMAKE_BINARY_DIR}/vcpkg_installed/*)
-message (STATUS "StoneyDSP CMAKE_BINARY_DIR: ${CMAKE_BINARY_DIR}/vcpkg_installed/${VCPKG_TARGET_TRIPLET}")
-execute_process (COMMAND ${CMAKE_COMMAND} -E cat ${CMAKE_BINARY_DIR}/vcpkg_installed/${VCPKG_TARGET_TRIPLET}/*)
-
 # if (DEFINED ENV{STONEYDSP_CI})
 #     include ("${CMAKE_CURRENT_LIST_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake")
 # endif ()
@@ -58,6 +51,10 @@ if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR AND NOT CMAKE_BUILD_TYPE A
     set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 endif()
 
+if (NOT DEFINED JUCE_VERSION)
+    find_package (JUCE CONFIG REQUIRED)
+endif ()
+
 project (
     StoneyDSP
     VERSION 0.0.1
@@ -66,9 +63,13 @@ project (
     LANGUAGES C;CXX
 )
 
-if (NOT DEFINED JUCE_VERSION)
-    find_package (JUCE CONFIG REQUIRED)
-endif ()
+message (STATUS "StoneyDSP CMAKE_BINARY_DIR: ${CMAKE_BINARY_DIR}")
+execute_process (COMMAND ${CMAKE_COMMAND} -E cat ${CMAKE_BINARY_DIR}/*)
+message (STATUS "StoneyDSP CMAKE_BINARY_DIR: ${CMAKE_BINARY_DIR}/vcpkg_installed")
+execute_process (COMMAND ${CMAKE_COMMAND} -E cat ${CMAKE_BINARY_DIR}/vcpkg_installed/*)
+message (STATUS "StoneyDSP CMAKE_BINARY_DIR: ${CMAKE_BINARY_DIR}/vcpkg_installed/${VCPKG_TARGET_TRIPLET}")
+execute_process (COMMAND ${CMAKE_COMMAND} -E cat ${CMAKE_BINARY_DIR}/vcpkg_installed/${VCPKG_TARGET_TRIPLET}/*)
+
 
 include (CMakeDependentOption)
 include (GetGitRef)
