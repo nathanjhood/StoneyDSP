@@ -63,6 +63,7 @@ target_compile_definitions (CurlConsoleAppExample
         # If you remove this, add `NEEDS_WEB_BROWSER TRUE` to the
         # `juce_add_console_app` call
         JUCE_WEB_BROWSER=0
+        JUCE_USE_CURL=1
 )
 
 # juce_add_binary_data(ConsoleAppData SOURCES ...)
