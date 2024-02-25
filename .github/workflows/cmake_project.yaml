@@ -102,7 +102,7 @@ jobs:
 
     - name: Install macOS Deps
       if: ${{ matrix.name == 'macOS' }}
-      run: brew install ninja osxutils autoconf automake libtool m4
+      run: brew install ninja osxutils autoconf automake libtool m4 curl openssl
 
     # This block can be removed once 15.1 is default (JUCE requires it when building on macOS 14)
     - name: Use latest Xcode on system (macOS)
@@ -128,6 +128,31 @@ jobs:
         # pkgs: # optional
         # vcpkg triplet to use
         triplet: ${{ matrix.triplet }}
+        # Extra vcpkg command line args (optional)
+        extra-args: --allow-unsupported # optional
+        # Additional cache key component (optional)
+        cache-key: ${{ matrix.os }} # optional
+        # Disable cache (useful for release builds)
+        # disable-cache: # optional, default is false
+        # vcpkg revision to checkout.
+        revision: master # optional, default is 
+        # GitHub token to authenticate API requests. Recommended to use  github.token 
+        token: ${{ github.token }}
+        # Directory containing vcpkg.json manifest file. Cannot be used with pkgs.
+        manifest-dir: ${{ github.workspace }} # optional, default is 
+        # Use vcpkg built-in GitHub binary caching. If not specified, will use the dry-run based file cache.
+        github-binarycache: true
+        # Fetch depth for vcpkg checkout
+        # fetch-depth: # optional, default is 1
+
+    - name: vcpkg-action (x64-osx only)
+      if: ${{ matrix.name == 'macOS' }}
+      uses: johnwason/vcpkg-action@v6
+      with:
+        # List of packages to build, separated by spaces. Cannot be used with manifest-dir
+        # pkgs: # optional
+        # vcpkg triplet to use
+        triplet: "x64-osx"
         # Extra vcpkg command line args (optional)
         extra-args: --allow-unsupported # optional
         # Additional cache key component (optional)
