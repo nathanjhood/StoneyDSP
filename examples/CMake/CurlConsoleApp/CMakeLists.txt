@@ -74,6 +74,7 @@ target_link_libraries (CurlConsoleAppExample
         juce::juce_core
         StoneyDSP::stoneydsp_core
         StoneyDSP::stoneydsp_web
+        CURL::libcurl
     PUBLIC
         juce::juce_recommended_warning_flags
         juce::juce_recommended_config_flags
