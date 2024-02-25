@@ -26,10 +26,8 @@ EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
 DISCLAIMED.
 ]=============================================================================]#
 
-find_package (CMakeRC CONFIG REQUIRED)
-# include (public/images/CMakeLists.txt)
 if (NOT DEFINED CMakeRC_DIR)
-    find_package (CMakeRC)
+    find_package (CMakeRC CONFIG REQUIRED)
 	if (NOT DEFINED CMakeRC_DIR)
 		message (FATAL_ERROR "Cannot find CMakeRC?")
 		return ()

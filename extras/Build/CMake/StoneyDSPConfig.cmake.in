@@ -46,7 +46,7 @@ set(_stoneydsp_modules
     stoneydsp_audio
     stoneydsp_core
     stoneydsp_graphics
-	stoneydsp_web
+	# stoneydsp_web
 )
 
 set(_targets_defined)

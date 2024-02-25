@@ -29,10 +29,8 @@ DISCLAIMED.
 # Create a CMakeRC library
 # See https://github.com/vector-of-bool/cmrc/blob/master/README.md#usage
 
-find_package (CMakeRC CONFIG REQUIRED)
-# include (public/images/CMakeLists.txt)
 if (NOT DEFINED CMakeRC_DIR)
-    find_package (CMakeRC)
+    find_package (CMakeRC CONFIG REQUIRED)
 	if (NOT DEFINED CMakeRC_DIR)
 		message (FATAL_ERROR "Cannot find CMakeRC?")
 		return ()

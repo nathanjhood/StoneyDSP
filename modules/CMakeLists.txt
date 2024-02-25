@@ -36,7 +36,7 @@ juce_add_modules(
     stoneydsp_core
     stoneydsp_audio
     stoneydsp_graphics
-    stoneydsp_web
+    # stoneydsp_web
 )
 
-target_link_libraries(stoneydsp_core PRIVATE CURL::libcurl)
+# target_link_libraries(stoneydsp_web INTERFACE CURL::libcurl)
