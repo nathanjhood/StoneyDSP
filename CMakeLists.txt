@@ -34,7 +34,8 @@ if (DEFINED ENV{VCPKG_ROOT} AND (NOT DEFINED CMAKE_TOOLCHAIN_FILE))
 endif ()
 
 if (APPLE)
-    set (JUCE_DIR "${CMAKE_CURRENT_LIST_DIR}/vcpkg_installed/x64-osx/share/juce" CACHE PATH "Path to JUCEConfig.cmake" FORCE)
+    set (JUCE_DIR "${CMAKE_CURRENT_LIST_DIR}/installed/x64-osx/share/juce" CACHE PATH "Path to JUCEConfig.cmake" FORCE)
+    message (STATUS "StoneyDSP JUCE_DIR: ${JUCE_DIR}")
 endif ()
 
 list (APPEND CMAKE_MODULE_PATH
