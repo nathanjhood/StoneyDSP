@@ -28,6 +28,7 @@ env:
   SCCACHE_GHA_ENABLED: "true"
   HOMEBREW_NO_INSTALL_CLEANUP: 1
   IPP_DIR: C:\Program Files (x86)\Intel\oneAPI\ipp\latest\lib\cmake\ipp
+  STONEYDSP_CI: true
 
 jobs:
   cmake_project_build:
