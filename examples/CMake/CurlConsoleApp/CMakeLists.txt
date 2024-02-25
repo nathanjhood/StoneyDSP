@@ -30,6 +30,10 @@ cmake_minimum_required(VERSION 3.22)
 
 project(CURL_CONSOLE_APP_EXAMPLE VERSION 0.0.1)
 
+if (NOT DEFINED CURL_VERSION_MAJOR)
+    find_package (CURL REQUIRED)
+endif ()
+
 # Uncomment this if not being built as a StoneyDSP example sub-project
 # find_package(JUCE CONFIG REQUIRED)
 
