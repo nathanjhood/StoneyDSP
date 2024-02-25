@@ -24,7 +24,7 @@ env:
   DISPLAY: :0 # linux pluginval needs this
   CMAKE_BUILD_PARALLEL_LEVEL: 3 # Use up to 3 cpus to build juceaide, etc
   VCPKG_ROOT: vcpkg
-  VCPKG_OSX_ARCHITECTURES: "arm64;x86_64"
+  VCPKG_OSX_ARCHITECTURES: "x86_64"
   SCCACHE_GHA_ENABLED: "true"
   HOMEBREW_NO_INSTALL_CLEANUP: 1
   IPP_DIR: C:\Program Files (x86)\Intel\oneAPI\ipp\latest\lib\cmake\ipp
@@ -158,12 +158,18 @@ jobs:
       shell: bash
       run: ls -la
 
+    - name: Set directories (debugging workflow failures)
+      working-directory: ${{ github.workspace }}
+      shell: bash
+      run: |
+        export VCPKG_ROOT=${{ github.workspace }}/vcpkg
+
     - name: Configure
       working-directory: ${{ github.workspace }}
       shell: bash
       # Configure CMake in a 'bin' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-      run: cmake -S . -B ${{ env.BUILD_DIR }} -G Ninja -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DSTONEYDSP_BUILD_TESTS:BOOL=TRUE -DSTONEYDSP_BUILD_EXTRAS:BOOL=TRUE -DSTONEYDSP_BUILD_EXAMPLES:BOOL=TRUE -DCMAKE_INSTALL_PREFIX=install -DVCPKG_TARGET_TRIPLET:STRING=${{ matrix.triplet }} -DVCPKG_MANIFEST_MODE:BOOL=ON -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64"
+      run: cmake -S . -B ${{ env.BUILD_DIR }} -G Ninja -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DSTONEYDSP_BUILD_TESTS:BOOL=TRUE -DSTONEYDSP_BUILD_EXTRAS:BOOL=TRUE -DSTONEYDSP_BUILD_EXAMPLES:BOOL=TRUE -DCMAKE_INSTALL_PREFIX=install -DVCPKG_TARGET_TRIPLET:STRING=${{ matrix.triplet }} -DVCPKG_MANIFEST_MODE:BOOL=ON -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache -DCMAKE_OSX_ARCHITECTURES="x86_64"
 
     - name: Build
       working-directory: ${{ github.workspace }}
