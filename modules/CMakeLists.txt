@@ -36,19 +36,7 @@ juce_add_modules(
     stoneydsp_core
     stoneydsp_audio
     stoneydsp_graphics
-    stoneydsp_web
+    # stoneydsp_web
 )
 
-# if (DEFINED VCPKG_TARGET_TRIPLET)
-#     if(VCPKG_MANIFEST_MODE)
-#         target_link_libraries(stoneydsp_web INTERFACE "${CMAKE_BINARY_DIR}/vcpkg_installed/${VCPKG_TARGET_TRIPLET}/lib/libcurl.a")
-#     else ()
-#         target_link_libraries(stoneydsp_web INTERFACE "${StoneyDSP_SOURCE_DIR}/vcpkg/installed/${VCPKG_TARGET_TRIPLET}/lib/libcurl.a")
-#     endif()
-# else ()
-
-# endif ()
-
-# target_link_options(stoneydsp_web INTERFACE "-lcurl")
-
-target_link_libraries(stoneydsp_web INTERFACE CURL::libcurl)
+# target_link_libraries(stoneydsp_web INTERFACE CURL::libcurl)
