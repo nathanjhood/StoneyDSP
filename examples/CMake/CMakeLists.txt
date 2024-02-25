@@ -26,5 +26,5 @@ EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
 DISCLAIMED.
 ]=============================================================================]#
 
-add_subdirectory (CurlConsoleApp)
+# add_subdirectory (CurlConsoleApp)
 add_subdirectory (GUIApp)
