@@ -42,17 +42,17 @@ jobs:
             os: ubuntu-22.04
             pluginval-binary: ./pluginval
             triplet: x64-linux
-            vcpkg_root: ${{ github.workspace }}/vcpkg
+            # vcpkg_root: ${{ github.workspace }}/vcpkg
           - name: macOS
             os: macos-14
             pluginval-binary: pluginval.app/Contents/MacOS/pluginval
             triplet: x64-osx
-            vcpkg_root: ${{ github.workspace }}/vcpkg
+            # vcpkg_root: ${{ github.workspace }}/vcpkg
           - name: Windows
             os: windows-latest
             pluginval-binary: ./pluginval.exe
             triplet: x64-windows
-            vcpkg_root: ${{ github.workspace }}\vcpkg
+            # vcpkg_root: ${{ github.workspace }}\vcpkg
 
     steps:
 
@@ -139,7 +139,7 @@ jobs:
         # GitHub token to authenticate API requests. Recommended to use  github.token 
         token: ${{ github.token }}
         # Directory containing vcpkg.json manifest file. Cannot be used with pkgs.
-        # manifest-dir: ${{ github.workspace }} # optional, default is 
+        manifest-dir: ${{ github.workspace }} # optional, default is 
         # Use vcpkg built-in GitHub binary caching. If not specified, will use the dry-run based file cache.
         github-binarycache: true
         # Fetch depth for vcpkg checkout
@@ -158,18 +158,12 @@ jobs:
       shell: bash
       run: ls -la
 
-    - name: Set directories (debugging workflow failures)
-      working-directory: ${{ github.workspace }}
-      shell: bash
-      run: |
-        export VCPKG_ROOT=${{ github.workspace }}/vcpkg
-
     - name: Configure
       working-directory: ${{ github.workspace }}
       shell: bash
       # Configure CMake in a 'bin' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-      run: cmake -S . -B ${{ env.BUILD_DIR }} -G Ninja -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DSTONEYDSP_BUILD_TESTS:BOOL=TRUE -DSTONEYDSP_BUILD_EXTRAS:BOOL=TRUE -DSTONEYDSP_BUILD_EXAMPLES:BOOL=TRUE -DCMAKE_INSTALL_PREFIX=install -DVCPKG_TARGET_TRIPLET:STRING=${{ matrix.triplet }} -DVCPKG_MANIFEST_MODE:BOOL=OFF -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache -DCMAKE_OSX_ARCHITECTURES="x86_64" -DCMAKE_TOOLCHAIN_FILE:FILEPATH="${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake"
+      run: cmake -S . -B ${{ env.BUILD_DIR }} -G Ninja -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DSTONEYDSP_BUILD_TESTS:BOOL=TRUE -DSTONEYDSP_BUILD_EXTRAS:BOOL=TRUE -DSTONEYDSP_BUILD_EXAMPLES:BOOL=TRUE -DCMAKE_INSTALL_PREFIX=install -DVCPKG_TARGET_TRIPLET:STRING=${{ matrix.triplet }} -DVCPKG_MANIFEST_MODE:BOOL=ON -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache -DCMAKE_OSX_ARCHITECTURES="x86_64" -DCMAKE_TOOLCHAIN_FILE:FILEPATH="${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake"
 
     - name: Build
       working-directory: ${{ github.workspace }}
