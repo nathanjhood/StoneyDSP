@@ -33,6 +33,13 @@ if (DEFINED ENV{VCPKG_ROOT} AND (NOT DEFINED CMAKE_TOOLCHAIN_FILE))
     set (CMAKE_TOOLCHAIN_FILE "${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE FILEPATH "vcpkg toolchain file." FORCE)
 endif ()
 
+message (STATUS "StoneyDSP CMAKE_BINARY_DIR: ${CMAKE_BINARY_DIR}")
+execute_process (COMMAND ${CMAKE_COMMAND} -E cat ${CMAKE_BINARY_DIR}/*)
+message (STATUS "StoneyDSP CMAKE_BINARY_DIR: ${CMAKE_BINARY_DIR}/vcpkg_installed")
+execute_process (COMMAND ${CMAKE_COMMAND} -E cat ${CMAKE_BINARY_DIR}/vcpkg_installed/*)
+message (STATUS "StoneyDSP CMAKE_BINARY_DIR: ${CMAKE_BINARY_DIR}/vcpkg_installed/${VCPKG_TARGET_TRIPLET}")
+execute_process (COMMAND ${CMAKE_COMMAND} -E cat ${CMAKE_BINARY_DIR}/vcpkg_installed/${VCPKG_TARGET_TRIPLET}/*)
+
 # if (DEFINED ENV{STONEYDSP_CI})
 #     include ("${CMAKE_CURRENT_LIST_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake")
 # endif ()
