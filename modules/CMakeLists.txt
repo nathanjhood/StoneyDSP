@@ -40,7 +40,7 @@ juce_add_modules(
 )
 
 if (VCPKG_TARGET_TRIPLET STREQUAL "arm64-osx")
-    target_link_directories(stoneydsp_web INTERFACE "vcpkg_installed/x64-osx/lib/libcurl.a")
+    target_link_directories(stoneydsp_web INTERFACE "${StoneyDSP_SOURCE_DIR}/vcpkg_installed/x64-osx/lib/libcurl.a")
 else ()
     target_link_libraries(stoneydsp_web INTERFACE CURL::libcurl)
 endif ()
