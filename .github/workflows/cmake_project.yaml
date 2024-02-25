@@ -153,6 +153,11 @@ jobs:
     - name: npm install, build, test
       run: npm install
 
+    - name: Show directories (debugging workflow failures)
+      working-directory: ${{ github.workspace }}
+      shell: bash
+      run: ls -la
+
     - name: Configure
       working-directory: ${{ github.workspace }}
       shell: bash
