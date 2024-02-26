@@ -8,7 +8,6 @@ name: cmake_project
 
 on:
   workflow_dispatch: # lets you run a build from the UI
-  pull_request:
   push:
 
 # When pushing new commits, cancel any running builds on that branch
