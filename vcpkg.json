@@ -22,7 +22,8 @@
       "host": true
     },
     {
-      "name": "vcpkg-tool-nodejs"
+      "name": "vcpkg-tool-nodejs",
+			"host": true
     },
     {
       "name": "cmakerc"
