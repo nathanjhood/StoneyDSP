@@ -24,6 +24,7 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   DISPLAY: :0 # linux pluginval needs this
   CMAKE_BUILD_PARALLEL_LEVEL: 3 # Use up to 3 cpus to build juceaide, etc
+  VCPKG_MAX_CONCURRENCY: 3
   # VCPKG_ROOT: vcpkg
   VCPKG_OSX_ARCHITECTURES: "arm64;x86_64"
   VCPKG_FORCE_DOWNLOADED_BINARIES: true
@@ -45,16 +46,19 @@ jobs:
             pluginval-binary: ./pluginval
             triplet: x64-linux
             # vcpkg_root: ${{ github.workspace }}/vcpkg
+            cache: sccache
           - name: macOS
             os: macos-14
             pluginval-binary: pluginval.app/Contents/MacOS/pluginval
             triplet: arm64-osx
             # vcpkg_root: ${{ github.workspace }}/vcpkg
+            cache: sccache
           - name: Windows
             os: windows-latest
             pluginval-binary: ./pluginval.exe
             triplet: x64-windows
             # vcpkg_root: ${{ github.workspace }}\vcpkg
+            cache: sccache
 
     steps:
 
@@ -68,7 +72,7 @@ jobs:
       if: runner.os == 'Linux'
       # Thanks to McMartin & co https://forum.juce.com/t/list-of-juce-dependencies-under-linux/15121/44
       run: |
-        sudo apt-get update && sudo apt install libasound2-dev libx11-dev libxinerama-dev libxext-dev libfreetype6-dev libwebkit2gtk-4.0-dev libglu1-mesa-dev xvfb ninja-build
+        sudo apt-get update && sudo apt install libasound2-dev libx11-dev libxinerama-dev libxext-dev libfreetype6-dev libwebkit2gtk-4.0-dev libglu1-mesa-dev xvfb ninja-build ccache
         # downgrade gcc to workaround 22.04 and C++20 issue 
         # see: https://github.com/actions/runner-images/issues/8659
         sudo apt-get install -y --allow-downgrades libc6=2.35-0ubuntu3.6 libc6-dev=2.35-0ubuntu3.6 libstdc++6=12.3.0-1ubuntu1~22.04 libgcc-s1=12.3.0-1ubuntu1~22.04
@@ -100,11 +104,11 @@ jobs:
     - name: Install Ninja (Windows)
       if: runner.os == 'Windows'
       shell: bash
-      run: choco install ninja
+      run: choco install ninja sccache
 
     - name: Install macOS Deps
       if: ${{ matrix.name == 'macOS' }}
-      run: brew install ninja osxutils autoconf automake libtool m4 curl openssl
+      run: brew install ninja osxutils autoconf automake libtool m4 curl openssl sccache
 
     # This block can be removed once 15.1 is default (JUCE requires it when building on macOS 14)
     - name: Use latest Xcode on system (macOS)
@@ -185,7 +189,7 @@ jobs:
       shell: bash
       # Configure CMake in a 'bin' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-      run: cmake -S . -B ${{ env.BUILD_DIR }} -G Ninja -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DSTONEYDSP_BUILD_TESTS:BOOL=TRUE -DSTONEYDSP_BUILD_EXTRAS:BOOL=TRUE -DSTONEYDSP_BUILD_EXAMPLES:BOOL=TRUE -DCMAKE_INSTALL_PREFIX=install -DVCPKG_HOST_TRIPLET:STRING=${{ matrix.triplet }} -DVCPKG_TARGET_TRIPLET:STRING=${{ matrix.triplet }} -DVCPKG_MANIFEST_MODE:BOOL=ON -DCMAKE_C_COMPILER_LAUNCHER=sccache -DCMAKE_CXX_COMPILER_LAUNCHER=sccache -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" --toolchain "${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake" --compile-no-warning-as-error --no-warn-unused-cli
+      run: cmake -S . -B ${{ env.BUILD_DIR }} -G Ninja -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} -DSTONEYDSP_BUILD_TESTS:BOOL=TRUE -DSTONEYDSP_BUILD_EXTRAS:BOOL=TRUE -DSTONEYDSP_BUILD_EXAMPLES:BOOL=TRUE -DCMAKE_INSTALL_PREFIX=install -DVCPKG_HOST_TRIPLET:STRING=${{ matrix.triplet }} -DVCPKG_TARGET_TRIPLET:STRING=${{ matrix.triplet }} -DVCPKG_MANIFEST_MODE:BOOL=ON -DCMAKE_C_COMPILER_LAUNCHER=${{ matrix.cache }} -DCMAKE_CXX_COMPILER_LAUNCHER=${{ matrix.cache }} -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" --toolchain "${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake" --compile-no-warning-as-error --no-warn-unused-cli
 
     - name: Build
       working-directory: ${{ github.workspace }}
@@ -233,59 +237,74 @@ jobs:
       run: cpack --config ${{ env.BUILD_DIR }}/CPackConfig.cmake -B install -G TGZ
 
     - name: Upload Zip Source
-      uses: actions/upload-artifact@v3
-      with:
-        name: StoneyDSP-0.0.1-Source.zip
-        path: './install/StoneyDSP-0.0.1-Source.zip'
-        
-    - name: Upload Tar Source (Linux)
       if: ${{ matrix.name == 'Linux' }}
       uses: actions/upload-artifact@v3
       with:
-        name: StoneyDSP-0.0.1-Linux-x86_64-JUCE_7.0.10.tar.gz
-        path: './install/StoneyDSP-0.0.1-Linux-x86_64-JUCE_7.0.10.tar.gz'
+        name: StoneyDSP-0.0.0-Source.zip
+        path: './install/StoneyDSP-0.0.0-Source.zip'
+        
+    - name: Upload Tar Source
+      if: ${{ matrix.name == 'Linux' }}
+      uses: actions/upload-artifact@v3
+      with:
+        name: StoneyDSP-0.0.0-Source.tar.gz
+        path: './install/StoneyDSP-0.0.0-Source.tar.gz'
 
     - name: Upload Tar Source (macOS)
       if: ${{ matrix.name == 'macOS' }}
       uses: actions/upload-artifact@v3
       with:
-        name: StoneyDSP-0.0.1-Darwin-arm64-JUCE_7.0.10.tar.gz
-        path: './install/StoneyDSP-0.0.1-Darwin-arm64-JUCE_7.0.10.tar.gz'
+        name: StoneyDSP-0.0.0-Darwin-arm64-JUCE_7.0.10.tar.gz
+        path: './install/StoneyDSP-0.0.0-Darwin-arm64-JUCE_7.0.10.tar.gz'
 
     - name: Upload Zip Build (Linux)
       if: ${{ matrix.name == 'Linux' }}
       uses: actions/upload-artifact@v3
       with:
-        name: StoneyDSP-0.0.1-Linux-x86_64-JUCE_7.0.10.zip
-        path: './install/StoneyDSP-0.0.1-Linux-x86_64-JUCE_7.0.10.zip'
+        name: StoneyDSP-0.0.0-Linux-x86_64-JUCE_7.0.10.zip
+        path: './install/StoneyDSP-0.0.0-Linux-x86_64-JUCE_7.0.10.zip'
         
     - name: Upload Zip Build (macOS)
       if: ${{ matrix.name == 'macOS' }}
       uses: actions/upload-artifact@v3
       with:
-        name: StoneyDSP-0.0.1-Darwin-arm64-JUCE_7.0.10.zip
-        path: './install/StoneyDSP-0.0.1-Darwin-arm64-JUCE_7.0.10.zip'
+        name: StoneyDSP-0.0.0-Darwin-arm64-JUCE_7.0.10.zip
+        path: './install/StoneyDSP-0.0.0-Darwin-arm64-JUCE_7.0.10.zip'
 
     - name: Upload Zip Build (Windows)
       if: ${{ matrix.name == 'Windows' }}
       uses: actions/upload-artifact@v3
       with:
-        name: StoneyDSP-0.0.1-Windows-x86_64-JUCE_7.0.10.zip
-        path: '.\install\StoneyDSP-0.0.1-Windows-x86_64-JUCE_7.0.10.zip'
+        name: StoneyDSP-0.0.0-Windows-x86_64-JUCE_7.0.10.zip
+        path: '.\install\StoneyDSP-0.0.0-Windows-x86_64-JUCE_7.0.10.zip'
 
     - name: Upload Tar Build (Linux)
       if: ${{ matrix.name == 'Linux' }}
       uses: actions/upload-artifact@v3
       with:
-        name: StoneyDSP-0.0.1-Linux-x86_64-JUCE_7.0.10.tar.gz
-        path: './install/StoneyDSP-0.0.1-Linux-x86_64-JUCE_7.0.10.tar.gz'
+        name: StoneyDSP-0.0.0-Linux-x86_64-JUCE_7.0.10.tar.gz
+        path: './install/StoneyDSP-0.0.0-Linux-x86_64-JUCE_7.0.10.tar.gz'
 
     - name: Upload Tar Build (macOS)
       if: ${{ matrix.name == 'macOS' }}
       uses: actions/upload-artifact@v3
       with:
-        name: StoneyDSP-0.0.1-Darwin-arm64-JUCE_7.0.10.tar.gz
-        path: './install/StoneyDSP-0.0.1-Darwin-arm64-JUCE_7.0.10.tar.gz'
+        name: StoneyDSP-0.0.0-Darwin-arm64-JUCE_7.0.10.tar.gz
+        path: './install/StoneyDSP-0.0.0-Darwin-arm64-JUCE_7.0.10.tar.gz'
+
+    - name: Upload Shell Installer (macOS)
+      if: ${{ matrix.name == 'macOS' }}
+      uses: actions/upload-artifact@v3
+      with:
+        name: StoneyDSP-0.0.0-Darwin-arm64-JUCE_7.0.10.sh
+        path: './install/StoneyDSP-0.0.0-Darwin-arm64-JUCE_7.0.10.sh'
+
+    - name: Upload Shell Installer (Linux)
+      if: ${{ matrix.name == 'Linux' }}
+      uses: actions/upload-artifact@v3
+      with:
+        name: StoneyDSP-0.0.0-Linux-x86_64-JUCE_7.0.10.sh
+        path: './install/StoneyDSP-0.0.0-Linux-x86_64-JUCE_7.0.10.sh'
 
   release:
     if: contains(github.ref, 'tags/v')
@@ -305,5 +324,5 @@ jobs:
         files: |
           */*.exe
           */*.zip
-          */*.tgz
+          */*.tar.gz
           */*.dmg
