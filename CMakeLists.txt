@@ -33,10 +33,6 @@ if (DEFINED ENV{VCPKG_ROOT} AND (NOT DEFINED CMAKE_TOOLCHAIN_FILE))
     set (CMAKE_TOOLCHAIN_FILE "${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake" CACHE FILEPATH "vcpkg toolchain file." FORCE)
 endif ()
 
-# if (DEFINED ENV{STONEYDSP_CI})
-#     include ("${CMAKE_CURRENT_LIST_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake")
-# endif ()
-
 list (APPEND CMAKE_MODULE_PATH
     "${CMAKE_CURRENT_LIST_DIR}/share/cmake/Modules"
 )
@@ -53,7 +49,7 @@ endif()
 
 project (
     StoneyDSP
-    VERSION 0.0.1
+    VERSION 0.0.0
     DESCRIPTION "The StoneyDSP library for JUCE."
     HOMEPAGE_URL "https://github.com/StoneyDSP/StoneyDSP/blob/production/README.md"
     LANGUAGES C;CXX
@@ -151,7 +147,6 @@ set(STONEYDSP_INSTALL_DESTINATION "lib/cmake/StoneyDSP-v${StoneyDSP_VERSION}" CA
 
 set(STONEYDSP_MODULE_PATH "include/StoneyDSP-v${StoneyDSP_VERSION}/modules")
 set(STONEYDSP_UTILS_INSTALL_DIR "${STONEYDSP_INSTALL_DESTINATION}")
-# set(JUCEAIDE_PATH "${JUCE_TOOL_INSTALL_DIR}/${JUCE_JUCEAIDE_NAME}")
 set(STONEYDSP_STONEYHELPER_PATH "${STONEYDSP_TOOL_INSTALL_DIR}/${STONEYDSP_STONEYHELPER_NAME}")
 
 configure_package_config_file(
@@ -163,7 +158,6 @@ configure_package_config_file(
 
 set(STONEYDSP_MODULE_PATH "${STONEYDSP_MODULES_DIR}")
 set(STONEYDSP_UTILS_INSTALL_DIR "${CMAKE_CURRENT_SOURCE_DIR}/extras/Build/CMake")
-# get_target_property(JUCEAIDE_PATH juceaide IMPORTED_LOCATION)
 get_target_property(STONEYDSP_STONEYHELPER_PATH stoneyhelper IMPORTED_LOCATION)
 configure_package_config_file(
     "${STONEYDSP_CMAKE_UTILS_DIR}/StoneyDSPConfig.cmake.in"
@@ -182,7 +176,20 @@ install(FILES
 )
 
 # offer a basic/messy CPack
-
+set(STONEYDSP_CPACK_GENERATORS "")
+list(APPEND STONEYDSP_CPACK_GENERATORS
+    "ZIP"
+)
+if(UNIX)
+    list(APPEND STONEYDSP_CPACK_GENERATORS
+        "TAR"
+    )
+endif()
+if(WIN32)
+    list(APPEND STONEYDSP_CPACK_GENERATORS
+        "NSIS"
+    )
+endif()
 # set(CPACK_PACKAGE_CHECKSUM "${PROJECT_VERSION_TWEAK}") # git rev-parse is a good idea for this...
 set(CPACK_PACKAGE_VENDOR "StoneyDSP")
 set(CPACK_PACKAGE_NAME              "${PROJECT_NAME}-${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}-${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}-JUCE_${JUCE_VERSION}")
