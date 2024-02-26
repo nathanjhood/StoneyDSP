@@ -49,7 +49,7 @@ endif()
 
 project (
     StoneyDSP
-    VERSION 0.0.0
+    VERSION 0.0.1
     DESCRIPTION "The StoneyDSP library for JUCE."
     HOMEPAGE_URL "https://github.com/StoneyDSP/StoneyDSP/blob/production/README.md"
     LANGUAGES C;CXX
