@@ -9,7 +9,6 @@ name: cmake_project
 on:
   workflow_dispatch: # lets you run a build from the UI
   pull_request:
-  push:
 
 # When pushing new commits, cancel any running builds on that branch
 concurrency:
@@ -285,33 +284,12 @@ jobs:
         name: StoneyDSP-0.0.0-Linux-x86_64-JUCE_7.0.10.tar.gz
         path: './install/StoneyDSP-0.0.0-Linux-x86_64-JUCE_7.0.10.tar.gz'
 
-    - name: Upload Tar Z Build (Linux)
-      if: ${{ matrix.name == 'Linux' }}
-      uses: actions/upload-artifact@v3
-      with:
-        name: StoneyDSP-0.0.0-Linux-x86_64-JUCE_7.0.10.tar.Z
-        path: './install/StoneyDSP-0.0.0-Linux-x86_64-JUCE_7.0.10.tar.gz'
-
     - name: Upload Tar Build (macOS)
       if: ${{ matrix.name == 'macOS' }}
       uses: actions/upload-artifact@v3
       with:
         name: StoneyDSP-0.0.0-Darwin-arm64-JUCE_7.0.10.tar.gz
         path: './install/StoneyDSP-0.0.0-Darwin-arm64-JUCE_7.0.10.tar.gz'
-
-    - name: Upload Tar Z Build (macOS)
-      if: ${{ matrix.name == 'macOS' }}
-      uses: actions/upload-artifact@v3
-      with:
-        name: StoneyDSP-0.0.0-Darwin-arm64-JUCE_7.0.10.tar.Z
-        path: './install/StoneyDSP-0.0.0-Darwin-arm64-JUCE_7.0.10.tar.Z'
-
-    - name: Upload Shell Installer (macOS)
-      if: ${{ matrix.name == 'macOS' }}
-      uses: actions/upload-artifact@v3
-      with:
-        name: StoneyDSP-0.0.0-Darwin-arm64-JUCE_7.0.10.sh
-        path: './install/StoneyDSP-0.0.0-Darwin-arm64-JUCE_7.0.10.sh'
 
     - name: Upload Shell Installer (Linux)
       if: ${{ matrix.name == 'Linux' }}
@@ -353,6 +331,5 @@ jobs:
           */*.exe
           */*.zip
           */*.tar.gz
-          */*.tar.Z
           */*.sh
           */*.dmg
