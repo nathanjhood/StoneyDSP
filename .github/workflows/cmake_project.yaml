@@ -332,3 +332,13 @@ jobs:
           */*.tar.gz
           */*.sh
           */*.dmg
+          **/*.exe
+          **/*.zip
+          **/*.tar.gz
+          **/*.sh
+          **/*.dmg
+          **/**.exe
+          **/**.zip
+          **/**.tar.gz
+          **/**.sh
+          **/**.dmg
