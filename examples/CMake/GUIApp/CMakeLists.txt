@@ -28,7 +28,7 @@ DISCLAIMED.
 
 cmake_minimum_required(VERSION 3.22)
 
-project(STONEYDSP_GUI_APP_EXAMPLE VERSION 0.0.1)
+project(STONEYDSP_GUI_APP_EXAMPLE VERSION 0.0.0)
 
 # find_package(JUCE CONFIG REQUIRED))                    # If you've put JUCE in a subdirectory called JUCE
 
