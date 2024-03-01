@@ -1,12 +1,14 @@
 {
-  "recommendations": [
-    "cschlosser.doxdocgen",
+	"recommendations": [
+		"cschlosser.doxdocgen",
 		"ms-vscode.cmake-tools",
 		"ms-vscode.cpptools",
+		"josetr.cmake-language-support",
 		"josetr.cmake-language-support-vscode",
 		"editorconfig.editorconfig"
-  ],
+	],
 	"unwantedRecommendations": [
-		"twxs.cmake"
+		"twxs.cmake",
+		"fougas.msys2"
 	]
 }
