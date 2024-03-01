@@ -59,6 +59,7 @@ yarn.lock
 !.npmrc
 !public/**/*.png
 .gnupg
+.ssh
 
 # https://github.com/github/gitignore/blob/main/C%2B%2B.gitignore
 
