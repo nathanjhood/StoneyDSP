@@ -16,6 +16,7 @@ JUCE
 .nvm
 .subversion
 .vcpkg
+.yarn
 .yarnrc
 
 compile_commands.json
@@ -40,6 +41,7 @@ package.json
 .local
 
 Desktop
+Development
 Documents
 Downloads
 Music
@@ -60,6 +62,7 @@ yarn.lock
 !public/**/*.png
 .gnupg
 .ssh
+.w3m
 
 # https://github.com/github/gitignore/blob/main/C%2B%2B.gitignore
 
