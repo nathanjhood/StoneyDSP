@@ -20,6 +20,7 @@ list(APPEND STONEYDSP_IGNORE_LIST
     /.cmake
     /.dotnet
     /.github
+    /.gnome
     /.gnupg
     /.npm
     /.nvm
