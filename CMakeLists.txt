@@ -206,43 +206,88 @@ set(CPACK_INCLUDE_TOPLEVEL_DIRECTORY ON)
 set(CPACK_COMPONENT_INCLUDE_TOPLEVEL_DIRECTORY ON)
 set(CPACK_SOURCE_GENERATOR "TGZ;ZIP") # Check out CPack's 'NSIS' installer for Win32, and the others!
 set(CPACK_SOURCE_IGNORE_FILES
+
     _CPack_Packages
-    /*.zip
-    /*.tar
-    /*.tar.*
-    /.env*
-    /.git/*
-    /.bak
-    /.cmake
-    /.github
-    /.vs
-    /.vscode
+    CMake
+
     /.cache
     /.config
     /.local
-    /dist
-    /_layouts
+
+    /*.zip
+    /*.tar
+    /*.tar.*
+
+    /.env*
+    /.git/*
+    /.bak
+
+    /.cmake
+    /.dotnet
+    /.github
+    /.gnupg
+    /.npm
+    /.nvm
+    /.ssh
+    /.subversion
+    /.vcpkg
+    /.vs
+    /.vscode
+    /.vscode-remote-containers
+    /.vscode-server
+    /.w3m
+    /.yarn
+
+    /Desktop
+    /Development
+    /Documents
+    /Downloads
+    /Music
+    /Pictures
+    /Public
+    /Templates
+    /Videos
+
+    /.bash_history
+    /.bash_logout
+    /.bash_profile
+    /.bashrc
+    /.i18n
+    /.lesshst
+    /.profile
+    /.sudo_as_admin_successful
+    /.wget-hsts
+    /.yarnrc
+
     /doc
     /docs
     #/bin
     #/lib
     /usr
-    /out
+
+    /dist
     #/build
+    #/Builds
+    /install
+    #/out
+
     /Release
     /Debug
     /MinSizeRel
     /RelWithDebInfo
+
     /downloads
     /packages
     /installed
-    /install
-    /node_modules
     /vcpkg
     /vcpkg_installed
+
     /.*build.*
+
+    /node_modules
     /package-lock.json
     /yarn.lock
+
     /\\\\.DS_Store
 )
 include(CPack)
