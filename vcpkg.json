@@ -48,6 +48,16 @@
 			"host": true
     }
   ],
+	"default-features": [
+    "curl",
+    "freetype",
+    "jack",
+    "opengl",
+    "xcursor",
+    "xinerama",
+    "xrandr",
+    "xrender"
+  ],
 	"features": {
     "curl": {
       "description": "Enable CURL support",
