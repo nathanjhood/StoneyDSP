@@ -17,6 +17,7 @@ list(APPEND STONEYDSP_IGNORE_LIST
     /.git/*
     /.bak
 
+    /.certs
     /.cmake
     /.dotnet
     /.github
@@ -24,6 +25,7 @@ list(APPEND STONEYDSP_IGNORE_LIST
     /.gnupg
     /.npm
     /.nvm
+    /.pki
     /.ssh
     /.subversion
     /.vcpkg

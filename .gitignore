@@ -8,10 +8,12 @@ examples/ConsoleApplication
 .sudo*
 .wget*
 
+.certs
 .dotnet
 .gnome
 .npm
 .nvm
+.pki
 .subversion
 .vcpkg
 .yarn
