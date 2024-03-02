@@ -6,11 +6,13 @@
 		"**/.bash_logout": true,
 		"**/.bash_profile": true,
 		"**/.bashrc": true,
+		"**/.certs": true,
 		"**/.dotnet": true,
 		"**/.gnome": true,
 		"**/.npm": true,
 		"**/.nvm": true,
 		"**/.subversion": true,
+		"**/.pki": true,
 		"**/.profile": true,
 		"**/.sudo_as_admin_successful": true,
 		"**/.wget-hsts": true,
@@ -31,10 +33,14 @@
 	"cmake.installPrefix": "${workspaceFolder}/.local",
 	"cmake.generator": "Unix Makefiles",
 	"cmake.configureSettings": {
-		"CMAKE_TOOLCHAIN_FILE": "${workspaceFolder}/.vcpkg/scripts/buildsystems/vcpkg.cmake",
-		"CMAKE_MAKE_PROGRAM": "/usr/bin/make",
+		"VCPKG_ROOT": "${workspaceFolder}/vcpkg",
+		"VCPKG_OVERLAY_PORTS": "${workspaceFolder}/overlays",
+		"VCPKG_OVERLAY_TRIPLETS": "${workspaceFolder}/triplets",
+		"CMAKE_TOOLCHAIN_FILE": "${workspaceFolder}/vcpkg/scripts/buildsystems/vcpkg.cmake",
+		"CMAKE_MAKE_PROGRAM": "make",
 		"CMAKE_C_COMPILER_LAUNCHER": "ccache",
-		"CMAKE_CXX_COMPILER_LAUNCHER": "ccache"
+		"CMAKE_CXX_COMPILER_LAUNCHER": "ccache",
+		"CMAKE_PREFIX_PATH": "${workspaceFolder}/.local"
 	},
 	"cmake.debugConfig": {
 		"cwd": "${workspaceFolder}",
