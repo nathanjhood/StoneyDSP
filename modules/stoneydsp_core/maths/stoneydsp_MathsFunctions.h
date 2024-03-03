@@ -41,30 +41,30 @@ namespace Maths
  *  @{
  */
 
-/** 
- * @brief Commonly used mathematical functions. 
- * 
+/**
+ * @brief Commonly used mathematical functions.
+ *
 */
 template <typename FloatType>
 struct Functions
 {
-    /** 
-     * @brief Returns the value of 1.0L / x. 
-     * 
+    /**
+     * @brief Returns the value of 1.0L / x.
+     *
     */
-    static FloatType oneDivX(FloatType x) 
-    { 
-        return static_cast<FloatType> (1 / x) 
-    };
+    static FloatType oneDivX(FloatType x)
+    {
+        return static_cast<FloatType> (1 / x);
+    }
 
-    /** 
-     * @brief Returns the value of 1.0L / x. 
-     * 
+    /**
+     * @brief Returns the value of 1.0L / x.
+     *
     */
-    static FloatType oneDivX(const FloatType& x) 
-    { 
-        return static_cast<FloatType> (1 / x) 
-    };
+    static FloatType oneDivX(const FloatType& x)
+    {
+        return static_cast<FloatType> (1 / x);
+    }
 };
 
   /// @} group Maths

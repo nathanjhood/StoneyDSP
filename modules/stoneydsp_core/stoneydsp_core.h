@@ -78,7 +78,7 @@ using Byte      = unsigned char;
 
 template <typename... Types>
 /** @brief Handy function for avoiding unused variables warning. */
-void ignoreUnused (Types&&...) noexcept {};
+void ignoreUnused (Types&&...) noexcept {}
 
 class InputStream;
 class OutputStream;

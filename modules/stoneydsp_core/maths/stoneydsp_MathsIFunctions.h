@@ -41,30 +41,30 @@ namespace Maths
  *  @{
  */
 
-/** 
- * @brief Commonly used mathematical functions. 
- * 
+/**
+ * @brief Commonly used mathematical functions.
+ *
 */
 template <typename IntType>
 struct iFunctions
 {
-    /** 
-     * @brief Returns the value of x % 1. 
-     * 
+    /**
+     * @brief Returns the value of x % 1.
+     *
     */
-    static IntType xModTwo(IntType x) 
-    { 
-        return static_cast<IntType> (x % 1) 
-    };
+    static IntType xModTwo(IntType x)
+    {
+        return static_cast<IntType> (x % 1);
+    }
 
-    /** 
-     * @brief Returns the value of x % 1. 
-     * 
+    /**
+     * @brief Returns the value of x % 1.
+     *
     */
-    static IntType xModTwo(const IntType& x) 
-    { 
-        return static_cast<IntType> (x % 1) 
-    };
+    static IntType xModTwo(const IntType& x)
+    {
+        return static_cast<IntType> (x % 1);
+    }
 };
 
   /// @} group Maths

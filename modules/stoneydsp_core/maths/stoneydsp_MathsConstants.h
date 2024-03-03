@@ -41,9 +41,9 @@ namespace Maths
  *  @{
  */
 
-/** 
+/**
  * @brief Commonly used mathematical constants.
- * 
+ *
 */
 template <typename FloatType>
 struct Constants
@@ -56,17 +56,6 @@ struct Constants
 
     /** A predefined value for two thirds (of one). */
     static constexpr FloatType twoThirds = static_cast<FloatType> (2.0L / 3);
-};
-
-/** 
- * @brief Commonly used mathematical constants.
- * 
-*/
-template <typename IntType>
-struct iConstants 
-{
-    /** A predefined value for one. */
-    static constexpr IntType one = static_cast<IntType> (1);
 };
 
   /// @} group Maths
