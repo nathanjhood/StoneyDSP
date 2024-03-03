@@ -6,24 +6,16 @@
  * @date 2023-09-09
  *
  *
- * @copyright Copyright (c) 2023
+ * @copyright Copyright (c) 2024
  *
  ******************************************************************************/
 
 // #include "StoneyDSP/modules/stoneydsp_core/stoneydsp_core.cpp"
 
-
-// #include "main.h"
-
-#include <iostream>
+#include "stoneyhelper/cli.hpp"
+#include "stoneyhelper/main.hpp"
 
 int main(int argc, char* argv[])
 {
-
-    for(int i = 0; i < argc; ++i)
-        std::cout << "Argument " << i << ": " << argv[i] << std::endl;
-
-    std::cout << std::endl;
-
-    return 0;
+    StoneyDSP::process(argc, argv);
 }

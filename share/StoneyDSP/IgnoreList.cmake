@@ -4,6 +4,7 @@ list(APPEND STONEYDSP_IGNORE_LIST
 
     _CPack_Packages
     CMake
+    JUCE
 
     /.cache
     /.config
