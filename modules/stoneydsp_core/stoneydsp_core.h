@@ -57,6 +57,9 @@
 
 #define STONEYDSP_CORE_H_INCLUDED
 
+#include "system/stoneydsp_TargetPlatform.h" // system...
+#include "system/stoneydsp_StandardHeader.h" // version...
+
 /**
  * @brief The ```StoneyDSP``` namespace.
  * @author Nathan J. Hood (nathanjhood@googlemail.com)
@@ -69,21 +72,33 @@ namespace StoneyDSP
 /** @addtogroup StoneyDSP
  *  @{
  */
+
+/** A platform-independent 8-bit signed integer type. */
+using Byte      = unsigned char;
+
+template <typename... Types>
+/** @brief Handy function for avoiding unused variables warning. */
+void ignoreUnused (Types&&...) noexcept {};
+
+class InputStream;
+class OutputStream;
+
   /// @} group StoneyDSP
 } // namespace StoneyDSP
 
-#include "version/stoneydsp_version.h"
+// #include "version/stoneydsp_version.h"
 
 #ifndef STRINGIFY
 # define STRINGIFY_HELPER(n) #n
 # define STRINGIFY(n) STRINGIFY_HELPER(n)
 #endif
 
+#include "maths/stoneydsp_MathsIConstants.h"
+#include "maths/stoneydsp_MathsIFunctions.h"
+#include "maths/stoneydsp_MathsConstants.h"
+#include "maths/stoneydsp_MathsFunctions.h"
 
 #include "res/stoneydsp_resource.h"
-#include "types/stoneydsp_types.h"
-
-
 
 namespace StoneyDSP
 {

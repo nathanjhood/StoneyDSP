@@ -1,5 +1,5 @@
 /***************************************************************************//**
- * @file stoneydsp_types.h
+ * @file stoneydsp_MathsConstants.h
  * @author Nathan J. Hood <nathanjhood@googlemail.com>
  * @brief
  * @version 1.0.0
@@ -29,6 +29,48 @@
  *
  ******************************************************************************/
 
-#pragma once
+namespace StoneyDSP
+{
+/** @addtogroup StoneyDSP
+ *  @{
+ */
 
-#define STONEYDSP_TYPES_H_INCLUDED
+namespace Maths
+{
+/** @addtogroup Maths
+ *  @{
+ */
+
+/** 
+ * @brief Commonly used mathematical constants.
+ * 
+*/
+template <typename FloatType>
+struct Constants
+{
+    /** A predefined value for one. */
+    static constexpr FloatType one = static_cast<FloatType> (1.0L);
+
+    /** A predefined value for one third (of one). */
+    static constexpr FloatType oneThird = static_cast<FloatType> (1.0L / 3);
+
+    /** A predefined value for two thirds (of one). */
+    static constexpr FloatType twoThirds = static_cast<FloatType> (2.0L / 3);
+};
+
+/** 
+ * @brief Commonly used mathematical constants.
+ * 
+*/
+template <typename IntType>
+struct iConstants 
+{
+    /** A predefined value for one. */
+    static constexpr IntType one = static_cast<IntType> (1);
+};
+
+  /// @} group Maths
+} // namespace Maths
+
+  /// @} group StoneyDSP
+} // namespace StoneyDSP
