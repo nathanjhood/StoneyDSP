@@ -47,10 +47,31 @@ endif ()
 # configuration stage of the outer project.
 
 if(STONEYDSP_BUILD_HELPER_TOOLS)
+
+    configure_file(
+        "include/stoneyhelper/cli.hpp" # SOURCE_DIR
+        "include/stoneyhelper/cli.hpp" # BINARY_DIR
+    )
+
+    configure_file(
+        "include/stoneyhelper/main.hpp" # SOURCE_DIR
+        "include/stoneyhelper/main.hpp" # BINARY_DIR
+    )
+
     # Build the tool for the current system
     juce_add_console_app(stoneyhelper _NO_RESOURCERC)
 
-    target_sources(stoneyhelper PRIVATE src/stoneyhelper/main.cpp)
+    target_include_directories(stoneyhelper
+        PUBLIC
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
+            $<INSTALL_INTERFACE:include>
+    )
+
+    target_sources(stoneyhelper
+        PRIVATE
+        "src/stoneyhelper/cli.cpp"
+        "src/stoneyhelper/main.cpp"
+    )
 
     target_compile_definitions(stoneyhelper PRIVATE
         JUCE_DISABLE_JUCE_VERSION_PRINTING=1
@@ -124,7 +145,7 @@ else()
         set(ENV{CMAKE_GENERATOR_PLATFORM} "${CMAKE_HOST_SYSTEM_PROCESSOR}")
     endif()
 
-    #string(CONFIGURE [[$<CMAKE_TOOLCHAIN_FILE:-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}>]] _maybe_toolchain)
+
     if(DEFINED CMAKE_TOOLCHAIN_FILE)
         set(_maybe_toolchain "-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}")
     endif()
@@ -138,8 +159,10 @@ else()
             "-DCMAKE_BUILD_TYPE=Debug"
             "-DSTONEYDSP_BUILD_HELPER_TOOLS=ON"
             "-DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX}"
+            "-DVCPKG_MANIFEST_MODE=FALSE"
             ${_maybe_toolchain}
             ${extra_compiler_flag_arguments}
+            "--no-warn-unused-cli"
         WORKING_DIRECTORY "${StoneyDSP_SOURCE_DIR}"
         OUTPUT_VARIABLE command_output
         ERROR_VARIABLE command_output
