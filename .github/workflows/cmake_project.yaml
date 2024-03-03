@@ -80,7 +80,7 @@ jobs:
     - name: Cache IPP (Windows)
       if: runner.os == 'Windows'
       id: cache-ipp
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         key: ipp-v4
         path: C:\Program Files (x86)\Intel
@@ -95,7 +95,7 @@ jobs:
 
     - name: Save IPP cache (even on CI fail)
       if: runner.os == 'Windows' && (steps.cache-ipp.outputs.cache-hit != 'true')
-      uses: actions/cache/save@v3
+      uses: actions/cache/save@v4
       with:
         path: C:\Program Files (x86)\Intel
         key: ipp-v4
@@ -122,12 +122,12 @@ jobs:
         xcode-version: latest-stable
         
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         submodules: true # Get JUCE populated (if used)
 
     - name: Cache the build
-      uses: mozilla-actions/sccache-action@v0.0.3
+      uses: mozilla-actions/sccache-action@v0.0.4
         
     - name: vcpkg-action
       # You may pin to the exact commit or the version.
@@ -156,7 +156,7 @@ jobs:
         # fetch-depth: # optional, default is 1
           
     - name: Use Node.js 16.18.0
-      uses: actions/setup-node@v3
+      uses: actions/setup-node@v4
       with:
         node-version: 16.18.0
 
@@ -217,70 +217,70 @@ jobs:
 
     - name: Upload Zip Source
       if: ${{ matrix.name == 'Linux' }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: StoneyDSP-v0.0.1-Source.zip
         path: './install/StoneyDSP-v0.0.1-Source.zip'
         
     - name: Upload Tar Source
       if: ${{ matrix.name == 'Linux' }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: StoneyDSP-v0.0.1-Source.tar.gz
         path: './install/StoneyDSP-v0.0.1-Source.tar.gz'
 
     - name: Upload Zip Build (Linux)
       if: ${{ matrix.name == 'Linux' }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: StoneyDSP-v0.0.1-Linux-x86_64-JUCE-v7.0.9.zip
         path: './install/StoneyDSP-v0.0.1-Linux-x86_64-JUCE-v7.0.9.zip'
         
     - name: Upload Zip Build (macOS)
       if: ${{ matrix.name == 'macOS' }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: StoneyDSP-v0.0.1-Darwin-arm64-JUCE-v7.0.9.zip
         path: './install/StoneyDSP-v0.0.1-Darwin-arm64-JUCE-v7.0.9.zip'
 
     - name: Upload Zip Build (Windows)
       if: ${{ matrix.name == 'Windows' }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: StoneyDSP-v0.0.1-Windows-AMD64-JUCE-v7.0.9.zip
         path: '.\install\StoneyDSP-v0.0.1-Windows-AMD64-JUCE-v7.0.9.zip'
 
     - name: Upload Tar Build (Linux)
       if: ${{ matrix.name == 'Linux' }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: StoneyDSP-v0.0.1-Linux-x86_64-JUCE-v7.0.9.tar.gz
         path: './install/StoneyDSP-v0.0.1-Linux-x86_64-JUCE-v7.0.9.tar.gz'
 
     - name: Upload Tar Build (macOS)
       if: ${{ matrix.name == 'macOS' }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: StoneyDSP-v0.0.1-Darwin-arm64-JUCE-v7.0.9.tar.gz
         path: './install/StoneyDSP-v0.0.1-Darwin-arm64-JUCE-v7.0.9.tar.gz'
 
   #  - name: Upload Shell Installer (Linux)
   #    if: ${{ matrix.name == 'Linux' }}
-  #    uses: actions/upload-artifact@v3
+  #    uses: actions/upload-artifact@v4
   #    with:
   #      name: StoneyDSP-0.0.1-Linux-x86_64-JUCE_7.0.10.sh
   #      path: './install/StoneyDSP-0.0.1-Linux-x86_64-JUCE_7.0.10.sh'
 
   #  - name: Upload Exe Installer (Windows)
   #    if: ${{ matrix.name == 'Windows' }}
-  #    uses: actions/upload-artifact@v3
+  #    uses: actions/upload-artifact@v4
   #    with:
   #      name: StoneyDSP-0.0.1-Windows-AMD64-JUCE_7.0.10.exe
   #      path: './install/StoneyDSP-0.0.1-Windows-AMD64-JUCE_7.0.10.exe'
 
   #  - name: Upload DMG Installer (macOS)
   #    if: ${{ matrix.name == 'macOS' }}
-  #    uses: actions/upload-artifact@v3
+  #    uses: actions/upload-artifact@v4
   #    with:
   #      name: StoneyDSP-0.0.1-Darwin-arm64-JUCE_7.0.10.dmg
   #      path: './install/StoneyDSP-0.0.1-Darwin-arm64-JUCE_7.0.10.dmg'
@@ -292,7 +292,7 @@ jobs:
 
     steps:
     - name: Get Artifacts
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
 
     - name: Create Release
       uses: softprops/action-gh-release@v1
