@@ -27,19 +27,13 @@ DISCLAIMED.
 ]=============================================================================]#
 
 if (NOT DEFINED CMakeRC_DIR)
-
     include(CMakeRC RESULT_VARIABLE CMakeRC_FOUND)
     if (NOT CMakeRC_FOUND)
-
         message (FATAL_ERROR "Cannot find CMakeRC?")
         return ()
-
     endif ()
-
 else ()
-
-    find_package (CMakeRC CONFIG REQUIRED)
-
+    find_package (CMakeRC REQUIRED)
 endif ()
 
 file(COPY "${StoneyDSP_SOURCE_DIR}/public/images"

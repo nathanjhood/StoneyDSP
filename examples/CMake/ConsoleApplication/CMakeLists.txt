@@ -40,6 +40,7 @@ endif()
 
 juce_add_console_app(ConsoleAppExample
     PRODUCT_NAME "Console App Example"
+    _NO_RESOURCERC
 )
 
 configure_file(
