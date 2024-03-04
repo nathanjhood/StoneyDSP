@@ -36,11 +36,16 @@
 		"VCPKG_ROOT": "${workspaceFolder}/vcpkg",
 		"VCPKG_OVERLAY_PORTS": "${workspaceFolder}/overlays",
 		"VCPKG_OVERLAY_TRIPLETS": "${workspaceFolder}/triplets",
+		"VCPKG_MANIFEST_MODE": false,
+		"VCPKG_PREFER_SYSTEM_INSTALLED_BINARIES": true,
 		"CMAKE_TOOLCHAIN_FILE": "${workspaceFolder}/vcpkg/scripts/buildsystems/vcpkg.cmake",
 		"CMAKE_MAKE_PROGRAM": "make",
 		"CMAKE_C_COMPILER_LAUNCHER": "ccache",
 		"CMAKE_CXX_COMPILER_LAUNCHER": "ccache",
-		"CMAKE_PREFIX_PATH": "${workspaceFolder}/.local"
+		"CMAKE_PREFIX_PATH": "${workspaceFolder}/.local",
+		"STONEYDSP_BUILD_EXAMPLES": true,
+		"STONEYDSP_BUILD_EXTRAS": true,
+		"STONEYDSP_BUILD_TESTS": true
 	},
 	"cmake.debugConfig": {
 		"cwd": "${workspaceFolder}",
@@ -205,6 +210,27 @@
 		"sstream": "cpp",
 		"chrono": "cpp",
 		"codecvt": "cpp",
-		"ratio": "cpp"
+		"ratio": "cpp",
+		"*.in": "cpp",
+		"bitset": "cpp",
+		"charconv": "cpp",
+		"complex": "cpp",
+		"condition_variable": "cpp",
+		"csignal": "cpp",
+		"cstring": "cpp",
+		"list": "cpp",
+		"map": "cpp",
+		"set": "cpp",
+		"optional": "cpp",
+		"regex": "cpp",
+		"future": "cpp",
+		"mutex": "cpp",
+		"semaphore": "cpp",
+		"shared_mutex": "cpp",
+		"stop_token": "cpp",
+		"thread": "cpp",
+		"cfenv": "cpp",
+		"typeindex": "cpp",
+		"variant": "cpp"
 	}
 }

@@ -7,7 +7,7 @@
 				"${workspaceFolder}/examples/**",
 				"${workspaceFolder}/modules/**",
 				"${workspaceFolder}/.local/include/**",
-				"${vcpkgRoot}/x64-linux/include"
+				"${workspaceFolder}/vcpkg_installed/x64-linux/include"
 			],
 			"defines": [],
 			"compilerPath": "/usr/bin/gcc",
@@ -15,8 +15,8 @@
 			"cppStandard": "gnu++17",
 			"intelliSenseMode": "linux-gcc-x64",
 			"configurationProvider": "ms-vscode.cmake-tools",
-			"mergeConfigurations": true,
-			"compileCommands": "${workspaceFolder}/build/compile_commands.json"
+			"mergeConfigurations": true
+			// "compileCommands": "${workspaceFolder}/build/compile_commands.json"
 		},
 		{
 			"name": "Clang 14.0.0 x86_64-pc-linux-gnu",
@@ -25,7 +25,7 @@
 				"${workspaceFolder}/examples/**",
 				"${workspaceFolder}/modules/**",
 				"${workspaceFolder}/.local/include/**",
-				"${vcpkgRoot}/x64-linux/include"
+				"${workspaceFolder}/vcpkg_installed/x64-linux/include"
 			],
 			"defines": [],
 			"compilerPath": "/usr/bin/clang",
