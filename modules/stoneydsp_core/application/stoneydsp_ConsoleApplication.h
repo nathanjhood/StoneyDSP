@@ -43,60 +43,76 @@ namespace Application
  *  @{
  */
 
+#define __STDOUT_GAP_40 std::setw(40) << std::setfill(' ')
+
+#define __STDOUT_USAGE_LINE(args, info) \
+  std::cout << __STDOUT_GAP_40 << args << "  "; std::cout << info << std::endl;
+
 /**
- * @brief The Application Class.
- * 
+ * @brief The ConsoleApplication Class.
+ *
 */
-class Application
+class ConsoleApplication : public Application
 {
 public:
 
     /**
-     * @brief Construct a new Application object.
-     * 
+     * @brief Construct a new Console Application object.
+     *
      */
-    Application()
-    : _application_name("Application")
+    ConsoleApplication()
+    : _application_name("ConsoleApplication")
     {}
-    
-    /**
-     * @brief Construct a new Application object with a given name.
-     * 
-     * @param application_name 
-     */
-    Application(std::string_view application_name)
+
+    ConsoleApplication(std::string_view application_name)
     : _application_name(application_name)
     {}
 
-    /**
-     * @brief Construct a new Application object with a given name.
-     * 
-     * @param application_name 
-     */
-    Application(std::string application_name)
+    ConsoleApplication(std::string application_name)
     : _application_name(application_name)
     {}
 
-    /**
-     * @brief Construct a new Application object with a given name.
-     * 
-     * @param application_name 
-     */
-    Application(const char application_name[])
-    : _application_name(application_name)
-    {}
-
-    /**
-     * @brief Destroy the Application object.
-     * 
-     */
-    ~Application()
+    ~ConsoleApplication()
     {
         // _application_name.clear(); not supported for string_view!
     }
 
+    void print_usage()
+    {
+        std::cout << "usage: " << _application_name.data() << " [OPTION]... [FILE]..." << std::endl;
+    }
+
+    void print_version()
+    {
+        std::cout << _application_name.data() << " v." << "1.0.0" << std::endl;
+    }
+
+    void print_err_exception(const std::exception& x)
+    {
+        std::cerr << x.what() << '\n';
+        std::cerr << "usage: " << _application_name.data() << " [OPTION]... [FILE]...\n";
+    }
+
+    void print_help()
+    {
+        print_usage();
+        std::cout << "" << std::endl;
+        std::cout << "Options:" << std::endl;
+        std::cout << "" << std::endl;
+        __STDOUT_USAGE_LINE("[-v|--version]",   "Show program version and exit.")
+        __STDOUT_USAGE_LINE("[-h|--help]",      "Show program commands and exit.")
+        __STDOUT_USAGE_LINE("[--usage]",        "Show program options and exit.")
+    }
+
 private:
+
     std::string_view                        _application_name;
+
+    static std::vector<std::string_view>    _input_args;
+
+    static inline bool                      _show_version   = false;
+    static inline bool                      _show_help      = false;
+    static inline bool                      _show_usage     = false;
 };
 
   /// @} group Application

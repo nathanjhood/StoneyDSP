@@ -34,3 +34,15 @@
 #endif
 
 #include "stoneydsp_core.h"
+
+namespace StoneyDSP
+{
+
+std::string_view SystemStats::getStoneyDSPVersion()
+{
+    return "StoneyDSP v" STONEYDSP_STRINGIFY (STONEYDSP_MAJOR_VERSION)
+                "." STONEYDSP_STRINGIFY (STONEYDSP_MINOR_VERSION)
+                "." STONEYDSP_STRINGIFY (STONEYDSP_BUILDNUMBER);
+}
+
+} // namespace StoneyDSP

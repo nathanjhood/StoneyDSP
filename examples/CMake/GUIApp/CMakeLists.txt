@@ -28,10 +28,9 @@ DISCLAIMED.
 
 cmake_minimum_required(VERSION 3.22)
 
-project(STONEYDSP_GUI_APP_EXAMPLE VERSION 0.0.0)
+project(STONEYDSP_EXAMPLE_GUI_APP VERSION 0.0.0)
 
 # find_package(JUCE CONFIG REQUIRED))                    # If you've put JUCE in a subdirectory called JUCE
-
 
 juce_add_gui_app(GuiAppExample
     # VERSION ...                       # Set this if the app version is different to the project version
@@ -49,7 +48,7 @@ configure_file (
 )
 target_include_directories (GuiAppExample
     PUBLIC
-        $<BUILD_INTERFACE:${STONEYDSP_GUI_APP_EXAMPLE_BINARY_DIR}/include>
+        $<BUILD_INTERFACE:${STONEYDSP_EXAMPLE_GUI_APP_BINARY_DIR}/include>
         $<INSTALL_INTERFACE:include>
 )
 

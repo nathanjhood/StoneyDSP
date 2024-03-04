@@ -48,12 +48,38 @@
 
     See also StoneyDSP::SystemStats::getStoneyDSPVersion() for a string version.
 */
-#define STONEYDSP_VERSION ((STONEYDSP_MAJOR_VERSION << 16) + (STONEYDSP_MINOR_VERSION << 8) + STONEYDSP_BUILDNUMBER)
+#define STONEYDSP_VERSION (                                                    \
+    (STONEYDSP_MAJOR_VERSION << 16) +                                          \
+    (STONEYDSP_MINOR_VERSION << 8 ) +                                          \
+     STONEYDSP_BUILDNUMBER)
+
+// Standard includes
+
+#include <stdexcept>
+#include <vector>
+
+#include <iostream>
+#include <iomanip>
+
+#include <filesystem>
+#include <fstream>
+
+#include <string>
+#include <sstream>
+
+#include <climits> // INT_MAX
 
 // Platform defs...
 
-/** 
- * This macro defines the C calling convention used as the standard for 
+// #ifdef JUCE_CALLTYPE
+//  #define STONEYDSP_CALLTYPE JUCE_CALLTYPE
+// #endif
+// #ifdef JUCE_CDECL
+//  #define STONEYDSP_CDECL JUCE_CDECL
+// #endif
+
+/**
+ * This macro defines the C calling convention used as the standard for
  * STONEYDSP calls.
  */
 #if STONEYDSP_WINDOWS
@@ -64,44 +90,29 @@
  #define STONEYDSP_CDECL
 #endif
 
-/** This is a shorthand macro for deleting a class's copy constructor and
-    copy assignment operator.
-
-    For example, instead of
-    @code
-    class MyClass
-    {
-        etc..
-
-    private:
-        MyClass (const MyClass&);
-        MyClass& operator= (const MyClass&);
-    };@endcode
-
-    ..you can just write:
-
-    @code
-    class MyClass
-    {
-        etc..
-
-    private:
-        STONEYDSP_DECLARE_NON_COPYABLE (MyClass)
-    };@endcode
+/**
+ * @brief This is a shorthand macro for deleting a class's copy constructor and
+ * copy assignment operator.
+ *
 */
 #define STONEYDSP_DECLARE_NON_COPYABLE(className) \
     className (const className&) = delete;\
     className& operator= (const className&) = delete;
 
-/** This is a shorthand macro for deleting a class's move constructor and
-    move assignment operator.
-*/
+/**
+ * @brief This is a shorthand macro for deleting a class's move constructor and
+ * move assignment operator.
+ *
+ */
 #define STONEYDSP_DECLARE_NON_MOVEABLE(className) \
     className (className&&) = delete;\
     className& operator= (className&&) = delete;
 
-/** This macro can be added to class definitions to disable the use of new/delete to
-    allocate the object on the heap, forcing it to only be used as a stack or member variable.
+/**
+ * @brief This macro can be added to class definitions to disable the use of
+ * new/delete to allocate the object on the heap, forcing it to only be used as
+ * a stack or member variable.
+ *
 */
 #define STONEYDSP_PREVENT_HEAP_ALLOCATION \
    private: \

@@ -73,30 +73,54 @@ namespace StoneyDSP
  *  @{
  */
 
-/** A platform-independent 8-bit signed integer type. */
+/**
+ * @brief A platform-independent 8-bit signed integer type.
+ *
+*/
 using Byte      = unsigned char;
 
+/**
+ * @brief Handy function for avoiding unused variables warning.
+ *
+*/
 template <typename... Types>
-/** @brief Handy function for avoiding unused variables warning. */
 void ignoreUnused (Types&&...) noexcept {}
 
-class InputStream;
-class OutputStream;
+/**
+ * @brief The SystemStats class.
+ *
+ */
+class SystemStats  final
+{
+public:
+    /**
+     * @brief Returns the current version of ```STONEYDSP```.
+     * See also the ```STONEYDSP_VERSION```, ```STONEYDSP_MAJOR_VERSION``` and
+     * ```STONEYDSP_MINOR_VERSION``` macros.
+     *
+    */
+    static std::string_view getStoneyDSPVersion();
+private:
+    SystemStats() = delete; // Only static methods!
+    STONEYDSP_DECLARE_NON_COPYABLE (SystemStats)
+};
+
 
   /// @} group StoneyDSP
 } // namespace StoneyDSP
 
-// #include "version/stoneydsp_version.h"
-
-#ifndef STRINGIFY
-# define STRINGIFY_HELPER(n) #n
-# define STRINGIFY(n) STRINGIFY_HELPER(n)
+#ifndef STONEYDSP_STRINGIFY
+# define STONEYDSP_STRINGIFY_HELPER(n) #n
+# define STONEYDSP_STRINGIFY(n) STONEYDSP_STRINGIFY_HELPER(n)
 #endif
 
 #include "maths/stoneydsp_MathsIConstants.h"
 #include "maths/stoneydsp_MathsIFunctions.h"
 #include "maths/stoneydsp_MathsConstants.h"
 #include "maths/stoneydsp_MathsFunctions.h"
+
+#include "application/stoneydsp_Application.h"
+#include "application/stoneydsp_ConsoleApplication.h"
 
 #include "res/stoneydsp_resource.h"
 
