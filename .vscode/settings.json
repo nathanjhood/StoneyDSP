@@ -229,7 +229,6 @@
 		"xutility": "cpp",
 		"algorithm": "cpp",
 		"any": "cpp",
-		"array": "cpp",
 		"charconv": "cpp",
 		"chrono": "cpp",
 		"codecvt": "cpp",
