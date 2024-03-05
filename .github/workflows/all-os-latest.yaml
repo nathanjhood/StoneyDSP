@@ -177,7 +177,7 @@ jobs:
         -DSTONEYDSP_BUILD_TESTS:BOOL="TRUE"
         -DSTONEYDSP_BUILD_EXTRAS:BOOL="TRUE"
         -DSTONEYDSP_BUILD_EXAMPLES:BOOL="TRUE"
-        -DCMAKE_INSTALL_PREFIX="${PWD}/${{ env.INSTALL_DIR }}"
+        -DCMAKE_INSTALL_PREFIX="${PWD}/${{ env.INSTALL_DIR }}/${{ matrix.triplet }}"
         -DVCPKG_HOST_TRIPLET:STRING="${{ matrix.triplet }}"
         -DVCPKG_TARGET_TRIPLET:STRING="${{ matrix.triplet }}"
         -DVCPKG_MANIFEST_MODE:BOOL="TRUE"
@@ -228,7 +228,7 @@ jobs:
       working-directory: ${{ github.workspace }}
       shell: bash 
       # Build StoneyDSO with the given configuration
-      run: cmake --build "${PWD}/${{ env.BUILD_DIR }}" --config ${{ env.BUILD_TYPE }} --parallel 4
+      run: cmake --build "${PWD}/${{ env.BUILD_DIR }}/${{ matrix.triplet }}" --config ${{ env.BUILD_TYPE }} --parallel 4
 
     - name: Upload Binary Directory
       uses: actions/upload-artifact@v4
@@ -270,7 +270,7 @@ jobs:
       shell: bash
       # Execute tests defined by the CMake configuration.
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-      run: ctest --test-dir "${PWD}/${{ env.BUILD_DIR }}" -j4 --rerun-failed --output-on-failure --verbose 
+      run: ctest --test-dir "${PWD}/${{ env.BUILD_DIR }}/${{ matrix.triplet }}" -j4 --rerun-failed --output-on-failure --verbose 
 
     - name: Upload Binary Directory
       uses: actions/upload-artifact@v4
@@ -296,6 +296,11 @@ jobs:
             os: macos-latest
     steps:
     # This is applicable for all platforms
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: true # Get JUCE populated (if used)
+        
     - name: Download Binary Directory
       uses: actions/download-artifact@v4
       with:
@@ -309,7 +314,7 @@ jobs:
       shell: bash
       working-directory: ${{ github.workspace }}
       # Install StoneyDSP with the given configuration
-      run: cmake --install "${PWD}/${{ env.BUILD_DIR }}"
+      run: cmake --install "${PWD}/${{ env.BUILD_DIR }}/${{ matrix.triplet }}"
 
     - name: Upload Binary Directory
       uses: actions/upload-artifact@v4
@@ -341,6 +346,11 @@ jobs:
             os: macos-latest
     steps:
     # This is applicable for all platforms
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        submodules: true # Get JUCE populated (if used)
+        
     - name: Download Binary Directory
       uses: actions/download-artifact@v4
       with:
@@ -357,13 +367,13 @@ jobs:
       shell: bash
       working-directory: ${{ github.workspace }}
       # Pack the StoneyDSP source code with the given configuration
-      run: cpack --config "${PWD}/${{ env.BUILD_DIR }}/CPackSourceConfig.cmake" -B "${PWD}/install" -G "ZIP"
+      run: cpack --config "${PWD}/${{ env.BUILD_DIR }}/${{ matrix.triplet }}/CPackSourceConfig.cmake" -B "${PWD}/${{ env.INSTALL_DIR }}" -G "ZIP"
       
     - name: Zip Build
       shell: bash
       working-directory: ${{github.workspace}}
       # Pack the StoneyDSP source code with the given configuration
-      run: cpack --config "${PWD}/${{ env.BUILD_DIR }}/CPackConfig.cmake" -B "${PWD}/install" -G "ZIP"
+      run: cpack --config "${PWD}/${{ env.BUILD_DIR }}/${{ matrix.triplet }}/CPackConfig.cmake" -B "${PWD}/${{ env.INSTALL_DIR }}" -G "ZIP"
 
     - name: Upload Install Directory
       uses: actions/upload-artifact@v4
