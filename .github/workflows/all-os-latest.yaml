@@ -228,7 +228,7 @@ jobs:
       working-directory: ${{ github.workspace }}
       shell: bash 
       # Build StoneyDSO with the given configuration
-      run: cmake --build "${PWD}/${{ env.BUILD_DIR }}/${{ matrix.triplet }}" --config ${{ env.BUILD_TYPE }} --parallel 4
+      run: cmake --build ${PWD}/${{ env.BUILD_DIR }}/${{ matrix.triplet }} --config ${{ env.BUILD_TYPE }} --parallel 4
 
     - name: Upload Binary Directory
       uses: actions/upload-artifact@v4
@@ -270,7 +270,7 @@ jobs:
       shell: bash
       # Execute tests defined by the CMake configuration.
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-      run: ctest --test-dir "${PWD}/${{ env.BUILD_DIR }}/${{ matrix.triplet }}" -j4 --rerun-failed --output-on-failure --verbose 
+      run: ctest --test-dir ${PWD}/${{ env.BUILD_DIR }}/${{ matrix.triplet }} -j4 --rerun-failed --output-on-failure --verbose 
 
     - name: Upload Binary Directory
       uses: actions/upload-artifact@v4
