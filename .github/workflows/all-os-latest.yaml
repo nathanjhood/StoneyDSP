@@ -182,12 +182,6 @@ jobs:
       with:
         submodules: true # Get JUCE populated (if used)
 
-    - name: Download Binary Directory
-      uses: actions/download-artifact@v4
-      with:
-        name: ${{ matrix.triplet }}
-        path: './${{ env.BUILD_DIR }}/${{ matrix.triplet }}'
-
     - name: Cache the build
       uses: mozilla-actions/sccache-action@v0.0.4
       
