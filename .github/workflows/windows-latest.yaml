@@ -110,19 +110,19 @@ jobs:
       # Configure CMake in a 'bin' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
       run: >-
-        cmake -S${{github.workspace}}
-        -B${{github.workspace}}/${{ env.BUILD_DIR }}
+        cmake -S${PWD}
+        -B${PWD}/${{ env.BUILD_DIR }}
         -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
         -DCMAKE_C_COMPILER_LAUNCHER=sccache
         -DCMAKE_CXX_COMPILER_LAUNCHER=sccache
         -DSTONEYDSP_BUILD_TESTS:BOOL=TRUE
         -DSTONEYDSP_BUILD_EXTRAS:BOOL=TRUE
         -DSTONEYDSP_BUILD_EXAMPLES:BOOL=TRUE
-        -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/install
+        -DCMAKE_INSTALL_PREFIX=${PWD}/install
         -DVCPKG_HOST_TRIPLET:STRING=x64-windows
         -DVCPKG_TARGET_TRIPLET:STRING=x64-windows
         -DVCPKG_MANIFEST_MODE:BOOL=FALSE
-        -DCMAKE_TOOLCHAIN_FILE:FILEPATH="${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake"
+        -DCMAKE_TOOLCHAIN_FILE:FILEPATH="${PWD}/vcpkg/scripts/buildsystems/vcpkg.cmake"
         -G "Ninja"
         --compile-no-warning-as-error
         --no-warn-unused-cli
@@ -131,7 +131,7 @@ jobs:
       # Build your program with the given configuration
       run: >-
         cmake
-        --build ${{github.workspace}}/${{ env.BUILD_DIR }}
+        --build ${PWD}/${{ env.BUILD_DIR }}
         --config ${{env.BUILD_TYPE}}
         --parallel 4
         --target all
@@ -143,7 +143,7 @@ jobs:
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: >-
         ctest
-        --test-dir ${{ github.workspace }}/${{ env.BUILD_DIR }}
+        --test-dir ${PWD}/${{ env.BUILD_DIR }}
         -j4
         --rerun-failed
         --output-on-failure
@@ -153,19 +153,19 @@ jobs:
       shell: bash
       working-directory: ${{ github.workspace }}
       # Install StoneyDSP with the given configuration
-      run: cmake --install ${{ github.workspace }}/${{ env.BUILD_DIR }}
+      run: cmake --install ${PWD}/${{ env.BUILD_DIR }}
 
     - name: Zip Source 
       shell: bash
       working-directory: ${{ github.workspace }}
       # Pack the StoneyDSP source code with the given configuration
-      run: cpack --config ${{ github.workspace }}/${{ env.BUILD_DIR }}/CPackSourceConfig.cmake -B install -G ZIP
+      run: cpack --config ${PWD}/${{ env.BUILD_DIR }}/CPackSourceConfig.cmake -B install -G ZIP
 
     - name: Zip Build
       shell: bash
       working-directory: ${{github.workspace}}
       # Pack the StoneyDSP source code with the given configuration
-      run: cpack --config ${{ github.workspace }}/${{ env.BUILD_DIR }}/CPackConfig.cmake -B install -G ZIP
+      run: cpack --config ${PWD}/${{ env.BUILD_DIR }}/CPackConfig.cmake -B install -G ZIP
 
     - name: Upload Zip Build
       uses: actions/upload-artifact@v4
