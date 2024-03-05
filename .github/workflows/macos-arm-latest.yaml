@@ -101,9 +101,9 @@ jobs:
         -DSTONEYDSP_BUILD_EXTRAS:BOOL=TRUE
         -DSTONEYDSP_BUILD_EXAMPLES:BOOL=TRUE
         -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/install
-        -DVCPKG_HOST_TRIPLET:STRING=x64-osx
+        -DVCPKG_HOST_TRIPLET:STRING=arm64-osx
         -DVCPKG_TARGET_TRIPLET:STRING=arm64-osx
-        -DVCPKG_MANIFEST_MODE:BOOL=FALSE
+        -DVCPKG_MANIFEST_MODE:BOOL=TRUE
         -DCMAKE_TOOLCHAIN_FILE:FILEPATH="${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake"
         -G "Ninja"
         --compile-no-warning-as-error
