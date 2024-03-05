@@ -23,6 +23,7 @@ env:
   SCCACHE_GHA_ENABLED: "true"
   HOMEBREW_NO_INSTALL_CLEANUP: 1
   IPP_DIR: C:\Program Files (x86)\Intel\oneAPI\ipp\latest\lib\cmake\ipp
+  STONEYDSP_CURRENT_VERSION: 1.0.1
 
 jobs:
   ubuntu-build:
@@ -91,33 +92,32 @@ jobs:
       shell: bash
       # Configure CMake in a 'bin' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
       # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
-      run: | 
-        cmake \
-        -S${{github.workspace}} \
-        -B${{github.workspace}}/${{ env.BUILD_DIR }} \
-        -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }} \
-        -DCMAKE_C_COMPILER_LAUNCHER=sccache \
-        -DCMAKE_CXX_COMPILER_LAUNCHER=sccache \
-        -DSTONEYDSP_BUILD_TESTS:BOOL=TRUE \ 
-        -DSTONEYDSP_BUILD_EXTRAS:BOOL=TRUE \
-        -DSTONEYDSP_BUILD_EXAMPLES:BOOL=TRUE \
+      run: >-
+        cmake -S${{github.workspace}}
+        -B${{github.workspace}}/${{ env.BUILD_DIR }}
+        -DCMAKE_BUILD_TYPE=${{ env.BUILD_TYPE }}
+        -DCMAKE_C_COMPILER_LAUNCHER=sccache
+        -DCMAKE_CXX_COMPILER_LAUNCHER=sccache
+        -DSTONEYDSP_BUILD_TESTS:BOOL=TRUE
+        -DSTONEYDSP_BUILD_EXTRAS:BOOL=TRUE
+        -DSTONEYDSP_BUILD_EXAMPLES:BOOL=TRUE
         -DStoneyDSP_VERSION_TWEAK:STRING="${{ github.ref }}"
-        -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/install \
-        -DVCPKG_HOST_TRIPLET:STRING=x64-linux \
-        -DVCPKG_TARGET_TRIPLET:STRING=x64-linux \
-        -DVCPKG_MANIFEST_MODE:BOOL=FALSE \
-        -DCMAKE_TOOLCHAIN_FILE:FILEPATH "${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake" \
-        -G "Ninja" \
-        --compile-no-warning-as-error \
+        -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/install
+        -DVCPKG_HOST_TRIPLET:STRING=x64-linux
+        -DVCPKG_TARGET_TRIPLET:STRING=x64-linux
+        -DVCPKG_MANIFEST_MODE:BOOL=FALSE
+        -DCMAKE_TOOLCHAIN_FILE:FILEPATH "${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake"
+        -G "Ninja"
+        --compile-no-warning-as-error
         --no-warn-unused-cli
 
     - name: Build
       # Build your program with the given configuration
-      run: | 
-        cmake \
-        --build ${{github.workspace}}/${{ env.BUILD_DIR }} \
-        --config ${{env.BUILD_TYPE}} \
-        --parallel 4 \
+      run: >-
+        cmake
+        --build ${{github.workspace}}/${{ env.BUILD_DIR }}
+        --config ${{env.BUILD_TYPE}}
+        --parallel 4
         --target all
 
     - name: Test
@@ -125,12 +125,12 @@ jobs:
       shell: bash
       # Execute tests defined by the CMake configuration.
       # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-      run: |
-        ctest \
-        --test-dir ${{ github.workspace }}/${{ env.BUILD_DIR }} \
-        -j4 \
-        --rerun-failed \
-        --output-on-failure \
+      run: >-
+        ctest
+        --test-dir ${{ github.workspace }}/${{ env.BUILD_DIR }}
+        -j4
+        --rerun-failed
+        --output-on-failure
         --verbose 
 
     - name: Install
@@ -166,26 +166,26 @@ jobs:
     - name: Upload Zip Source
       uses: actions/upload-artifact@v4
       with:
-        name: StoneyDSP-v0.0.1-Source.zip
-        path: '${{ github.workspace }}/install/StoneyDSP-v0.0.1-Source.zip'
+        name: StoneyDSP-v${{ env.STONEYDSP_CURRENT_VERSION }}-Source.zip
+        path: '${{ github.workspace }}/install/StoneyDSP-v${{ env.STONEYDSP_CURRENT_VERSION }}-Source.zip'
         
     - name: Upload Tar Source
       uses: actions/upload-artifact@v4
       with:
-        name: StoneyDSP-v0.0.1-Source.tar.gz
-        path: '${{ github.workspace }}/install/StoneyDSP-v0.0.1-Source.tar.gz'
+        name: StoneyDSP-v${{ env.STONEYDSP_CURRENT_VERSION }}-Source.tar.gz
+        path: '${{ github.workspace }}/install/StoneyDSP-v${{ env.STONEYDSP_CURRENT_VERSION }}-Source.tar.gz'
 
     - name: Upload Zip Build
       uses: actions/upload-artifact@v4
       with:
-        name: StoneyDSP-v0.0.1-Linux-x86_64-JUCE-v7.0.9.zip
-        path: '${{ github.workspace }}/install/StoneyDSP-v0.0.1-Linux-x86_64-JUCE-v7.0.9.zip'
+        name: StoneyDSP-v${{ env.STONEYDSP_CURRENT_VERSION }}-Linux-x86_64-JUCE-v7.0.9.zip
+        path: '${{ github.workspace }}/install/StoneyDSP-v${{ env.STONEYDSP_CURRENT_VERSION }}-Linux-x86_64-JUCE-v7.0.9.zip'
 
     - name: Upload Tar Build
       uses: actions/upload-artifact@v4
       with:
-        name: StoneyDSP-v0.0.1-Linux-x86_64-JUCE-v7.0.9.tar.gz
-        path: '${{ github.workspace }}/install/StoneyDSP-v0.0.1-Linux-x86_64-JUCE-v7.0.9.tar.gz'
+        name: StoneyDSP-v${{ env.STONEYDSP_CURRENT_VERSION }}-Linux-x86_64-JUCE-v7.0.9.tar.gz
+        path: '${{ github.workspace }}/install/StoneyDSP-v${{ env.STONEYDSP_CURRENT_VERSION }}-Linux-x86_64-JUCE-v7.0.9.tar.gz'
 
     - name: Get Artifacts
       uses: actions/download-artifact@v4
