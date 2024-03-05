@@ -40,7 +40,7 @@ env:
 jobs:
 
   setup:
-    name: ${{ matrix.name }}
+    name: ${{ matrix.triplet }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false # show all errors for each platform (vs. cancel jobs on error)
