@@ -59,7 +59,7 @@ jobs:
         # List of packages to build, separated by spaces. Cannot be used with manifest-dir
         # pkgs: # optional
         # vcpkg triplet to use
-        triplet: arm64-osx
+        triplet: x64-osx
         # Extra vcpkg command line args (optional)
         # extra-args: --allow-unsupported # optional
         # Additional cache key component (optional)
@@ -101,9 +101,9 @@ jobs:
         -DSTONEYDSP_BUILD_EXTRAS:BOOL=TRUE
         -DSTONEYDSP_BUILD_EXAMPLES:BOOL=TRUE
         -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/install
-        -DVCPKG_HOST_TRIPLET:STRING=arm64-osx
-        -DVCPKG_TARGET_TRIPLET:STRING=arm64-osx
-        -DVCPKG_MANIFEST_MODE:BOOL=TRUE
+        -DVCPKG_HOST_TRIPLET:STRING=x64-osx
+        -DVCPKG_TARGET_TRIPLET:STRING=x64-osx
+        -DVCPKG_MANIFEST_MODE:BOOL=FALSE
         -DCMAKE_TOOLCHAIN_FILE:FILEPATH="${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake"
         -G "Ninja"
         --compile-no-warning-as-error
@@ -173,14 +173,14 @@ jobs:
     - name: Upload Zip Build
       uses: actions/upload-artifact@v4
       with:
-        name: StoneyDSP-v${{ env.STONEYDSP_CURRENT_VERSION }}-Darwin-arm64-JUCE-v${{ env.STONEYDSP_CURRENT_JUCE_VERSION }}.zip
-        path: '${{ github.workspace }}/install/StoneyDSP-v${{ env.STONEYDSP_CURRENT_VERSION }}-Darwin-arm64-JUCE-v${{ env.STONEYDSP_CURRENT_JUCE_VERSION }}.zip'
+        name: StoneyDSP-v${{ env.STONEYDSP_CURRENT_VERSION }}-Darwin-x86_64-JUCE-v${{ env.STONEYDSP_CURRENT_JUCE_VERSION }}.zip
+        path: '${{ github.workspace }}/install/StoneyDSP-v${{ env.STONEYDSP_CURRENT_VERSION }}-Darwin-x86_64-JUCE-v${{ env.STONEYDSP_CURRENT_JUCE_VERSION }}.zip'
 
     - name: Upload Tar Build
       uses: actions/upload-artifact@v4
       with:
-        name: StoneyDSP-v${{ env.STONEYDSP_CURRENT_VERSION }}-Darwin-arm64-JUCE-v${{ env.STONEYDSP_CURRENT_JUCE_VERSION }}.tar.gz
-        path: '${{ github.workspace }}/install/StoneyDSP-v${{ env.STONEYDSP_CURRENT_VERSION }}-Darwin-arm64-JUCE-v${{ env.STONEYDSP_CURRENT_JUCE_VERSION }}.tar.gz'
+        name: StoneyDSP-v${{ env.STONEYDSP_CURRENT_VERSION }}-Darwin-x86_64-JUCE-v${{ env.STONEYDSP_CURRENT_JUCE_VERSION }}.tar.gz
+        path: '${{ github.workspace }}/install/StoneyDSP-v${{ env.STONEYDSP_CURRENT_VERSION }}-Darwin-x86_64-JUCE-v${{ env.STONEYDSP_CURRENT_JUCE_VERSION }}.tar.gz'
 
     - name: Get Artifacts
       uses: actions/download-artifact@v4
