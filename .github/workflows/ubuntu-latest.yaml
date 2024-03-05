@@ -18,12 +18,9 @@ env:
   DISPLAY: :0 # linux pluginval needs this
   CMAKE_BUILD_PARALLEL_LEVEL: 3 # Use up to 3 cpus to build juceaide, etc
   VCPKG_MAX_CONCURRENCY: 3
-  VCPKG_OSX_ARCHITECTURES: "arm64;x86_64"
-  VCPKG_FORCE_DOWNLOADED_BINARIES: true
   SCCACHE_GHA_ENABLED: "true"
-  HOMEBREW_NO_INSTALL_CLEANUP: 1
-  IPP_DIR: C:\Program Files (x86)\Intel\oneAPI\ipp\latest\lib\cmake\ipp
   STONEYDSP_CURRENT_VERSION: 1.0.1
+  STONEYDSP_CURRENT_JUCE_VERSION: 7.0.9
 
 jobs:
   ubuntu-build:
@@ -101,12 +98,11 @@ jobs:
         -DSTONEYDSP_BUILD_TESTS:BOOL=TRUE
         -DSTONEYDSP_BUILD_EXTRAS:BOOL=TRUE
         -DSTONEYDSP_BUILD_EXAMPLES:BOOL=TRUE
-        -DStoneyDSP_VERSION_TWEAK:STRING="${{ github.ref }}"
         -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/install
         -DVCPKG_HOST_TRIPLET:STRING=x64-linux
         -DVCPKG_TARGET_TRIPLET:STRING=x64-linux
         -DVCPKG_MANIFEST_MODE:BOOL=FALSE
-        -DCMAKE_TOOLCHAIN_FILE:FILEPATH "${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake"
+        -DCMAKE_TOOLCHAIN_FILE:FILEPATH="${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake"
         -G "Ninja"
         --compile-no-warning-as-error
         --no-warn-unused-cli
@@ -178,14 +174,14 @@ jobs:
     - name: Upload Zip Build
       uses: actions/upload-artifact@v4
       with:
-        name: StoneyDSP-v${{ env.STONEYDSP_CURRENT_VERSION }}-Linux-x86_64-JUCE-v7.0.9.zip
-        path: '${{ github.workspace }}/install/StoneyDSP-v${{ env.STONEYDSP_CURRENT_VERSION }}-Linux-x86_64-JUCE-v7.0.9.zip'
+        name: StoneyDSP-v${{ env.STONEYDSP_CURRENT_VERSION }}-Linux-x86_64-JUCE-v${{ env.STONEYDSP_CURRENT_JUCE_VERSION }}.zip
+        path: '${{ github.workspace }}/install/StoneyDSP-v${{ env.STONEYDSP_CURRENT_VERSION }}-Linux-x86_64-JUCE-v${{ env.STONEYDSP_CURRENT_JUCE_VERSION }}.zip'
 
     - name: Upload Tar Build
       uses: actions/upload-artifact@v4
       with:
-        name: StoneyDSP-v${{ env.STONEYDSP_CURRENT_VERSION }}-Linux-x86_64-JUCE-v7.0.9.tar.gz
-        path: '${{ github.workspace }}/install/StoneyDSP-v${{ env.STONEYDSP_CURRENT_VERSION }}-Linux-x86_64-JUCE-v7.0.9.tar.gz'
+        name: StoneyDSP-v${{ env.STONEYDSP_CURRENT_VERSION }}-Linux-x86_64-JUCE-v${{ env.STONEYDSP_CURRENT_JUCE_VERSION }}.tar.gz
+        path: '${{ github.workspace }}/install/StoneyDSP-v${{ env.STONEYDSP_CURRENT_VERSION }}-Linux-x86_64-JUCE-v${{ env.STONEYDSP_CURRENT_JUCE_VERSION }}.tar.gz'
 
     - name: Get Artifacts
       uses: actions/download-artifact@v4
