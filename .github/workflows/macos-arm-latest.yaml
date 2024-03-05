@@ -26,7 +26,7 @@ env:
   STONEYDSP_CURRENT_JUCE_VERSION: 7.0.9
 
 jobs:
-  macos:
+  macos-arm:
     # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
     # You can convert this to a matrix build if you need cross-platform coverage.
     # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
@@ -101,7 +101,7 @@ jobs:
         -DSTONEYDSP_BUILD_EXTRAS:BOOL=TRUE
         -DSTONEYDSP_BUILD_EXAMPLES:BOOL=TRUE
         -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/install
-        -DVCPKG_HOST_TRIPLET:STRING=arm64-osx
+        -DVCPKG_HOST_TRIPLET:STRING=x64-osx
         -DVCPKG_TARGET_TRIPLET:STRING=arm64-osx
         -DVCPKG_MANIFEST_MODE:BOOL=FALSE
         -DCMAKE_TOOLCHAIN_FILE:FILEPATH="${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake"
