@@ -19,11 +19,11 @@ env:
   CMAKE_BUILD_PARALLEL_LEVEL: 3 # Use up to 3 cpus to build juceaide, etc
   VCPKG_MAX_CONCURRENCY: 3
   SCCACHE_GHA_ENABLED: "true"
-  STONEYDSP_CURRENT_VERSION: 1.0.1
+  STONEYDSP_CURRENT_VERSION: 0.0.1
   STONEYDSP_CURRENT_JUCE_VERSION: 7.0.9
 
 jobs:
-  ubuntu-build:
+  ubuntu:
     # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
     # You can convert this to a matrix build if you need cross-platform coverage.
     # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
@@ -50,7 +50,7 @@ jobs:
     - name: Cache the build
       uses: mozilla-actions/sccache-action@v0.0.4
       
-    - name: vcpkg-action
+    - name: vcpkg install
       # You may pin to the exact commit or the version.
       # uses: johnwason/vcpkg-action@7c4b562bb35ef5a01d9d728acc90100b107dee4d
       uses: johnwason/vcpkg-action@v6
