@@ -6,7 +6,7 @@ on:
 
 # When pushing new commits, cancel any running builds on that branch
 concurrency:
-  group: ${{ github.ref }}
+  group: ubuntu-latest-${{ github.ref }}
   cancel-in-progress: true
 
 env:
@@ -25,7 +25,7 @@ env:
   IPP_DIR: C:\Program Files (x86)\Intel\oneAPI\ipp\latest\lib\cmake\ipp
 
 jobs:
-  build:
+  ubuntu-build:
     # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
     # You can convert this to a matrix build if you need cross-platform coverage.
     # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
@@ -106,7 +106,7 @@ jobs:
         -DVCPKG_HOST_TRIPLET:STRING=x64-linux \
         -DVCPKG_TARGET_TRIPLET:STRING=x64-linux \
         -DVCPKG_MANIFEST_MODE:BOOL=FALSE \
-        --toolchain "${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake" \
+        -DCMAKE_TOOLCHAIN_FILE:FILEPATH "${{ github.workspace }}/vcpkg/scripts/buildsystems/vcpkg.cmake" \
         -G "Ninja" \
         --compile-no-warning-as-error \
         --no-warn-unused-cli
