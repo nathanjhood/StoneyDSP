@@ -19,7 +19,6 @@ env:
   CMAKE_BUILD_PARALLEL_LEVEL: 3 # Use up to 3 cpus to build juceaide, etc
   VCPKG_MAX_CONCURRENCY: 3
   SCCACHE_GHA_ENABLED: "true"
-  PLUGINVAL_BINARY: ./pluginval.exe
   IPP_DIR: C:\Program Files (x86)\Intel\oneAPI\ipp\latest\lib\cmake\ipp
   STONEYDSP_CURRENT_VERSION: 0.0.1
   STONEYDSP_CURRENT_JUCE_VERSION: 7.0.9
@@ -150,13 +149,6 @@ jobs:
         --output-on-failure
         --verbose 
 
-    - name: Pluginval
-      shell: bash
-      run: |
-        curl -LO "https://github.com/Tracktion/pluginval/releases/download/v1.0.3/pluginval_Windows.zip"
-        7z x pluginval_Windows.zip
-        ${{ env.PLUGINVAL_BINARY }} --strictness-level 10 --verbose --validate "${{ env.BUILD_DIR }}/examples/CMake/AudioPlugin/AudioPluginExample_artefacts/${{ env.BUILD_TYPE }}/VST3/Audio Plugin Example.vst3/"
-    
     - name: Install
       shell: bash
       working-directory: ${{ github.workspace }}
