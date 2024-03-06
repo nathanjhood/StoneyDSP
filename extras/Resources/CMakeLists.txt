@@ -30,20 +30,13 @@ DISCLAIMED.
 # See https://github.com/vector-of-bool/cmrc/blob/master/README.md#usage
 
 if (NOT DEFINED CMakeRC_DIR)
-
-    find_package (CMakeRC CONFIG) # REQUIRED
-    if (NOT DEFINED CMakeRC_DIR)
-
-        include(CMakeRC RESULT_VARIABLE CMakeRC_FOUND)
-        if (NOT CMakeRC_FOUND)
-
-            message (FATAL_ERROR "Cannot find CMakeRC?")
-            return ()
-
-        endif ()
-
-    endif()
-
+    include(CMakeRC RESULT_VARIABLE CMakeRC_FOUND)
+    if (NOT CMakeRC_FOUND)
+        message (FATAL_ERROR "Cannot find CMakeRC?")
+        return ()
+    endif ()
+else ()
+    find_package (CMakeRC REQUIRED)
 endif ()
 
 file(COPY
