@@ -30,6 +30,8 @@ juce_add_plugin(AudioPluginExample
     # NEEDS_WEB_BROWSER <TRUE|FALSE>
     # NEEDS_STORE_KIT <TRUE|FALSE>
 
+    VST3_AUTO_MANIFEST FALSE
+
     IS_SYNTH FALSE                              # Is this a synth or an effect?
     NEEDS_MIDI_INPUT FALSE                      # Does the plugin need midi input?
     NEEDS_MIDI_OUTPUT FALSE                     # Does the plugin need midi output?

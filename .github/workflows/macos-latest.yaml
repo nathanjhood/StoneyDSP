@@ -63,7 +63,7 @@ jobs:
         # Extra vcpkg command line args (optional)
         # extra-args: --allow-unsupported # optional
         # Additional cache key component (optional)
-        cache-key: macos-14 # optional
+        cache-key: macos-latest # optional
         # Disable cache (useful for release builds)
         # disable-cache: # optional, default is false
         # vcpkg revision to checkout.
@@ -108,6 +108,7 @@ jobs:
         -G "Ninja"
         --compile-no-warning-as-error
         --no-warn-unused-cli
+
     - name: Build
       # Build your program with the given configuration
       run: >-
@@ -116,6 +117,7 @@ jobs:
         --config ${{env.BUILD_TYPE}}
         --parallel 4
         --target all
+
     - name: Test
       working-directory: ${{ github.workspace }}
       shell: bash
@@ -128,6 +130,7 @@ jobs:
         --rerun-failed
         --output-on-failure
         --verbose 
+
     - name: Install
       shell: bash
       working-directory: ${{ github.workspace }}

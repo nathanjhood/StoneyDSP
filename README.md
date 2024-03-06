@@ -1,19 +1,16 @@
 # <p align="center">StoneyDSP</p>
 
-<p align="center">The StoneyDSP library for JUCE.</p>
+<p align="center">The StoneyDSP audio, graphics, and web library for JUCE.</p>
 
 <div align="center">
 
 | Latest release: | [v.0.0.1-rc](https://github.com/StoneyDSP/StoneyDSP/tree/v0.0.1-rc) |
 | :-: | :-: |
-| Latest development: |
-[![windows-latest](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/windows-latest.yaml/badge.svg?branch=development&event=push)](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/windows-latest.yaml)
-[![ubuntu-latest](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/ubuntu-latest.yaml/badge.svg?branch=development&event=push)](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/ubuntu-latest.yaml)
-[![macos-latest](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/macos-latest.yaml/badge.svg?branch=development&event=push)](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/macos-latest.yaml)
-[![macos-arm-latest](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/macos-arm-latest.yaml/badge.svg?branch=development&event=push)](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/macos-arm-latest.yaml) |
-| | |
-
-
+| Latest development: | Formats: |
+[![windows-latest](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/windows-latest.yaml/badge.svg?branch=development&event=push)](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/windows-latest.yaml) | VST3, Standalone |
+[![ubuntu-latest](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/ubuntu-latest.yaml/badge.svg?branch=development&event=push)](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/ubuntu-latest.yaml) | LV2, VST3, Standalone |
+[![macos-latest](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/macos-latest.yaml/badge.svg?branch=development&event=push)](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/macos-latest.yaml) | AU, VST3, Standalone |
+[![macos-arm-latest](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/macos-arm-latest.yaml/badge.svg?branch=development&event=push)](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/macos-arm-latest.yaml) | AU, VST3, Standalone |
 
 <hr>
 
@@ -27,9 +24,9 @@
 | :-: |
 | |
 | <p align="center"><i><b>I am making a C++ library extension for the [JUCE](https://github.com/juce-framework/JUCE) framework for building audio and graphical software applications.</b></i></p> |
-| <p align="left">You may use this library to build your own audio software with on MIT license. You must also respect the JUCE license system.</p> |
+| <p align="left">You may use this library to build your own audio software with on <a href="https://github.com/StoneyDSP/StoneyDSP?tab=License-1-ov-file">MIT license</a>. You must also respect the <a href="https://github.com/juce-framework/JUCE?tab=License-1-ov-file">JUCE license system</a>.</p> |
 | |
-| <p align="left">The primary goal here is/will be to provide some additional DSP (digital signal processing) classes, utilities, and functions of specific interests, which aim to be relatively approachable to builders with firm backgrounds in patching together new sounds from modular pieces of software of hardware, using familiar conventions and abstractions and aiming to provide a lower cognitive overhead.</p> |
+| <p align="left">The primary goal here is/will be to provide some additional DSP (digital signal processing) classes, utilities, and functions of specific interests; the StoneyDSP library aims to be relatively approachable to builders with firm backgrounds in patching together new ideas from modular pieces of software or hardware, by using familiar conventions and abstractions and aiming to provide a low cognitive overhead.</p> |
 | |
 | <p align="left">StoneyDSP is *not* an audio plugin manufacturer or vendor explicitly, but aims to provide a useful set of coding tools that can be used to create interesting audio and graphical effects with, specifically targeting the JUCE application framework. </p> |
 | |
@@ -49,7 +46,6 @@
 | |
 | [![AudioPlugin-SVF](https://github-readme-stats.vercel.app/api/pin/?username=nathanjhood\&repo=AudioPlugin-SVF\&theme=transparent)](https://github.com/nathanjhood/AudioPlugin-SVF) [![AudioPlugin](https://github-readme-stats.vercel.app/api/pin/?username=nathanjhood\&repo=AudioPlugin\&theme=transparent)](https://github.com/nathanjhood/AudioPlugin) |
 | <p>*we = just <a href="https://github.com/nathanjhood">me</a>, for now! </p> |
-| |
 
 <small>
 

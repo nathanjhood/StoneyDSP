@@ -5,6 +5,8 @@ list(APPEND STONEYDSP_IGNORE_LIST
     _CPack_Packages
     CMake
     JUCE
+    pluginval
+    pluginval_*
 
     /.cache
     /.config
@@ -69,6 +71,8 @@ list(APPEND STONEYDSP_IGNORE_LIST
     #/Builds
     /install
     #/out
+
+    /Builds
 
     /Release
     /Debug
