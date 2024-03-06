@@ -23,7 +23,7 @@ void AudioPluginAudioProcessorEditor::paint (juce::Graphics& g)
 
     g.setColour (juce::Colours::white);
     g.setFont (15.0f);
-    g.drawFittedText (AudioPluginAudioProcessor::getName(), getLocalBounds(), juce::Justification::centred, 1);
+    g.drawFittedText ("AudioPluginExample", getLocalBounds(), juce::Justification::centred, 1);
     g.drawFittedText ("This is an example of an audio plugin!", getLocalBounds(), juce::Justification::centred, 1);
 }
 
