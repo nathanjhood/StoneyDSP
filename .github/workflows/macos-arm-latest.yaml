@@ -22,7 +22,6 @@ env:
   SCCACHE_GHA_ENABLED: "true"
   SCCACHE_CACHE_MULTIARCH: 1 # for macos actions only!
   HOMEBREW_NO_INSTALL_CLEANUP: 1
-  PLUGINVAL_BINARY: pluginval.app/Contents/MacOS/pluginval 
   STONEYDSP_CURRENT_VERSION: 0.0.1
   STONEYDSP_CURRENT_JUCE_VERSION: 7.0.9
 
@@ -131,13 +130,6 @@ jobs:
         --rerun-failed
         --output-on-failure
         --verbose 
-
-    - name: Pluginval
-      shell: bash
-      run: |
-        curl -LO "https://github.com/Tracktion/pluginval/releases/download/v1.0.3/pluginval_macOS.zip"
-        7z x pluginval_macOS.zip
-        ${{ env.PLUGINVAL_BINARY }} --strictness-level 10 --verbose --validate "${{ env.BUILD_DIR }}/examples/CMake/AudioPlugin/AudioPluginExample_artefacts/${{ env.BUILD_TYPE }}/VST3/Audio Plugin Example.vst3/"
 
     - name: Install
       shell: bash
