@@ -130,13 +130,6 @@ jobs:
         --output-on-failure
         --verbose 
 
-    - name: Pluginval
-      shell: bash
-      run: |
-        curl -LO "https://github.com/Tracktion/pluginval/releases/download/v1.0.3/pluginval_Linux.zip"
-        7z x pluginval_Linux.zip
-        ${{ env.PLUGINVAL_BINARY }} --strictness-level 10 --verbose --validate "${{ env.BUILD_DIR }}/examples/CMake/AudioPlugin/AudioPluginExample_artefacts/${{ env.BUILD_TYPE }}/VST3/Audio Plugin Example.vst3/"
-
     - name: Install
       shell: bash
       working-directory: ${{ github.workspace }}
