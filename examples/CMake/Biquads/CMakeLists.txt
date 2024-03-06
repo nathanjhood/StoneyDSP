@@ -37,7 +37,7 @@ juce_add_plugin(Biquads
     # ICON_BIG ...                              # ICON_* arguments specify a path to an image file to use as an icon for the Standalone
     # ICON_SMALL ...
     COMPANY_NAME StoneyDSP                      # Specify the name of the plugin's author
-    IS_SYNTH TRUE                               # Is this a synth or an effect?
+    IS_SYNTH FALSE                              # Is this a synth or an effect?
     NEEDS_MIDI_INPUT FALSE                      # Does the plugin need midi input?
     NEEDS_MIDI_OUTPUT FALSE                     # Does the plugin need midi output?
     IS_MIDI_EFFECT FALSE                        # Is this plugin a MIDI effect?
@@ -77,7 +77,7 @@ list (APPEND STONEYDSP_BIQUADS_VST_HEADERS
 set (STONEYDSP_BIQUADS_HEADERS "")
 list (APPEND STONEYDSP_BIQUADS_HEADERS
     ${STONEYDSP_BIQUADS_GUI_HEADERS}
-    ${STONEYDSP_BIQUADS_GUI_HEADERS}
+    ${STONEYDSP_BIQUADS_DSP_HEADERS}
     ${STONEYDSP_BIQUADS_VST_HEADERS}
 )
 

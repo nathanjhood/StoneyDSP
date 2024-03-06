@@ -1,5 +1,5 @@
 /***************************************************************************//**
- * @file stoneydsp_core.cpp
+ * @file stoneydsp_MathsConstants.h
  * @author Nathan J. Hood <nathanjhood@googlemail.com>
  * @brief
  * @version 1.0.0
@@ -29,20 +29,37 @@
  *
  ******************************************************************************/
 
-#ifdef STONEYDSP_CORE_H_INCLUDED
- #error "Incorrect usage of 'stoneydsp_core.cpp'!"
-#endif
-
-#include "stoneydsp_core.h"
-
 namespace StoneyDSP
 {
+/** @addtogroup StoneyDSP
+ *  @{
+ */
 
-std::string_view SystemStats::getStoneyDSPVersion()
+namespace Maths
 {
-    return "StoneyDSP v" STONEYDSP_STRINGIFY (STONEYDSP_MAJOR_VERSION)
-                "." STONEYDSP_STRINGIFY (STONEYDSP_MINOR_VERSION)
-                "." STONEYDSP_STRINGIFY (STONEYDSP_BUILDNUMBER);
-}
+/** @addtogroup Maths
+ *  @{
+ */
 
+/**
+ * @brief Commonly used mathematical constants.
+ *
+*/
+template <typename FloatType>
+struct Constants
+{
+    /** A predefined value for one. */
+    static constexpr FloatType one = static_cast<FloatType> (1.0L);
+
+    /** A predefined value for one third (of one). */
+    static constexpr FloatType oneThird = static_cast<FloatType> (1.0L / 3);
+
+    /** A predefined value for two thirds (of one). */
+    static constexpr FloatType twoThirds = static_cast<FloatType> (2.0L / 3);
+};
+
+  /// @} group Maths
+} // namespace Maths
+
+  /// @} group StoneyDSP
 } // namespace StoneyDSP

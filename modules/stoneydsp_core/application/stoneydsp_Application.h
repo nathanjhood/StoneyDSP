@@ -1,5 +1,5 @@
 /***************************************************************************//**
- * @file stoneydsp_core.cpp
+ * @file stoneydsp_Application.h
  * @author Nathan J. Hood <nathanjhood@googlemail.com>
  * @brief
  * @version 1.0.0
@@ -29,20 +29,78 @@
  *
  ******************************************************************************/
 
-#ifdef STONEYDSP_CORE_H_INCLUDED
- #error "Incorrect usage of 'stoneydsp_core.cpp'!"
-#endif
-
-#include "stoneydsp_core.h"
+#pragma once
 
 namespace StoneyDSP
 {
+/** @addtogroup StoneyDSP
+ *  @{
+ */
 
-std::string_view SystemStats::getStoneyDSPVersion()
+namespace Application
 {
-    return "StoneyDSP v" STONEYDSP_STRINGIFY (STONEYDSP_MAJOR_VERSION)
-                "." STONEYDSP_STRINGIFY (STONEYDSP_MINOR_VERSION)
-                "." STONEYDSP_STRINGIFY (STONEYDSP_BUILDNUMBER);
-}
+/** @addtogroup Application
+ *  @{
+ */
 
+/**
+ * @brief The Application Class.
+ * 
+*/
+class Application
+{
+public:
+
+    /**
+     * @brief Construct a new Application object.
+     * 
+     */
+    Application()
+    : _application_name("Application")
+    {}
+    
+    /**
+     * @brief Construct a new Application object with a given name.
+     * 
+     * @param application_name 
+     */
+    Application(std::string_view application_name)
+    : _application_name(application_name)
+    {}
+
+    /**
+     * @brief Construct a new Application object with a given name.
+     * 
+     * @param application_name 
+     */
+    Application(std::string application_name)
+    : _application_name(application_name)
+    {}
+
+    /**
+     * @brief Construct a new Application object with a given name.
+     * 
+     * @param application_name 
+     */
+    Application(const char application_name[])
+    : _application_name(application_name)
+    {}
+
+    /**
+     * @brief Destroy the Application object.
+     * 
+     */
+    ~Application()
+    {
+        // _application_name.clear(); not supported for string_view!
+    }
+
+private:
+    std::string_view                        _application_name;
+};
+
+  /// @} group Application
+} // namespace Application
+
+  /// @} group StoneyDSP
 } // namespace StoneyDSP
