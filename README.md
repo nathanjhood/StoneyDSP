@@ -26,25 +26,21 @@
 | <p>Hi! I'm <a href="https://github.com/nathanjhood">Nathan</a> (aka StoneyDSP).</p>  |
 | :-: |
 | |
-| <p align="center"><i>I am making a C++ library extension for the [JUCE](https://github.com/juce-framework/JUCE) framework for building audio and graphical software applications.</i></p> |
-| |
+| <p align="center"><i><b>I am making a C++ library extension for the [JUCE](https://github.com/juce-framework/JUCE) framework for building audio and graphical software applications.</b></i></p> |
 | <p align="left">You may use this library to build your own audio software with on MIT license. You must also respect the JUCE license system.</p> |
 | |
 | <p align="left">The primary goal here is/will be to provide some additional DSP (digital signal processing) classes, utilities, and functions of specific interests, which aim to be relatively approachable to builders with firm backgrounds in patching together new sounds from modular pieces of software of hardware, using familiar conventions and abstractions and aiming to provide a lower cognitive overhead.</p> |
+| |
 | <p align="left">StoneyDSP is *not* an audio plugin manufacturer or vendor explicitly, but aims to provide a useful set of coding tools that can be used to create interesting audio and graphical effects with, specifically targeting the JUCE application framework. </p> |
 | |
 | <p align="left">To this end, JUCE is the standard that the StoneyDSP library must follow closely; in order to guarantee a solid and familiar interface, our codebase intentionally mimics the JUCE project in lots of places, taking JUCE as our leading example. This also helps us minimize our own dependencies on JUCE itself, thus keeping our project as lightweight and portable as possible (we aim to be buildable without even needing to link with ```juce_core```, ideally). </p> |
 | |
 | <p align="left">Familiar base functionality aside, builders will find useable, modular DSP classes with interfaces reminiscent of the many popular "rack" modular environments, accompanied by strong documentation and plenty working examples. Being that StoneyDSP is not affiliated with JUCE itself in any way, we are also afforded all the scope we like for investigating various ideas that JUCE itself might not support directly.</p> |
-| |
-| <p align="center"><i>...we are seeking to ease the flow of creativity within the creation of audio software itself....</i></p> |
-| |
+| <p align="center"><i><b>...we are seeking to ease the flow of creativity within the creation of audio software itself...</b></i></p> |
 | <p align="left">We are still in the early days of construction, so please consider bookmarking and keeping on eye on development!</p> |
 | |
 | <p align="left">This is something that I am working on during my free time, so progress may be sporadic; however, I/we already have a *lot* of plugins, instruments, and interesting DSP up and running behind the scenes, and even more in working prototypes and breadboards. There are also various other types of software and tooling currently under construction that will likely appeal to visitors of this project.</p> |
-| |
-| <p align="center"><i>...in other words, plenty of reasons to stay tuned!</i></p> |
-| |
+| <p align="center"><i><b>...in other words, plenty of reasons to stay tuned!</b></i></p> |
 | <p align="left">Meanwhile, a small selection of older audio plugins are available as source code under permissive open-source licenses, much of which shall be re-contextualized to make use of the StoneyDSP audio and graphics libraries in due course, and may be found here:</p> |
 | |
 | [![Biquads](https://github-readme-stats.vercel.app/api/pin/?username=nathanjhood\&repo=Biquads\&theme=transparent)](https://github.com/StoneyDSP/Biquads) [![OrfanidisBiquad](https://github-readme-stats.vercel.app/api/pin/?username=nathanjhood\&repo=OrfanidisBiquad\&theme=transparent)](https://github.com/StoneyDSP/OrfanidisBiquad) |
@@ -52,7 +48,6 @@
 | [![NonLinearFilters](https://github-readme-stats.vercel.app/api/pin/?username=nathanjhood\&repo=NonLinearFilters\&theme=transparent)](https://github.com/nathanjhood/NonLinearFilters) [![BiLinearEQ](https://github-readme-stats.vercel.app/api/pin/?username=nathanjhood\&repo=BiLinearEQ\&theme=transparent)](https://github.com/nathanjhood/BiLinearEQ) |
 | |
 | [![AudioPlugin-SVF](https://github-readme-stats.vercel.app/api/pin/?username=nathanjhood\&repo=AudioPlugin-SVF\&theme=transparent)](https://github.com/nathanjhood/AudioPlugin-SVF) [![AudioPlugin](https://github-readme-stats.vercel.app/api/pin/?username=nathanjhood\&repo=AudioPlugin\&theme=transparent)](https://github.com/nathanjhood/AudioPlugin) |
-| |
 | <p>*we = just <a href="https://github.com/nathanjhood">me</a>, for now! </p> |
 | |
 
