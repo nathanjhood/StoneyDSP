@@ -27,19 +27,13 @@ DISCLAIMED.
 ]=============================================================================]#
 
 if (NOT DEFINED CMakeRC_DIR)
-
     include(CMakeRC RESULT_VARIABLE CMakeRC_FOUND)
     if (NOT CMakeRC_FOUND)
-
         message (FATAL_ERROR "Cannot find CMakeRC?")
         return ()
-
     endif ()
-
 else ()
-
-    find_package (CMakeRC CONFIG REQUIRED)
-
+    find_package (CMakeRC REQUIRED)
 endif ()
 
 file(COPY "${StoneyDSP_SOURCE_DIR}/public/images"
@@ -61,10 +55,14 @@ cmrc_add_resources (Icons
 
 set (STONEYDSP_ICONS_PNG_WIDE "")
 list (APPEND STONEYDSP_ICONS_PNG_WIDE
-	w_icon__1024x768.png
 	w_icon__196x128.png
+    w_icon__320x160.png
 	w_icon__384x256.png
+    w_icon__640x320.png
 	w_icon__768x512.png
+    w_icon__960x480.png
+    w_icon__1024x768.png
+    w_icon__1280x640.png
 )
 
 foreach (STONEYDSP_ICON_PNG_WIDE IN LISTS STONEYDSP_ICONS_PNG_WIDE)
