@@ -12,8 +12,6 @@
 [![macos-latest](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/macos-latest.yaml/badge.svg?branch=development&event=push)](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/macos-latest.yaml) | AU, VST3, Standalone |
 [![macos-arm-latest](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/macos-arm-latest.yaml/badge.svg?branch=development&event=push)](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/macos-arm-latest.yaml) | AU, VST3, Standalone |
 
-
-
 <hr>
 
 [![StoneyDSP](https://raw.githubusercontent.com/StoneyDSP/StoneyDSP/production/public/images/w_icon__384x256.png)](https://www.stoneydsp.com)
@@ -48,7 +46,6 @@
 | |
 | [![AudioPlugin-SVF](https://github-readme-stats.vercel.app/api/pin/?username=nathanjhood\&repo=AudioPlugin-SVF\&theme=transparent)](https://github.com/nathanjhood/AudioPlugin-SVF) [![AudioPlugin](https://github-readme-stats.vercel.app/api/pin/?username=nathanjhood\&repo=AudioPlugin\&theme=transparent)](https://github.com/nathanjhood/AudioPlugin) |
 | <p>*we = just <a href="https://github.com/nathanjhood">me</a>, for now! </p> |
-| |
 
 <small>
 
