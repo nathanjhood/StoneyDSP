@@ -73,6 +73,36 @@ namespace StoneyDSP
  *  @{
  */
 
+using int32_t  = signed int;
+using uint8_t  = unsigned char;
+using uint32_t = unsigned int;
+using int64_t  = long long int;
+
+/** A platform-independent 8-bit signed integer type. */
+using int8      = signed char;
+/** A platform-independent 8-bit unsigned integer type. */
+using uint8     = unsigned char;
+/** A platform-independent 16-bit signed integer type. */
+using int16     = signed short;
+/** A platform-independent 16-bit unsigned integer type. */
+using uint16    = unsigned short;
+/** A platform-independent 32-bit signed integer type. */
+using int32     = signed int;
+/** A platform-independent 32-bit unsigned integer type. */
+using uint32    = unsigned int;
+
+#if JUCE_MSVC
+  /** A platform-independent 64-bit integer type. */
+  using int64  = __int64;
+  /** A platform-independent 64-bit unsigned integer type. */
+  using uint64 = unsigned __int64;
+#else
+  /** A platform-independent 64-bit integer type. */
+  using int64  = long long;
+  /** A platform-independent 64-bit unsigned integer type. */
+  using uint64 = unsigned long long;
+#endif
+
 /**
  * @brief A platform-independent 8-bit signed integer type.
  *
