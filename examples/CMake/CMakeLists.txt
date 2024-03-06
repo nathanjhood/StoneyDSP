@@ -27,4 +27,7 @@ DISCLAIMED.
 ]=============================================================================]#
 
 # add_subdirectory (CurlConsoleApp)
-add_subdirectory (GUIApp)
+
+add_subdirectory(ConsoleApplication)
+add_subdirectory(GUIApp)
+add_subdirectory(AudioPlugin)

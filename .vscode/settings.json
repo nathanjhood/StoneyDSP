@@ -15,7 +15,11 @@
 		"VCPKG_ROOT": "${workspaceFolder}/vcpkg",
 		"VCPKG_OVERLAY_PORTS": "${workspaceFolder}/overlays",
 		"VCPKG_OVERLAY_TRIPLETS": "${workspaceFolder}/triplets",
+<<<<<<< HEAD
+		"VCPKG_MANIFEST_MODE": false,
+=======
 		"VCPKG_MANIFEST_MODE": true,
+>>>>>>> preview
 		"VCPKG_PREFER_SYSTEM_INSTALLED_BINARIES": true,
 		"CMAKE_TOOLCHAIN_FILE": "${workspaceFolder}/vcpkg/scripts/buildsystems/vcpkg.cmake",
 		"CMAKE_MAKE_PROGRAM": "make",
