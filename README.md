@@ -6,12 +6,11 @@
 
 | Latest release: | [v.0.0.1-rc](https://github.com/StoneyDSP/StoneyDSP/tree/v0.0.1-rc) |
 | :-: | :-: |
-| Latest development: |
-[![windows-latest](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/windows-latest.yaml/badge.svg?branch=development&event=push)](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/windows-latest.yaml)
-[![ubuntu-latest](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/ubuntu-latest.yaml/badge.svg?branch=development&event=push)](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/ubuntu-latest.yaml)
-[![macos-latest](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/macos-latest.yaml/badge.svg?branch=development&event=push)](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/macos-latest.yaml)
-[![macos-arm-latest](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/macos-arm-latest.yaml/badge.svg?branch=development&event=push)](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/macos-arm-latest.yaml) |
-| | |
+| Latest development: | Formats: |
+[![windows-latest](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/windows-latest.yaml/badge.svg?branch=development&event=push)](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/windows-latest.yaml) | VST3, Standalone |
+[![ubuntu-latest](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/ubuntu-latest.yaml/badge.svg?branch=development&event=push)](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/ubuntu-latest.yaml) | LV2, VST3, Standalone |
+[![macos-latest](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/macos-latest.yaml/badge.svg?branch=development&event=push)](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/macos-latest.yaml) | AU, VST3, Standalone |
+[![macos-arm-latest](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/macos-arm-latest.yaml/badge.svg?branch=development&event=push)](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/macos-arm-latest.yaml) | AU, VST3, Standalone |
 
 
 
