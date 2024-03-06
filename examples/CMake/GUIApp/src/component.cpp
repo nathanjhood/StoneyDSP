@@ -10,11 +10,13 @@ MainComponent::MainComponent()
 void MainComponent::paint (juce::Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
-    g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
+    g.fillAll (getLookAndFeel().findColour(juce::ResizableWindow::backgroundColourId));
 
     g.setFont (juce::Font (16.0f));
     g.setColour (juce::Colours::white);
-    g.drawText ("Hello World!", getLocalBounds(), juce::Justification::centred, true);
+    // g.drawText ("Hello World!", getLocalBounds(), juce::Justification::centred, true);
+    g.drawFittedText ("GUIAppExample", getLocalBounds(), juce::Justification::centred, 1);
+    // g.drawFittedText ("This is an example of a GUI app!", getLocalBounds(), juce::Justification::centred, 1);
 }
 
 void MainComponent::resized()

@@ -1,16 +1,51 @@
-| <p>Hi! I'm Nathan (aka <a href="https://github.com/StoneyDSP">StoneyDSP</a>).</p>  |
+# <p align="center">StoneyDSP</p>
+
+<p align="center">The StoneyDSP library for JUCE.</p>
+
+<div align="center">
+
+| Latest release: | [v.0.0.1-rc](https://github.com/StoneyDSP/StoneyDSP/tree/v0.0.1-rc) |
+| :-: | :-: |
+| Latest development: |
+[![windows-latest](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/windows-latest.yaml/badge.svg?branch=development&event=push)](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/windows-latest.yaml)
+[![ubuntu-latest](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/ubuntu-latest.yaml/badge.svg?branch=development&event=push)](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/ubuntu-latest.yaml)
+[![macos-latest](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/macos-latest.yaml/badge.svg?branch=development&event=push)](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/macos-latest.yaml)
+[![macos-arm-latest](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/macos-arm-latest.yaml/badge.svg?branch=development&event=push)](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/macos-arm-latest.yaml) |
+| | |
+
+
+
+<hr>
+
+[![StoneyDSP](https://raw.githubusercontent.com/StoneyDSP/StoneyDSP/production/public/images/w_icon__384x256.png)](https://www.stoneydsp.com)
+
+<hr>
+
+</div>
+
+| <p>Hi! I'm <a href="https://github.com/nathanjhood">Nathan</a> (aka StoneyDSP).</p>  |
 | :-: |
-| <p>I am making audio plugins, and a custom C++ library.</p> |
 | |
-| <p>You may use this library to build your own audio software with on MIT license.</p> |
+| <p align="center"><i>I am making a C++ library extension for the [JUCE](https://github.com/juce-framework/JUCE) framework for building audio and graphical software applications.</i></p> |
 | |
-| <p>We are still in the early days of construction, so please consider bookmarking and keeping on eye on development! </p> |
+| <p align="left">You may use this library to build your own audio software with on MIT license. You must also respect the JUCE license system.</p> |
 | |
-| <p>This is something that I am working on during my free time, so progress may occasionally be sporadic; however, we already have a *lot* of plugins, instruments, and interesting DSP up and running behind the scenes, and even more in working prototypes and breadboards. There are also various other types of software and tooling currently under construction that will likely appeal to visitors of this project.</p> |
+| <p align="left">The primary goal here is/will be to provide some additional DSP (digital signal processing) classes, utilities, and functions of specific interests, which aim to be relatively approachable to builders with firm backgrounds in patching together new sounds from modular pieces of software of hardware, using familiar conventions and abstractions and aiming to provide a lower cognitive overhead.</p> |
+| <p align="left">StoneyDSP is *not* an audio plugin manufacturer or vendor explicitly, but aims to provide a useful set of coding tools that can be used to create interesting audio and graphical effects with, specifically targeting the JUCE application framework. </p> |
 | |
-| <p>In other words, plenty of reasons to stay tuned! </p> |
+| <p align="left">To this end, JUCE is the standard that the StoneyDSP library must follow closely; in order to guarantee a solid and familiar interface, our codebase intentionally mimics the JUCE project in lots of places, taking JUCE as our leading example. This also helps us minimize our own dependencies on JUCE itself, thus keeping our project as lightweight and portable as possible (we aim to be buildable without even needing to link with ```juce_core```, ideally). </p> |
 | |
-| <p>Meanwhile, a small selection of older audio plugins are available as source code under permissive open-source licenses, much of which shall be re-contextualized to make use of the StoneyDSP audio and graphics libraries in due course, and may be found here:</p> |
+| <p align="left">Familiar base functionality aside, builders will find useable, modular DSP classes with interfaces reminiscent of the many popular "rack" modular environments, accompanied by strong documentation and plenty working examples. Being that StoneyDSP is not affiliated with JUCE itself in any way, we are also afforded all the scope we like for investigating various ideas that JUCE itself might not support directly.</p> |
+| |
+| <p align="center"><i>...we are seeking to ease the flow of creativity within the creation of audio software itself....</i></p> |
+| |
+| <p align="left">We are still in the early days of construction, so please consider bookmarking and keeping on eye on development!</p> |
+| |
+| <p align="left">This is something that I am working on during my free time, so progress may be sporadic; however, I/we already have a *lot* of plugins, instruments, and interesting DSP up and running behind the scenes, and even more in working prototypes and breadboards. There are also various other types of software and tooling currently under construction that will likely appeal to visitors of this project.</p> |
+| |
+| <p align="center"><i>...in other words, plenty of reasons to stay tuned!</i></p> |
+| |
+| <p align="left">Meanwhile, a small selection of older audio plugins are available as source code under permissive open-source licenses, much of which shall be re-contextualized to make use of the StoneyDSP audio and graphics libraries in due course, and may be found here:</p> |
 | |
 | [![Biquads](https://github-readme-stats.vercel.app/api/pin/?username=nathanjhood\&repo=Biquads\&theme=transparent)](https://github.com/StoneyDSP/Biquads) [![OrfanidisBiquad](https://github-readme-stats.vercel.app/api/pin/?username=nathanjhood\&repo=OrfanidisBiquad\&theme=transparent)](https://github.com/StoneyDSP/OrfanidisBiquad) |
 | |
@@ -20,6 +55,8 @@
 | |
 | <p>*we = just <a href="https://github.com/nathanjhood">me</a>, for now! </p> |
 | |
+
+<small>
 
 The StoneyDSP Library
 
@@ -49,3 +86,5 @@ For more information, visit the website:
 FULL STONEYDSP TERMS:
 - [STONEYDSP END-USER LICENSE AGREEMENT](https://www.stoneydsp.com/licence)
 - [STONEYDSP PRIVACY POLICY](https://www.stoneydsp.com/privacy-policy)
+
+</small>
