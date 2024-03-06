@@ -57,6 +57,9 @@
 
 #define STONEYDSP_CORE_H_INCLUDED
 
+#include "system/stoneydsp_TargetPlatform.h" // system...
+#include "system/stoneydsp_StandardHeader.h" // version...
+
 /**
  * @brief The ```StoneyDSP``` namespace.
  * @author Nathan J. Hood (nathanjhood@googlemail.com)
@@ -69,21 +72,87 @@ namespace StoneyDSP
 /** @addtogroup StoneyDSP
  *  @{
  */
+
+using int32_t  = signed int;
+using uint8_t  = unsigned char;
+using uint32_t = unsigned int;
+using int64_t  = long long int;
+
+/** A platform-independent 8-bit signed integer type. */
+using int8      = signed char;
+/** A platform-independent 8-bit unsigned integer type. */
+using uint8     = unsigned char;
+/** A platform-independent 16-bit signed integer type. */
+using int16     = signed short;
+/** A platform-independent 16-bit unsigned integer type. */
+using uint16    = unsigned short;
+/** A platform-independent 32-bit signed integer type. */
+using int32     = signed int;
+/** A platform-independent 32-bit unsigned integer type. */
+using uint32    = unsigned int;
+
+#if JUCE_MSVC
+  /** A platform-independent 64-bit integer type. */
+  using int64  = __int64;
+  /** A platform-independent 64-bit unsigned integer type. */
+  using uint64 = unsigned __int64;
+#else
+  /** A platform-independent 64-bit integer type. */
+  using int64  = long long;
+  /** A platform-independent 64-bit unsigned integer type. */
+  using uint64 = unsigned long long;
+#endif
+
+/**
+ * @brief A platform-independent 8-bit signed integer type.
+ *
+*/
+using Byte      = unsigned char;
+
+/**
+ * @brief Handy function for avoiding unused variables warning.
+ *
+*/
+template <typename... Types>
+void ignoreUnused (Types&&...) noexcept {}
+
+/**
+ * @brief The SystemStats class.
+ *
+ */
+class SystemStats  final
+{
+public:
+    /**
+     * @brief Returns the current version of ```STONEYDSP```.
+     * See also the ```STONEYDSP_VERSION```, ```STONEYDSP_MAJOR_VERSION``` and
+     * ```STONEYDSP_MINOR_VERSION``` macros.
+     *
+    */
+    static std::string_view getStoneyDSPVersion();
+private:
+    SystemStats() = delete; // Only static methods!
+    STONEYDSP_DECLARE_NON_COPYABLE (SystemStats)
+};
+
+
   /// @} group StoneyDSP
 } // namespace StoneyDSP
 
-#include "version/stoneydsp_version.h"
-
-#ifndef STRINGIFY
-# define STRINGIFY_HELPER(n) #n
-# define STRINGIFY(n) STRINGIFY_HELPER(n)
+#ifndef STONEYDSP_STRINGIFY
+# define STONEYDSP_STRINGIFY_HELPER(n) #n
+# define STONEYDSP_STRINGIFY(n) STONEYDSP_STRINGIFY_HELPER(n)
 #endif
 
+#include "maths/stoneydsp_MathsIConstants.h"
+#include "maths/stoneydsp_MathsIFunctions.h"
+#include "maths/stoneydsp_MathsConstants.h"
+#include "maths/stoneydsp_MathsFunctions.h"
+
+#include "application/stoneydsp_Application.h"
+#include "application/stoneydsp_ConsoleApplication.h"
 
 #include "res/stoneydsp_resource.h"
-#include "types/stoneydsp_types.h"
-
-
 
 namespace StoneyDSP
 {

@@ -1,5 +1,5 @@
 /***************************************************************************//**
- * @file stoneydsp_types.h
+ * @file stoneydsp_MathsFunctions.h
  * @author Nathan J. Hood <nathanjhood@googlemail.com>
  * @brief
  * @version 1.0.0
@@ -29,6 +29,46 @@
  *
  ******************************************************************************/
 
-#pragma once
+namespace StoneyDSP
+{
+/** @addtogroup StoneyDSP
+ *  @{
+ */
 
-#define STONEYDSP_TYPES_H_INCLUDED
+namespace Maths
+{
+/** @addtogroup Maths
+ *  @{
+ */
+
+/**
+ * @brief Commonly used mathematical functions.
+ *
+*/
+template <typename FloatType>
+struct Functions
+{
+    /**
+     * @brief Returns the value of 1.0L / x.
+     *
+    */
+    static FloatType oneDivX(FloatType x)
+    {
+        return static_cast<FloatType> (1 / x);
+    }
+
+    /**
+     * @brief Returns the value of 1.0L / x.
+     *
+    */
+    static FloatType oneDivX(const FloatType& x)
+    {
+        return static_cast<FloatType> (1 / x);
+    }
+};
+
+  /// @} group Maths
+} // namespace Maths
+
+  /// @} group StoneyDSP
+} // namespace StoneyDSP

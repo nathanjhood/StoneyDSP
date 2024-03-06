@@ -1,5 +1,5 @@
 /***************************************************************************//**
- * @file stoneydsp_core.cpp
+ * @file stoneydsp_MathsIConstants.h
  * @author Nathan J. Hood <nathanjhood@googlemail.com>
  * @brief
  * @version 1.0.0
@@ -29,20 +29,31 @@
  *
  ******************************************************************************/
 
-#ifdef STONEYDSP_CORE_H_INCLUDED
- #error "Incorrect usage of 'stoneydsp_core.cpp'!"
-#endif
-
-#include "stoneydsp_core.h"
-
 namespace StoneyDSP
 {
+/** @addtogroup StoneyDSP
+ *  @{
+ */
 
-std::string_view SystemStats::getStoneyDSPVersion()
+namespace Maths
 {
-    return "StoneyDSP v" STONEYDSP_STRINGIFY (STONEYDSP_MAJOR_VERSION)
-                "." STONEYDSP_STRINGIFY (STONEYDSP_MINOR_VERSION)
-                "." STONEYDSP_STRINGIFY (STONEYDSP_BUILDNUMBER);
-}
+/** @addtogroup Maths
+ *  @{
+ */
 
+/** 
+ * @brief Commonly used mathematical constants.
+ * 
+*/
+template <typename IntType>
+struct iConstants 
+{
+    /** A predefined value for one. */
+    static constexpr IntType one = static_cast<IntType> (1);
+};
+
+  /// @} group Maths
+} // namespace Maths
+
+  /// @} group StoneyDSP
 } // namespace StoneyDSP
