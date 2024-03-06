@@ -1,6 +1,6 @@
 # <p align="center">StoneyDSP</p>
 
-<p align="center">The StoneyDSP library for JUCE.</p>
+<p align="center">The StoneyDSP audio, graphics, and web library for JUCE.</p>
 
 <div align="center">
 
@@ -26,9 +26,9 @@
 | :-: |
 | |
 | <p align="center"><i><b>I am making a C++ library extension for the [JUCE](https://github.com/juce-framework/JUCE) framework for building audio and graphical software applications.</b></i></p> |
-| <p align="left">You may use this library to build your own audio software with on MIT license. You must also respect the JUCE license system.</p> |
+| <p align="left">You may use this library to build your own audio software with on <a href="https://github.com/StoneyDSP/StoneyDSP?tab=License-1-ov-file">MIT license</a>. You must also respect the <a href="https://github.com/juce-framework/JUCE?tab=License-1-ov-file">JUCE license system</a>.</p> |
 | |
-| <p align="left">The primary goal here is/will be to provide some additional DSP (digital signal processing) classes, utilities, and functions of specific interests, which aim to be relatively approachable to builders with firm backgrounds in patching together new sounds from modular pieces of software of hardware, using familiar conventions and abstractions and aiming to provide a lower cognitive overhead.</p> |
+| <p align="left">The primary goal here is/will be to provide some additional DSP (digital signal processing) classes, utilities, and functions of specific interests; the StoneyDSP library aims to be relatively approachable to builders with firm backgrounds in patching together new ideas from modular pieces of software or hardware, by using familiar conventions and abstractions and aiming to provide a low cognitive overhead.</p> |
 | |
 | <p align="left">StoneyDSP is *not* an audio plugin manufacturer or vendor explicitly, but aims to provide a useful set of coding tools that can be used to create interesting audio and graphical effects with, specifically targeting the JUCE application framework. </p> |
 | |
