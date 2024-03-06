@@ -21,7 +21,6 @@ env:
   VCPKG_OSX_ARCHITECTURES: "arm64;x86_64"
   SCCACHE_GHA_ENABLED: "true"
   SCCACHE_CACHE_MULTIARCH: 1 # for macos actions only!
-  PLUGINVAL_BINARY: pluginval.app/Contents/MacOS/pluginval
   HOMEBREW_NO_INSTALL_CLEANUP: 1
   STONEYDSP_CURRENT_VERSION: 0.0.1
   STONEYDSP_CURRENT_JUCE_VERSION: 7.0.9
@@ -64,7 +63,7 @@ jobs:
         # Extra vcpkg command line args (optional)
         # extra-args: --allow-unsupported # optional
         # Additional cache key component (optional)
-        cache-key: macos-14 # optional
+        cache-key: macos-latest # optional
         # Disable cache (useful for release builds)
         # disable-cache: # optional, default is false
         # vcpkg revision to checkout.
