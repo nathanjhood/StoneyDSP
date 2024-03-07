@@ -36,7 +36,7 @@ else ()
     find_package (CMakeRC REQUIRED)
 endif ()
 
-file(COPY "${StoneyDSP_SOURCE_DIR}/public/images"
+file(COPY "${CMAKE_CURRENT_LIST_DIR}/images"
     DESTINATION "${StoneyDSP_BINARY_DIR}/public"
 )
 
