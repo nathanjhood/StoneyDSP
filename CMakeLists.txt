@@ -34,12 +34,12 @@ if (DEFINED ENV{VCPKG_ROOT} AND (NOT DEFINED CMAKE_TOOLCHAIN_FILE))
 endif ()
 
 list (APPEND CMAKE_MODULE_PATH
-    "${CMAKE_CURRENT_LIST_DIR}/share/cmake/Modules"
+    "${CMAKE_CURRENT_LIST_DIR}/extras/Build/CMake"
 )
 
-message (STATUS "StoneyDSP CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
-message (STATUS "StoneyDSP CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}")
-message (STATUS "StoneyDSP CMAKE_TOOLCHAIN_FILE: ${CMAKE_TOOLCHAIN_FILE}")
+message (DEBUG "StoneyDSP CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH}")
+message (DEBUG "StoneyDSP CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}")
+message (DEBUG "StoneyDSP CMAKE_TOOLCHAIN_FILE: ${CMAKE_TOOLCHAIN_FILE}")
 
 # The default build type must be set before project()
 if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR AND NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
@@ -54,6 +54,8 @@ project (
     HOMEPAGE_URL "https://github.com/StoneyDSP/StoneyDSP/blob/production/README.md"
     LANGUAGES C;CXX
 )
+
+message (STATUS "Configuring StoneyDSP v${StoneyDSP_VERSION}...")
 
 if (NOT DEFINED JUCE_VERSION)
     find_package (JUCE CONFIG REQUIRED)
@@ -121,111 +123,43 @@ if(STONEYDSP_BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif()
 
-# ==================================================================================================
-# Test configuration
+#[=============================================================================[
+    target: format
+]=============================================================================]#
+# find_program(CLANG_FORMAT clang-format PATHS "$ENV{PROGRAMFILES}/LLVM/bin")
+# if(CLANG_FORMAT)
+#     # doing all of these formats in one line has a tendency to overflow the command line length
+#     add_custom_target(format
+#         COMMAND "${CLANG_FORMAT}" -i -verbose ${VCPKGLIB_BASE_SOURCES}
+#         COMMAND "${CLANG_FORMAT}" -i -verbose ${VCPKGLIB_SOURCES}
+#         COMMAND "${CLANG_FORMAT}" -i -verbose ${CMAKE_CURRENT_SOURCE_DIR}/include/pch.h
+#         COMMAND "${CLANG_FORMAT}" -i -verbose ${VCPKGLIB_BASE_INCLUDES}
+#         COMMAND "${CLANG_FORMAT}" -i -verbose ${VCPKGLIB_INCLUDES}
+
+#         COMMAND "${CLANG_FORMAT}" -i -verbose ${VCPKG_SOURCES}
+
+#         COMMAND "${CLANG_FORMAT}" -i -verbose ${VCPKG_TEST_SOURCES}
+#         COMMAND "${CLANG_FORMAT}" -i -verbose ${VCPKG_TEST_INCLUDES}
+
+#         COMMAND "${CLANG_FORMAT}" -i -verbose ${VCPKG_FUZZ_SOURCES} ${TLS12_DOWNLOAD_SOURCES}
+#             ${CLOSES_STDIN_SOURCES} ${CLOSES_STDOUT_SOURCES} ${READS_STDIN_SOURCES}
+#             ${TEST_EDITOR_SOURCES} ${TEST_SCRIPT_ASSET_CACHE_SOURCES}
+#     )
+# endif()
+
+#[=============================================================================[
+    CTest configuration
+]=============================================================================]#
 option (STONEYDSP_BUILD_TESTS "Build tests" ON)
 if(STONEYDSP_BUILD_TESTS AND (StoneyDSP_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR))
 
     enable_testing()
-
-    if(STONEYDSP_BUILD_EXAMPLES)
-        # Console application tests
-        set(_consoleapp_fail "if %ERRORLEVEL% neq 0 exit /b 1")
-        if(UNIX)
-            set(_consoleapp_fail "|| exit 1")
-        endif()
-        if(APPLE)
-            set(_consoleapp_fail "|| exit 1")
-        endif()
-        macro(_stoneydsp_test_consoleappexample_command_help)
-            add_test(
-                NAME test_consoleappexample_command_help
-                COMMAND "${StoneyDSP_BINARY_DIR}/examples/CMake/ConsoleApplication/ConsoleAppExample_artefacts/${CMAKE_BUILD_TYPE}/ConsoleAppExample" "--help" "${_consoleapp_fail}"
-                WORKING_DIRECTORY "${StoneyDSP_SOURCE_DIR}"
-            )
-            # set_tests_properties(test_consoleappexample_command_help
-            #     PROPERTIES PASS_REGULAR_EXPRESSION " passed."
-            # )
-        endmacro()
-        macro(_stoneydsp_test_consoleappexample_command_version)
-            add_test(
-                NAME test_consoleappexample_command_version
-                COMMAND "${StoneyDSP_BINARY_DIR}/examples/CMake/ConsoleApplication/ConsoleAppExample_artefacts/${CMAKE_BUILD_TYPE}/ConsoleAppExample" "--versoin" "${_consoleapp_fail}"
-                WORKING_DIRECTORY "${StoneyDSP_SOURCE_DIR}"
-            )
-            # set_tests_properties(test_consoleappexample_command_help
-            #     PROPERTIES PASS_REGULAR_EXPRESSION " passed."
-            # )
-        endmacro()
-
-        _stoneydsp_test_consoleappexample_command_help()
-        _stoneydsp_test_consoleappexample_command_version()
-
-        unset(_consoleapp_fail)
-
-        # VST3 tests with pluginval
-        set(_pluginval_platform "Windows")
-        set(_pluginval_binary "pluginval.exe")
-        set(_pluginval_fail "if %ERRORLEVEL% neq 0 exit /b 1")
-        if(UNIX)
-            set(_pluginval_platform "Linux")
-            set(_pluginval_binary "pluginval")
-            set(_pluginval_fail "|| exit 1")
-        endif()
-        if(APPLE)
-            set(_pluginval_platform "macOS")
-            set(_pluginval_binary "pluginval.app/Contents/MacOS/pluginval")
-            set(_pluginval_fail "|| exit 1")
-        endif()
-
-        message(STATUS "Fetching pluginval for CTest")
-        if(NOT CURL_FETCH_PLUGINVAL_BINARY)
-            execute_process(
-                RESULT_VARIABLE CURL_FETCH_PLUGINVAL_BINARY
-                COMMAND curl "-LO" "https://github.com/Tracktion/pluginval/releases/download/v1.0.3/pluginval_${_pluginval_platform}.zip"
-                WORKING_DIRECTORY "${StoneyDSP_BINARY_DIR}"
-            )
-        endif()
-        message(STATUS "Unpacking pluginval for CTest")
-        if(NOT 7ZIP_UNPACK_PLUGINVAL_BINARY)
-            execute_process(
-                RESULT_VARIABLE 7ZIP_UNPACK_PLUGINVAL_BINARY
-                COMMAND 7z "x" "pluginval_${_pluginval_platform}.zip"
-                WORKING_DIRECTORY "${StoneyDSP_BINARY_DIR}"
-            )
-        endif()
-        macro(_stoneydsp_test_audiopluginexample_pluginval_vst3_validation)
-            add_test(
-            NAME test_pluginval_vst3_validation
-            COMMAND "${StoneyDSP_BINARY_DIR}/${_pluginval_binary}" "--output-dir ${StoneyDSP_BINARY_DIR}" "--strictness-level 10" "--verbose" "--validate" "${StoneyDSP_BINARY_DIR}/examples/CMake/AudioPlugin/AudioPluginExample_artefacts/${CMAKE_BUILD_TYPE}/VST3/Audio Plugin Example.vst3/" "${_pluginval_fail}"
-            WORKING_DIRECTORY "${StoneyDSP_BINARY_DIR}"
-            )
-        endmacro()
-        macro(_stoneydsp_test_audiopluginexample_pluginval_vst3_unit_tests)
-            add_test(
-                NAME test_pluginval_vst3_unit_tests
-                COMMAND "${StoneyDSP_BINARY_DIR}/${_pluginval_binary}" "--output-dir ${StoneyDSP_BINARY_DIR}" "--strictness-level 10" "--verbose" "--run-tests" "${StoneyDSP_BINARY_DIR}/examples/CMake/AudioPlugin/AudioPluginExample_artefacts/${CMAKE_BUILD_TYPE}/VST3/Audio Plugin Example.vst3/" "${_pluginval_fail}"
-                WORKING_DIRECTORY "${StoneyDSP_BINARY_DIR}"
-            )
-        endmacro()
-
-        _stoneydsp_test_audiopluginexample_pluginval_vst3_validation()
-        # _stoneydsp_test_audiopluginexample_pluginval_vst3_unit_tests()
-
-        unset(_pluginval_platform)
-        unset(_pluginval_binary)
-        unset(_pluginval_fail)
-
-    endif()
-
-    # if(NOT MSVC)
-    #     add_compile_options(-Wall -Wextra)
-    # endif()
-    # add_subdirectory(tests)
+    add_subdirectory(tests)
 endif()
 
-# ==================================================================================================
-# Install configuration
+#[=============================================================================[
+    Install & CPack configuration
+]=============================================================================]#
 
 include(CMakePackageConfigHelpers)
 write_basic_package_version_file(
@@ -262,7 +196,14 @@ install(FILES
     "${StoneyDSP_BINARY_DIR}/StoneyDSPConfigVersion.cmake"
     "${StoneyDSP_BINARY_DIR}/StoneyDSPConfig.cmake"
     "${STONEYDSP_CMAKE_UTILS_DIR}/CMakeRC.cmake"
+    "${STONEYDSP_CMAKE_UTILS_DIR}/FindCMakeRC.cmake"
+    "${STONEYDSP_CMAKE_UTILS_DIR}/Findfmt.cmake"
+    "${STONEYDSP_CMAKE_UTILS_DIR}/GetGitRef.cmake"
     "${STONEYDSP_CMAKE_UTILS_DIR}/JoinPaths.cmake"
+    "${STONEYDSP_CMAKE_UTILS_DIR}/StoneyDSPCPackIgnoreList.cmake"
+    "${STONEYDSP_CMAKE_UTILS_DIR}/StoneyDSPModuleSupport.cmake"
+    "${STONEYDSP_CMAKE_UTILS_DIR}/WriteVersionFile.cmake"
+    "${STONEYDSP_CMAKE_UTILS_DIR}/WriteVersionHeader.cmake"
     DESTINATION "${STONEYDSP_INSTALL_DESTINATION}"
 )
 
@@ -281,7 +222,7 @@ if(WIN32)
         "NSIS"
     )
 endif()
-include("share/StoneyDSP/IgnoreList.cmake")
+include(StoneyDSPCPackIgnoreList)
 # set(CPACK_PACKAGE_CHECKSUM "${PROJECT_VERSION_TWEAK}") # git rev-parse is a good idea for this...
 set(CPACK_PACKAGE_VENDOR "StoneyDSP")
 set(CPACK_PACKAGE_NAME              "${PROJECT_NAME}-v${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}-${CMAKE_SYSTEM_NAME}-${CMAKE_SYSTEM_PROCESSOR}-JUCE-v${JUCE_VERSION}")
@@ -297,5 +238,11 @@ set(CPACK_RESOURCE_FILE_README  ${PROJECT_SOURCE_DIR}/README.md)
 set(CPACK_INCLUDE_TOPLEVEL_DIRECTORY ON)
 set(CPACK_COMPONENT_INCLUDE_TOPLEVEL_DIRECTORY ON)
 set(CPACK_SOURCE_GENERATOR "TGZ;ZIP") # Check out CPack's 'NSIS' installer for Win32, and the others!
-set(CPACK_SOURCE_IGNORE_FILES ${STONEYDSP_IGNORE_LIST})
+set(CPACK_SOURCE_IGNORE_FILES ${STONEYDSP_CPACK_IGNORE_LIST})
 include(CPack)
+
+#[=============================================================================[
+
+]=============================================================================]#
+
+message (STATUS "Configuring StoneyDSP v${StoneyDSP_VERSION} - done.")

@@ -49,8 +49,6 @@
 
 <small>
 
-<small>
-
 The StoneyDSP Library
 
 Copyright (C) 2024 Nathan J. Hood <nathanjhood@googlemail.com>
