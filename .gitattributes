@@ -1,4 +1,16 @@
 * text=auto eol=lf
+
+# Disable line ending smudges entirely.
+* -text
+
+# Rush's JSON config files use JavaScript-style code comments.  The rule below prevents pedantic
+# syntax highlighters such as GitHub's from highlighting these comments as errors.  Your text editor
+# may also require a special configuration to allow comments in JSON.
+#
+# For more information, see this issue: https://github.com/Microsoft/web-build-tools/issues/1088
+#
+*.json                       linguist-language=JSON-with-Comments
+
 *.{cmd,[cC][mM][dD]} text eol=crlf
 *.{bat,[bB][aA][tT]} text eol=crlf
 *.{sln,[sS][lL][nN]} text eol=crlf
@@ -25,6 +37,8 @@ COPYING eol=lf
 HACKING eol=lf
 AUTHORS eol=lf
 
+*.gif binary
+*.mp4 binary
 *.bin binary
 *.pfx binary
 *.png binary
