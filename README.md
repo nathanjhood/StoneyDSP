@@ -14,7 +14,7 @@
 
 <hr>
 
-[![StoneyDSP](https://raw.githubusercontent.com/StoneyDSP/StoneyDSP/production/public/images/w_icon__384x256.png)](https://www.stoneydsp.com)
+[![StoneyDSP](https://raw.githubusercontent.com/StoneyDSP/StoneyDSP/production/extras/Icons/images/w_icon__384x256.png)](https://www.stoneydsp.com)
 
 <hr>
 
