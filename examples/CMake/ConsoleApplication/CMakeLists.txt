@@ -28,7 +28,7 @@ DISCLAIMED.
 
 cmake_minimum_required(VERSION 3.22...3.28 FATAL_ERROR)
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/share/cmake/Modules")
+# list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/share/cmake/Modules")
 
 project(STONEYDSP_EXAMPLE_CONSOLE_APPLICATION VERSION 0.0.1)
 
@@ -80,6 +80,6 @@ target_link_libraries(ConsoleAppExample
         juce::juce_recommended_warning_flags
 )
 
-include("${StoneyDSP_SOURCE_DIR}/share/StoneyDSP/IgnoreList.cmake")
-set(CPACK_SOURCE_IGNORE_FILES ${STONEYDSP_IGNORE_LIST})
+include("${StoneyDSP_SOURCE_DIR}/extras/Build/CMake/StoneyDSPCPackIgnoreList.cmake")
+set(CPACK_SOURCE_IGNORE_FILES ${STONEYDSP_CPACK_IGNORE_LIST})
 include(CPack)
