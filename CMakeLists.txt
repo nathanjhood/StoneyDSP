@@ -152,6 +152,7 @@ endif()
 ]=============================================================================]#
 option (STONEYDSP_BUILD_TESTS "Build tests" ON)
 if(STONEYDSP_BUILD_TESTS AND (StoneyDSP_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR))
+
     enable_testing()
     add_subdirectory(tests)
 endif()
