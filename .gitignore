@@ -1,4 +1,6 @@
 pluginval
+!public
+!*.png
 
 .bash*
 .env

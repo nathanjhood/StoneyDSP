@@ -1,9 +1,0 @@
-User-Agent: *
-Allow: /
-# Disallow: /_next/__private
-# Disallow: /www/contact
-# Disallow: /contact
-# Disallow: /www/account
-# Disallow: /account
-
-Sitemap: https://www.stoneydsp.com/sitemap.xml
