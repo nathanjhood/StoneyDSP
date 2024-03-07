@@ -30,6 +30,12 @@
     {
       "name": "cmakerc"
     },
+		{
+			"name": "7z"
+		},
+		{
+			"name": "fmt"
+		},
     {
       "name": "openssl"
     },
