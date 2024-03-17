@@ -42,7 +42,7 @@
   license:            MIT
   minimumCppStandard: 17
 
-  dependencies:       stoneydsp_core
+  dependencies:       juce_dsp, stoneydsp_core
 
  END_JUCE_MODULE_DECLARATION
 
@@ -51,6 +51,9 @@
 #pragma once
 
 #define STONEYDSP_AUDIO_H_INCLUDED
+
+#include <juce_dsp/juce_dsp.h>
+#include <stoneydsp_core/stoneydsp_core.h>
 
 namespace StoneyDSP
 {
@@ -63,3 +66,9 @@ namespace Audio
 
 } // namespace Audio
 } // namespace StoneyDSP
+
+// #include "filter/stoneydsp_FilterTypes.hpp"
+// #include "filter/stoneydsp_TransformationTypes.hpp"
+// #include "filter/stoneydsp_Biquads.hpp"
+
+#include "widgets/stoneydsp_Biquads.hpp"

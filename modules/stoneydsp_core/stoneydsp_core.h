@@ -57,8 +57,8 @@
 
 #define STONEYDSP_CORE_H_INCLUDED
 
-#include "system/stoneydsp_TargetPlatform.h" // system...
-#include "system/stoneydsp_StandardHeader.h" // version...
+#include "system/stoneydsp_TargetPlatform.hpp" // system...
+#include "system/stoneydsp_StandardHeader.hpp" // version...
 
 /**
  * @brief The ```StoneyDSP``` namespace.
@@ -73,10 +73,12 @@ namespace StoneyDSP
  *  @{
  */
 
-using int32_t  = signed int;
-using uint8_t  = unsigned char;
-using uint32_t = unsigned int;
-using int64_t  = long long int;
+// 'using' is much better than a typedef here, because it
+// doesn't require us to define operator overloads for everything...
+// using int32_t  = signed int;
+// using uint8_t  = unsigned char;
+// using uint32_t = unsigned int;
+// using int64_t  = long long int;
 
 /** A platform-independent 8-bit signed integer type. */
 using int8      = signed char;
@@ -91,7 +93,7 @@ using int32     = signed int;
 /** A platform-independent 32-bit unsigned integer type. */
 using uint32    = unsigned int;
 
-#if JUCE_MSVC
+#if STONEYDSP_MSVC
   /** A platform-independent 64-bit integer type. */
   using int64  = __int64;
   /** A platform-independent 64-bit unsigned integer type. */
@@ -102,12 +104,6 @@ using uint32    = unsigned int;
   /** A platform-independent 64-bit unsigned integer type. */
   using uint64 = unsigned long long;
 #endif
-
-/**
- * @brief A platform-independent 8-bit signed integer type.
- *
-*/
-using Byte      = unsigned char;
 
 /**
  * @brief Handy function for avoiding unused variables warning.
@@ -144,15 +140,14 @@ private:
 # define STONEYDSP_STRINGIFY(n) STONEYDSP_STRINGIFY_HELPER(n)
 #endif
 
-#include "maths/stoneydsp_MathsIConstants.h"
-#include "maths/stoneydsp_MathsIFunctions.h"
-#include "maths/stoneydsp_MathsConstants.h"
-#include "maths/stoneydsp_MathsFunctions.h"
+#include "maths/stoneydsp_MathsIConstants.hpp"
+#include "maths/stoneydsp_MathsIFunctions.hpp"
+#include "maths/stoneydsp_MathsConstants.hpp"
+#include "maths/stoneydsp_MathsFunctions.hpp"
+#include "maths/stoneydsp_Coefficient.hpp"
 
-#include "application/stoneydsp_Application.h"
-#include "application/stoneydsp_ConsoleApplication.h"
-
-#include "res/stoneydsp_resource.h"
+#include "application/stoneydsp_Application.hpp"
+#include "application/stoneydsp_ConsoleApplication.hpp"
 
 namespace StoneyDSP
 {

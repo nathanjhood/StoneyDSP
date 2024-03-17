@@ -1,5 +1,5 @@
 /***************************************************************************//**
- * @file stoneydsp_Application.h
+ * @file stoneydsp_MathsFunctions.hpp
  * @author Nathan J. Hood <nathanjhood@googlemail.com>
  * @brief
  * @version 1.0.0
@@ -29,78 +29,46 @@
  *
  ******************************************************************************/
 
-#pragma once
-
 namespace StoneyDSP
 {
 /** @addtogroup StoneyDSP
  *  @{
  */
 
-namespace Application
+namespace Maths
 {
-/** @addtogroup Application
+/** @addtogroup Maths
  *  @{
  */
 
 /**
- * @brief The Application Class.
- * 
+ * @brief Commonly used mathematical functions.
+ *
 */
-class Application
+template <typename FloatType>
+struct Functions
 {
-public:
-
     /**
-     * @brief Construct a new Application object.
-     * 
-     */
-    Application()
-    : _application_name("Application")
-    {}
-    
-    /**
-     * @brief Construct a new Application object with a given name.
-     * 
-     * @param application_name 
-     */
-    Application(std::string_view application_name)
-    : _application_name(application_name)
-    {}
-
-    /**
-     * @brief Construct a new Application object with a given name.
-     * 
-     * @param application_name 
-     */
-    Application(std::string application_name)
-    : _application_name(application_name)
-    {}
-
-    /**
-     * @brief Construct a new Application object with a given name.
-     * 
-     * @param application_name 
-     */
-    Application(const char application_name[])
-    : _application_name(application_name)
-    {}
-
-    /**
-     * @brief Destroy the Application object.
-     * 
-     */
-    ~Application()
+     * @brief Returns the value of 1.0L / x.
+     *
+    */
+    static FloatType oneDivX(FloatType x)
     {
-        // _application_name.clear(); not supported for string_view!
+        return static_cast<FloatType> (1 / x);
     }
 
-private:
-    std::string_view                        _application_name;
+    /**
+     * @brief Returns the value of 1.0L / x.
+     *
+    */
+    static FloatType oneDivX(const FloatType& x)
+    {
+        return static_cast<FloatType> (1 / x);
+    }
 };
 
-  /// @} group Application
-} // namespace Application
+  /// @} group Maths
+} // namespace Maths
 
   /// @} group StoneyDSP
 } // namespace StoneyDSP

@@ -1,5 +1,5 @@
 /***************************************************************************//**
- * @file stoneydsp_audio.cpp
+ * @file stoneydsp_MathsConstants.hpp
  * @author Nathan J. Hood <nathanjhood@googlemail.com>
  * @brief
  * @version 1.0.0
@@ -29,12 +29,49 @@
  *
  ******************************************************************************/
 
-#ifdef STONEYDSP_AUDIO_H_INCLUDED
- #error "Incorrect usage of 'stoneydsp_audio.cpp'!"
-#endif
+namespace StoneyDSP
+{
+/** @addtogroup StoneyDSP
+ *  @{
+ */
 
-#include "stoneydsp_audio.h"
+namespace Maths
+{
+/** @addtogroup Maths
+ *  @{
+ */
 
-// #include "filter/stoneydsp_Biquads.cpp"
+/**
+ * @brief Commonly used mathematical constants.
+ *
+*/
+template <typename FloatType>
+struct Constants
+{
+    /** A predefined value for minus two. */
+    static constexpr FloatType minusTwo = static_cast<FloatType> (-2.0L);
 
-#include "widgets/stoneydsp_Biquads.cpp"
+    /** A predefined value for minus one. */
+    static constexpr FloatType minusOne = static_cast<FloatType> (-1.0L);
+
+    /** A predefined value for zero. */
+    static constexpr FloatType zero = static_cast<FloatType> (0.0L);
+
+    /** A predefined value for one third (of one). */
+    static constexpr FloatType oneThird = static_cast<FloatType> (1.0L / 3);
+
+    /** A predefined value for two thirds (of one). */
+    static constexpr FloatType twoThirds = static_cast<FloatType> (2.0L / 3);
+
+    /** A predefined value for one. */
+    static constexpr FloatType one = static_cast<FloatType> (1.0L);
+
+    /** A predefined value for two. */
+    static constexpr FloatType two = static_cast<FloatType> (2.0L);
+};
+
+  /// @} group Maths
+} // namespace Maths
+
+  /// @} group StoneyDSP
+} // namespace StoneyDSP

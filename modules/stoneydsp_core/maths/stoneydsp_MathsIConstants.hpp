@@ -1,5 +1,5 @@
 /***************************************************************************//**
- * @file stoneydsp_MathsConstants.h
+ * @file stoneydsp_MathsIConstants.hpp
  * @author Nathan J. Hood <nathanjhood@googlemail.com>
  * @brief
  * @version 1.0.0
@@ -45,17 +45,11 @@ namespace Maths
  * @brief Commonly used mathematical constants.
  *
 */
-template <typename FloatType>
-struct Constants
+template <typename IntType>
+struct iConstants
 {
     /** A predefined value for one. */
-    static constexpr FloatType one = static_cast<FloatType> (1.0L);
-
-    /** A predefined value for one third (of one). */
-    static constexpr FloatType oneThird = static_cast<FloatType> (1.0L / 3);
-
-    /** A predefined value for two thirds (of one). */
-    static constexpr FloatType twoThirds = static_cast<FloatType> (2.0L / 3);
+    static constexpr IntType one = static_cast<IntType> (1);
 };
 
   /// @} group Maths

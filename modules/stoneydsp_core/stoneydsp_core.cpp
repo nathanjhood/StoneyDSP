@@ -46,3 +46,5 @@ std::string_view SystemStats::getStoneyDSPVersion()
 }
 
 } // namespace StoneyDSP
+
+#include "maths/stoneydsp_Coefficient.cpp"

@@ -1,5 +1,5 @@
 /***************************************************************************//**
- * @file stoneydsp_TargetPlatform.h
+ * @file stoneydsp_TargetPlatform.hpp
  * @author Nathan J. Hood <nathanjhood@googlemail.com>
  * @brief
  * @version 1.0.0

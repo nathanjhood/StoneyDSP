@@ -1,9 +1,9 @@
 /***************************************************************************//**
- * @file stoneydsp_MathsFunctions.h
- * @author Nathan J. Hood <nathanjhood@googlemail.com>
+ * @file stoneydsp_Coefficient.hpp
+ * @author Nathan J. Hood (nathanjhood@googlemail.com)
  * @brief
- * @version 1.0.0
- * @date 2024-02-21
+ * @version 0.1
+ * @date 2024-03-09
  *
  * @copyright Copyright (c) 2024
  *
@@ -41,30 +41,42 @@ namespace Maths
  *  @{
  */
 
-/**
- * @brief Commonly used mathematical functions.
- *
-*/
-template <typename FloatType>
-struct Functions
+template <typename SampleType>
+class Coefficient
 {
-    /**
-     * @brief Returns the value of 1.0L / x.
-     *
-    */
-    static FloatType oneDivX(FloatType x)
-    {
-        return static_cast<FloatType> (1 / x);
-    }
+public:
+    /** Construct a new Coefficient object. */
+    Coefficient() noexcept;
+    /** Construct a new Coefficient object. */
+    Coefficient(SampleType init) noexcept;
+    /** Construct a new Coefficient object. */
+    Coefficient(const Coefficient<SampleType>& other) noexcept;
+    /** Destroy the Coefficient object. */
+    ~Coefficient() noexcept;
 
-    /**
-     * @brief Returns the value of 1.0L / x.
-     *
-    */
-    static FloatType oneDivX(const FloatType& x)
-    {
-        return static_cast<FloatType> (1 / x);
-    }
+    /** Returns the Coefficient object's current value. */
+    SampleType get() const noexcept { return value.load(); }
+
+    /** Returns the Coefficient object's current value. */
+    operator SampleType() const noexcept { return value.load(); }
+
+    Coefficient<SampleType>& operator=(const Coefficient<SampleType>&) noexcept;
+
+    /** Changes the Coefficient object's current value. */
+    Coefficient& operator= (SampleType newValue) noexcept;
+
+protected:
+    /** Override this method if you are interested in receiving callbacks
+        when the parameter value changes. */
+    void valueChanged(SampleType newValue) noexcept;
+
+private:
+    SampleType getValue() const noexcept;
+    void setValue(SampleType newValue) noexcept;
+
+private:
+    std::atomic<SampleType> value;
+    // SampleType value;
 };
 
   /// @} group Maths

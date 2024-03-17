@@ -1,5 +1,5 @@
 /***************************************************************************//**
- * @file stoneydsp_StandardHeader.h
+ * @file stoneydsp_StandardHeader.hpp
  * @author Nathan J. Hood <nathanjhood@googlemail.com>
  * @brief
  * @version 1.0.0
@@ -54,6 +54,8 @@
      STONEYDSP_BUILDNUMBER)
 
 // Standard includes
+
+#include <atomic>
 
 #include <stdexcept>
 #include <vector>

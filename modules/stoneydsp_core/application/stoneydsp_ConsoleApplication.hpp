@@ -1,5 +1,5 @@
 /***************************************************************************//**
- * @file stoneydsp_Application.h
+ * @file stoneydsp_Application.hpp
  * @author Nathan J. Hood <nathanjhood@googlemail.com>
  * @brief
  * @version 1.0.0
@@ -52,7 +52,7 @@ namespace Application
  * @brief The ConsoleApplication Class.
  *
 */
-class ConsoleApplication : public Application
+class ConsoleApplication : public StoneyDSP::Application::Application
 {
 public:
 
