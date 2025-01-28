@@ -1,4 +1,31 @@
 {
+	"makefile.launchConfigurations": [
+    {
+      "cwd": "${workspaceFolder}/build/bin",
+      "binaryPath": "${workspaceFolder}/build/bin/main",
+      "binaryArgs": [],
+			"MIMode": "gdb",
+			"miDebuggerPath": "${workspaceFolder}/share/gdbinit",
+			"stopAtEntry": false,
+			"symbolSearchPath": "${workspaceFolder}/include"
+    }
+  ],
+	"cmake.debugConfig": {
+    "cwd": "${workspaceFolder}",
+    "symbolSearchPath": "${workspaceFolder}/include",
+    "miDebuggerPath": "${workspaceFolder}/share/gdbinit",
+    "MIMode": "gdb",
+    "console": "newExternalWindow",
+    "stopAtEntry": false,
+    "logging": {
+      "engineLogging": false,
+      "exceptions": true,
+      "moduleLoad": true,
+      "trace": false,
+      "traceResponse": false,
+      "programOutput": true
+    }
+  },
   "files.insertFinalNewline": true,
   "files.trimFinalNewlines": true,
   "files.trimTrailingWhitespace": true,
@@ -15,36 +42,13 @@
 	"makefile.makeDirectory": "${workspaceFolder}",
   "makefile.makefilePath": "${workspaceFolder}/Makefile",
   "makefile.makePath": "make",
-	"makefile.launchConfigurations": [
-    {
-      "cwd": "${workspaceFolder}/build/bin",
-      "binaryPath": "${workspaceFolder}/build/bin/main",
-      "binaryArgs": [],
-			"MIMode": "gdb",
-			"stopAtEntry": false,
-			"symbolSearchPath": "${workspaceFolder}/include"
-    }
-  ],
+
 	"makefile.buildBeforeLaunch": true,
 	"makefile.clearOutputBeforeBuild": true,
 	"makefile.configurationCachePath": "${workspaceFolder}/build/MakeFiles/configurationCache.log",
 	"makefile.extensionOutputFolder": "${workspaceFolder}/build/MakeFiles",
-  "cmake.debugConfig": {
-    "cwd": "${workspaceFolder}",
-    "symbolSearchPath": "${workspaceFolder}/include",
-    // "miDebuggerPath": "${workspaceFolder}/share/gdbinit",
-    "MIMode": "gdb",
-    "console": "newExternalWindow",
-    "stopAtEntry": false,
-    "logging": {
-      "engineLogging": false,
-      "exceptions": true,
-      "moduleLoad": true,
-      "trace": false,
-      "traceResponse": false,
-      "programOutput": true
-    }
-  },
+
+
   "doxdocgen.generic.briefTemplate": "@brief {text}",
   "doxdocgen.generic.dateTemplate": "@date {date}",
   "doxdocgen.file.fileTemplate": "@file {name}",
