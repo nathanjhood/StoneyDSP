@@ -1,276 +1,222 @@
 {
-	"editor.rulers": [80],
-
-  "cmake.configureOnEdit": false,
-	"cmake.configureOnOpen": false,
-	"cmake.automaticReconfigure": false,
-
-	"cmake.cmakePath": "${workspaceFolder}/.local/bin/cmake",
-
-	"cmake.sourceDirectory": "${workspaceFolder}",
-	"cmake.buildDirectory": "${workspaceFolder}/build",
-	"cmake.installPrefix": "${workspaceFolder}/.local",
-	"cmake.generator": "Unix Makefiles",
-	"cmake.configureSettings": {
-		"VCPKG_ROOT": "${workspaceFolder}/vcpkg",
-		"VCPKG_OVERLAY_PORTS": "${workspaceFolder}/overlays",
-		"VCPKG_OVERLAY_TRIPLETS": "${workspaceFolder}/triplets",
-		"VCPKG_MANIFEST_MODE": false,
-		"VCPKG_PREFER_SYSTEM_INSTALLED_BINARIES": true,
-		"CMAKE_TOOLCHAIN_FILE": "${workspaceFolder}/vcpkg/scripts/buildsystems/vcpkg.cmake",
-		"CMAKE_MAKE_PROGRAM": "make",
-		"CMAKE_C_COMPILER_LAUNCHER": "ccache",
-		"CMAKE_CXX_COMPILER_LAUNCHER": "ccache",
-		"CMAKE_PREFIX_PATH": "${workspaceFolder}/.local",
-		"STONEYDSP_BUILD_EXAMPLES": true,
-		"STONEYDSP_BUILD_EXTRAS": true,
-		"STONEYDSP_BUILD_TESTS": true
-	},
-	"cmake.debugConfig": {
-		"cwd": "${workspaceFolder}",
-		"symbolSearchPath": "${workspaceFolder}",
-		"miDebuggerPath": "/usr/bin/gdb",
-		"MIMode": "gdb",
-		"console": "newExternalWindow",
-		"stopAtEntry": false,
-		"logging": {
-			"engineLogging": false,
-			"exceptions": true,
-			"moduleLoad": true,
-			"trace": false,
-			"traceResponse": false,
-			"programOutput": true
-		}
-	},
-
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
+  "files.trimTrailingWhitespace": true,
+  "editor.trimAutoWhitespace": true,
+  "editor.insertSpaces": true,
+  "editor.rulers": [
+    80,
+    160
+  ],
 	"json.format.enable": true,
-	"json.schemaDownload.enable": true,
 	"json.validate.enable": true,
+  "makefile.configureOnOpen": true,
+  "makefile.compileCommandsPath": "${workspaceFolder}/build/compile_commands_make.json",
+	"makefile.makeDirectory": "${workspaceFolder}",
+  "makefile.makefilePath": "${workspaceFolder}/Makefile",
+  "makefile.makePath": "make",
+	"makefile.launchConfigurations": [
+    {
+      "cwd": "${workspaceFolder}/build/bin",
+      "binaryPath": "${workspaceFolder}/build/bin/main",
+      "binaryArgs": [],
+			"MIMode": "gdb",
+			"stopAtEntry": false,
+			"symbolSearchPath": "${workspaceFolder}/include"
+    }
+  ],
+	"makefile.buildBeforeLaunch": true,
+	"makefile.clearOutputBeforeBuild": true,
+	"makefile.configurationCachePath": "${workspaceFolder}/build/MakeFiles/configurationCache.log",
+	"makefile.extensionOutputFolder": "${workspaceFolder}/build/MakeFiles",
+  "cmake.debugConfig": {
+    "cwd": "${workspaceFolder}",
+    "symbolSearchPath": "${workspaceFolder}/include",
+    // "miDebuggerPath": "${workspaceFolder}/share/gdbinit",
+    "MIMode": "gdb",
+    "console": "newExternalWindow",
+    "stopAtEntry": false,
+    "logging": {
+      "engineLogging": false,
+      "exceptions": true,
+      "moduleLoad": true,
+      "trace": false,
+      "traceResponse": false,
+      "programOutput": true
+    }
+  },
+  "doxdocgen.generic.briefTemplate": "@brief {text}",
+  "doxdocgen.generic.dateTemplate": "@date {date}",
+  "doxdocgen.file.fileTemplate": "@file {name}",
+  "doxdocgen.file.copyrightTag": [
+    "@copyright Copyright (c) {year}"
+  ],
+  "doxdocgen.file.versionTag": "@version 0.1",
+  "doxdocgen.file.fileOrder": [
+    "file",
+    "author",
+    "brief",
+    "version",
+    "date",
+    "empty",
+    "copyright",
+    "empty",
+    "custom"
+  ],
+  // "doxdocgen.file.customTag": [],
+  "doxdocgen.c.factoryMethodText": "Create a {name} object",
+  "doxdocgen.generic.dateFormat": "YYYY-MM-DD",
+  "doxdocgen.generic.boolReturnsTrueFalse": true,
+  // "doxdocgen.generic.filteredKeywords": [],
+  // "doxdocgen.generic.customTags": [],
+  "doxdocgen.generic.commandSuggestion": true,
+  "doxdocgen.generic.commandSuggestionAddPrefix": false,
+  "doxdocgen.generic.generateSmartText": true,
+  "doxdocgen.generic.splitCasingSmartText": true,
+  "doxdocgen.c.getterText": "Get the {name} object",
+  "doxdocgen.c.setterText": "Set the {name} object",
+  "doxdocgen.cpp.ctorText": "Construct a new {name} object",
+  "doxdocgen.cpp.dtorText": "Destroy the {name} object",
+  "doxdocgen.cpp.tparamTemplate": "@tparam {param} ",
+  "doxdocgen.generic.useGitUserName": true,
+  "doxdocgen.generic.useGitUserEmail": true,
+  "doxdocgen.generic.paramTemplate": "@param {param} ",
+  "doxdocgen.generic.returnTemplate": "@return {type} ",
+  "doxdocgen.generic.includeTypeAtReturn": true,
+  "doxdocgen.generic.authorEmail": "you@domain.com",
+  "doxdocgen.generic.authorName": "your name",
+  "doxdocgen.generic.authorTag": "@author {author} ({email})",
+
+  "doxdocgen.generic.linesToGet": 20,
+  "doxdocgen.generic.order": [
+    "brief",
+    "empty",
+    "tparam",
+    "param",
+    "return",
+    "custom"
+  ],
+  "doxdocgen.c.triggerSequence": "/**",
+  "doxdocgen.c.firstLine": "/**",
+  "doxdocgen.c.commentPrefix": " * ",
+  "doxdocgen.c.lastLine": " */",
+  "C_Cpp.commentContinuationPatterns": [
+    "/**"
+  ],
+  "C_Cpp.doxygen.generatedStyle": "/**",
+  "C_Cpp.doxygen.generateOnType": true,
+  "C_Cpp.doxygen.sectionTags": [
+    "attention",
+    "tparam",
+    "param",
+    "result",
+    "returns",
+    "retval",
+    "exception",
+    "deprecated",
+    "warning",
+    "note"
+  ],
+	"C_Cpp.default.configurationProvider": "ms-vscode.makefile-tools",
+  "C_Cpp.formatting": "clangFormat",
+  "C_Cpp.autoAddFileAssociations": true,
+  "C_Cpp.clang_format_style": "file:${workspaceFolder}/.clang-format",
+  "C_Cpp.clang_format_fallbackStyle": "GNU",
+  "C_Cpp.clang_format_sortIncludes": true,
+  "C_Cpp.codeAnalysis.clangTidy.enabled": true,
+  "C_Cpp.codeAnalysis.clangTidy.codeAction.formatFixes": true,
+  "C_Cpp.codeAnalysis.clangTidy.headerFilter": null,
+  "C_Cpp.codeAnalysis.clangTidy.fallbackConfig": "{BasedOnStyle: gnu, Checks: '-*,clang-analyzer-*'}",
+  "C_Cpp.autocomplete": "default",
+  "C_Cpp.default.cStandard": "gnu11",
+  "C_Cpp.default.cppStandard": "gnu++11",
+  "C_Cpp.default.intelliSenseMode": "linux-gcc-x64",
+  "C_Cpp.default.compilerPath": "/usr/bin/gcc",
+  "C_Cpp.default.defines": [
+    "_DEBUG"
+  ],
+  "C_Cpp.default.mergeConfigurations": true,
+  "C_Cpp.default.includePath": [
+    "${workspaceFolder}/include"
+  ],
+  "C_Cpp.files.exclude": {
+    "**/.vscode": true,
+    "**/.vs": true
+  },
+  "files.associations": {
+    "**.d.ts": "typescript",
+    "*.css": "tailwindcss",
+    "**.bash**": "shellscript",
+    "**.cmake": "cmake",
+    ".editorconfig": "editorconfig",
+    "compare": "cpp",
+    "cwchar": "cpp",
+    "cctype": "cpp",
+    "clocale": "cpp",
+    "cmath": "cpp",
+    "cstdarg": "cpp",
+    "cstddef": "cpp",
+    "cstdio": "cpp",
+    "cstdlib": "cpp",
+    "cstring": "cpp",
+    "cwctype": "cpp",
+    "array": "cpp",
+    "atomic": "cpp",
+    "bit": "cpp",
+    "*.tcc": "cpp",
+    "concepts": "cpp",
+    "cstdint": "cpp",
+    "deque": "cpp",
+    "string": "cpp",
+    "unordered_map": "cpp",
+    "vector": "cpp",
+    "exception": "cpp",
+    "algorithm": "cpp",
+    "functional": "cpp",
+    "iterator": "cpp",
+    "memory": "cpp",
+    "memory_resource": "cpp",
+    "numeric": "cpp",
+    "random": "cpp",
+    "string_view": "cpp",
+    "system_error": "cpp",
+    "tuple": "cpp",
+    "type_traits": "cpp",
+    "utility": "cpp",
+    "initializer_list": "cpp",
+    "iosfwd": "cpp",
+    "iostream": "cpp",
+    "istream": "cpp",
+    "limits": "cpp",
+    "new": "cpp",
+    "numbers": "cpp",
+    "ostream": "cpp",
+    "stdexcept": "cpp",
+    "streambuf": "cpp",
+    "cinttypes": "cpp",
+    "typeinfo": "cpp",
+    "sstream": "cpp",
+    "ctime": "cpp",
+    "chrono": "cpp",
+    "condition_variable": "cpp",
+    "ratio": "cpp",
+    "mutex": "cpp",
+    "semaphore": "cpp",
+    "stop_token": "cpp",
+    "thread": "cpp"
+  },
 	"json.schemas": [
 		{
-			"fileMatch": [
-				"vcpkg.json"
-			],
-			"url": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json"
-		},
-		{
-			"fileMatch": [
-				"vcpkg-configuration.json"
-			],
-			"url": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg-configuration.schema.json"
-		}
-	],
-
-	"doxdocgen.generic.useGitUserName": true,
-  "doxdocgen.generic.useGitUserEmail": true,
-
-	"terminal.integrated.profiles.windows": {
-		"MSYS2 UCRT64": {
-			"path": "cmd.exe",
-			"args": [
-				"/c",
-				"C:\\msys64\\msys2_shell.cmd -defterm -here -no-start -ucrt64"
-			]
-		},
-		"MSYS2 MINGW64": {
-			"path": "cmd.exe",
-			"args": [
-				"/c",
-				"C:\\msys64\\msys2_shell.cmd -defterm -here -no-start -mingw64"
-			]
-		},
-		"MSYS2 CLANG64": {
-			"path": "cmd.exe",
-			"args": [
-				"/c",
-				"C:\\msys64\\msys2_shell.cmd -defterm -here -no-start -clang64"
-			]
-		},
-		"MSYS2 MINGW32": {
-			"path": "cmd.exe",
-			"args": [
-				"/c",
-				"C:\\msys64\\msys2_shell.cmd -defterm -here -no-start -mingw32"
-			]
-		},
-		"MSYS2 CLANG32": {
-			"path": "cmd.exe",
-			"args": [
-				"/c",
-				"C:\\msys64\\msys2_shell.cmd -defterm -here -no-start -clang32"
-			]
-		},
-		"MSYS2 CLANGARM64": {
-			"path": "cmd.exe",
-			"args": [
-				"/c",
-				"C:\\msys64\\msys2_shell.cmd -defterm -here -no-start -clangarm64"
-			]
-		},
-		"MSYS2 MSYS64": {
-			"path": "cmd.exe",
-			"args": [
-				"/c",
-				"C:\\msys64\\msys2_shell.cmd -defterm -here -no-start -msys2"
-			]
-		}
-  },
-
-  "C_Cpp.vcpkg.enabled": true,
-  "C_Cpp.autoAddFileAssociations": true,
-  "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools",
-
-	"files.exclude": {
-		"**/.git": true,
-		"**/.svn": true,
-		"**/.hg": true,
-		"**/CVS": true,
-		"**/.DS_Store": true,
-		"**/Thumbs.db": true,
-
-		"Desktop": true,
-		"Development": true,
-		"Documents": true,
-		"Downloads": true,
-		"Music": true,
-		"Pictures": true,
-		"Templates": true,
-		"Videos": true
-	},
-
-  "C_Cpp.files.exclude": {
-		"**/.bak/**": true,
-		"**/.bash_history": true,
-		"**/.bash_logout": true,
-		"**/.bash_profile": true,
-		"**/.bashrc": true,
-		"**/.certs": true,
-		"**/.designer": true,
-		"**/.docker": true,
-		"**/.dotnet": true,
-		"**/.gnome": true,
-		"**/.gnupg": true,
-		"**/.idlerc": true,
-		"**/.lv2": true,
-		"**/.modules": true,
-		"**/.npm": true,
-		"**/.nvm": true,
-		"**/.subversion": true,
-		"**/.password-store": true,
-		"**/.pgadmin": true,
-		"**/.pki": true,
-		"**/.postman": true,
-		"**/.profile": true,
-		"**/.ssh": true,
-		"**/.ssl": true,
-		"**/.sudo_as_admin_successful": true,
-		"**/.supabase": true,
-		"**/.wget-hsts": true,
-		"**/.vscode": true,
-		"**/.vscode-remote-containers": true,
-		"**/.vscode-server": true,
-		"**/.vs": true
-	},
-
-	"files.associations": {
-		"**.bash**": "shellscript",
-		"**.cmake": "cmake",
-		"ignore": "ignore",
-		".editorconfig": "editorconfig",
-
-		"array": "cpp",
-		"atomic": "cpp",
-		"bit": "cpp",
-		"*.tcc": "cpp",
-		"cctype": "cpp",
-		"clocale": "cpp",
-		"cmath": "cpp",
-		"compare": "cpp",
-		"complex": "cpp",
-		"concepts": "cpp",
-		"cstdarg": "cpp",
-		"cstddef": "cpp",
-		"cstdint": "cpp",
-		"cstdio": "cpp",
-		"cstdlib": "cpp",
-		"cstring": "cpp",
-		"ctime": "cpp",
-		"cwchar": "cpp",
-
-		"exception": "cpp",
-		"initializer_list": "cpp",
-		"ios": "cpp",
-		"iosfwd": "cpp",
-		"istream": "cpp",
-		"iterator": "cpp",
-		"limits": "cpp",
-		"memory": "cpp",
-		"new": "cpp",
-		"ostream": "cpp",
-		"sstream": "cpp",
-		"stdexcept": "cpp",
-		"streambuf": "cpp",
-		"string": "cpp",
-		"system_error": "cpp",
-		"tuple": "cpp",
-		"type_traits": "cpp",
-		"typeinfo": "cpp",
-		"utility": "cpp",
-		"vector": "cpp",
-		"xfacet": "cpp",
-		"xiosbase": "cpp",
-		"xlocale": "cpp",
-		"xlocinfo": "cpp",
-		"xlocnum": "cpp",
-		"xmemory": "cpp",
-		"xstddef": "cpp",
-		"xstring": "cpp",
-		"xtr1common": "cpp",
-		"xutility": "cpp",
-		"algorithm": "cpp",
-		"any": "cpp",
-		"charconv": "cpp",
-		"chrono": "cpp",
-		"codecvt": "cpp",
-		"condition_variable": "cpp",
-		"coroutine": "cpp",
-		"csignal": "cpp",
-		"cwctype": "cpp",
-		"deque": "cpp",
-		"filesystem": "cpp",
-		"format": "cpp",
-		"forward_list": "cpp",
-		"fstream": "cpp",
-		"functional": "cpp",
-		"future": "cpp",
-		"iomanip": "cpp",
-		"iostream": "cpp",
-		"list": "cpp",
-		"locale": "cpp",
-		"map": "cpp",
-		"mutex": "cpp",
-		"numeric": "cpp",
-		"optional": "cpp",
-		"queue": "cpp",
-		"random": "cpp",
-		"ratio": "cpp",
-		"regex": "cpp",
-		"set": "cpp",
-		"shared_mutex": "cpp",
-		"source_location": "cpp",
-		"stack": "cpp",
-		"stop_token": "cpp",
-		"strstream": "cpp",
-		"thread": "cpp",
-		"typeindex": "cpp",
-		"unordered_map": "cpp",
-		"unordered_set": "cpp",
-		"variant": "cpp",
-		"xhash": "cpp",
-		"xlocbuf": "cpp",
-		"xlocmes": "cpp",
-		"xlocmon": "cpp",
-		"xloctime": "cpp",
-		"xtree": "cpp"
-	}
+      "fileMatch": [
+        "**/vcpkg.json"
+      ],
+      "url": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json"
+    },
+    {
+      "fileMatch": [
+        "**/vcpkg-configuration.json"
+      ],
+      "url": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg-configuration.schema.json"
+    }
+	]
 }
