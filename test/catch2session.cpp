@@ -15,7 +15,7 @@ STONEYDSP_EXTERN_C_BEGIN
 STONEYDSP_API stoneydsp_test_args stoneydspTestArgs = "";
 STONEYDSP_EXTERN_C_END
 
-int STONEYDSP_NAMESPACE_QUAL(stoneydsp::test)run() {
+int STONEYDSP_PUBLIC_FUNCTION STONEYDSP_NAMESPACE_QUAL(stoneydsp::test)run() {
 
     // Create Catch2 session
     Catch::Session session;
