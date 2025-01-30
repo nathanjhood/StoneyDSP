@@ -1,8 +1,8 @@
 include ./arch.mk
 
 # Compilers and tools
-CC := cc
-CXX := c++
+CC := gcc
+CXX := g++
 CPP := cpp
 LD := ld
 GDB := gdb
