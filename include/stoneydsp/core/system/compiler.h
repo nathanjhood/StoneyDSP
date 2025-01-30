@@ -14,6 +14,10 @@
 
 //==============================================================================
 
+#include "stoneydsp/core/system/platform.h"
+
+//==============================================================================
+
 // TODO: remove this and include the appropriate other file instead
 #ifndef STONEYDSP_STRINGIFY
   # define STONEYDSP_STRINGIFY_HELPER(n) #n
@@ -58,17 +62,51 @@
  * as the standard for StoneyDSP calls.
  */
 
-#if STONEYDSP_MSVC
-	/** @brief Specifies a calling convention where the callee cleans up the stack. */
-  #define STONEYDSP_CALLTYPE __stdcall
-	/** @brief Specifies a calling convention where the caller cleans up the stack. */
-  #define STONEYDSP_CDECL __cdecl
-#else
-	/** @brief Specifies a calling convention where the callee cleans up the stack. */
-  #define STONEYDSP_CALLTYPE __attribute__((stdcall))
-	/** @brief Specifies a calling convention where the caller cleans up the stack. */
-  #define STONEYDSP_CDECL __attribute__((cdecl))
+#if defined (STONEYDSP_32BIT)
+	#if defined (STONEYDSP_MSVC)
+		/** @brief Specifies a calling convention where the callee cleans up the stack. */
+		#define STONEYDSP_CALLTYPE __stdcall
+		/** @brief Specifies a calling convention where the caller cleans up the stack. */
+		#define STONEYDSP_CDECL __cdecl
+	#elif defined (STONEYDSP_MINGW)
+		/** @brief Specifies a calling convention where the callee cleans up the stack. */
+		#define STONEYDSP_CALLTYPE __attribute__((stdcall))
+	#else
+		#error unknown calling convention
+	#endif
+#elif defined (STONEYDSP_64BIT)
+	#if defined (STONEYDSP_MSVC)
+		/** @brief Specifies a calling convention where the callee cleans up the stack. */
+		#define STONEYDSP_CALLTYPE __stdcall
+		/** @brief Specifies a calling convention where the caller cleans up the stack. */
+		#define STONEYDSP_CDECL __cdecl
+	#elif defined (STONEYDSP_MINGW)
+		/** @brief Specifies a calling convention where the callee cleans up the stack. */
+		#define STONEYDSP_CALLTYPE __attribute__((ms_abi))
+	#elif defined (STONEYDSP_GCC) || defined (STONEYDSP_CLANG)
+			/** @brief Specifies a calling convention where the callee cleans up the stack. */
+		#define STONEYDSP_CALLTYPE __attribute__((sysv_abi))
+	#else
+		#error unknown calling convention
+	#endif
 #endif
+
+// #if STONEYDSP_MSVC
+// 	/** @brief Specifies a calling convention where the callee cleans up the stack. */
+//   #define STONEYDSP_CALLTYPE __stdcall
+// 	/** @brief Specifies a calling convention where the caller cleans up the stack. */
+//   #define STONEYDSP_CDECL __cdecl
+// #else
+// 		/** @brief Specifies a calling convention where the caller cleans up the stack. */
+// 		#define STONEYDSP_CDECL __attribute__((cdecl))
+//   #if STONEYDSP_32BIT
+// 		/** @brief Specifies a calling convention where the callee cleans up the stack. */
+// 		#define STONEYDSP_CALLTYPE __attribute__((stdcall))
+// 	#elif STONEYDSP_64BIT
+// 		/** @brief Specifies a calling convention where the callee cleans up the stack. */
+// 		#define STONEYDSP_CALLTYPE __attribute__((ms_abi))
+// 	#endif
+// #endif
 
 //==============================================================================
 
