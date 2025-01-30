@@ -181,9 +181,7 @@
 			"environment": {
 				"RACK_USER_DIR": "$penv{HOME}/Library/Application Support/Rack2",
 				"ARCH_OS": "mac",
-				"ARCH_MAC": "1",
-				"CMAKE_OSX_ARCHITECTURES": "x86_64;arm64",
-				"VCPKG_OSX_ARCHITECTURES": "x86_64;arm64"
+				"ARCH_MAC": "1"
 			}
 		},
 		{
@@ -269,7 +267,9 @@
 			"environment": {
 				"VCPKG_DEFAULT_TRIPLET": "x64-osx",
 				"VCPKG_DEFAULT_TARGET_TRIPLET": "x64-osx",
-				"PKG_CONFIG_PATH": "${sourceDir}/build/vcpkg_installed/x64-osx/lib/pkgconfig${pathListSep}$penv{PKG_CONFIG_PATH}"
+				"PKG_CONFIG_PATH": "${sourceDir}/build/vcpkg_installed/x64-osx/lib/pkgconfig${pathListSep}$penv{PKG_CONFIG_PATH}",
+				"CMAKE_OSX_ARCHITECTURES": "x86_64",
+				"VCPKG_OSX_ARCHITECTURES": "x86_64"
 			},
 			"vendor": {
 				"microsoft.com/VisualStudioSettings/CMake/1.0": {
@@ -304,7 +304,9 @@
 			"environment": {
 				"VCPKG_DEFAULT_TRIPLET": "arm64-osx",
 				"VCPKG_DEFAULT_TARGET_TRIPLET": "arm64-osx",
-				"PKG_CONFIG_PATH": "${sourceDir}/build/vcpkg_installed/arm64-osx/lib/pkgconfig${pathListSep}$penv{PKG_CONFIG_PATH}"
+				"PKG_CONFIG_PATH": "${sourceDir}/build/vcpkg_installed/arm64-osx/lib/pkgconfig${pathListSep}$penv{PKG_CONFIG_PATH}",
+				"CMAKE_OSX_ARCHITECTURES": "arm64",
+				"VCPKG_OSX_ARCHITECTURES": "arm64"
 			},
 			"vendor": {
 				"microsoft.com/VisualStudioSettings/CMake/1.0": {
