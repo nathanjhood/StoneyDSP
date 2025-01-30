@@ -1,8 +1,8 @@
 include ./arch.mk
 
 # Compilers and tools
-CC := gcc
-CXX := g++
+CC := cc
+CXX := c++
 CPP := cpp
 LD := ld
 GDB := gdb
@@ -28,10 +28,10 @@ else
 endif
 
 # Source files
-CORE_SRC := $(wildcard src/stoneydsp/core/core.cpp src/stoneydsp/core/core.mm)
+CORE_SRC := $(wildcard src/stoneydsp/core/core.cpp)
 DSP_SRC := $(wildcard src/stoneydsp/dsp/dsp.cpp)
 SIMD_SRC := $(wildcard src/stoneydsp/simd/simd.cpp)
-LIB_SRC := $(wildcard src/stoneydsp/stoneydsp.cpp src/stoneydsp/stoneydsp.mm)
+LIB_SRC := $(wildcard src/stoneydsp/stoneydsp.cpp)
 
 # Object files
 CORE_OBJ := $(CORE_SRC:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/src/%.cpp.o)
