@@ -1,0 +1,38 @@
+/**
+ * @file catch2session.hpp
+ * @author StoneyDSP (nathanjhood@googlemail.com)
+ * @brief
+ * @version @STONEYDSP_TEST_CATCH2_SESSION_VERSION@
+ * @date 2025-01-29
+ *
+ * @copyright Copyright (c) 2025
+ *
+ */
+
+#ifndef STONEYDSP_TEST_CATCH2_SESSION_HPP_INCLUDED
+#define STONEYDSP_TEST_CATCH2_SESSION_HPP_INCLUDED
+
+#if defined (STONEYDSP_BUILD_TEST)
+
+#include <stoneydsp/stoneydsp.h>
+
+#include <vector>
+#include <string>
+#include <sstream>
+
+STONEYDSP_NAMESPACE_BEGIN(stoneydsp)
+STONEYDSP_NAMESPACE_BEGIN(test)
+using args_t = ::std::string;
+int run();
+STONEYDSP_NAMESPACE_END
+STONEYDSP_NAMESPACE_END
+
+STONEYDSP_EXTERN_C_BEGIN
+typedef STONEYDSP_NAMESPACE_QUAL(stoneydsp::test)args_t stoneydsp_test_args_t;
+typedef stoneydsp_test_args_t stoneydsp_test_args;
+STONEYDSP_API extern stoneydsp_test_args stoneydspTestArgs;
+STONEYDSP_EXTERN_C_END
+
+#endif // defined (STONEYDSP_BUILD_TEST)
+
+#endif // STONEYDSP_TEST_CATCH2_SESSION_HPP_INCLUDED
