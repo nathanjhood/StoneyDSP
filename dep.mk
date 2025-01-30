@@ -25,14 +25,20 @@ VCPKG_ROOT ?= ./dep/vcpkg
 VCPKG := $(VCPKG_ROOT)/vcpkg
 
 STONEYDSP_EXTERNAL_DEPS :=
-# EXTERNAL_DEPS += Rack-SDK
 STONEYDSP_EXTERNAL_DEPS += catch2
 
 PKG_CONFIG_PATH += build/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/lib/pkgconfig
 
-LIB_CATCH := build/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/lib/libCatch2.a
+ifdef DEBUG
+	FLAGS += -Lbuild/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/lib/debug
+	LIB_CATCH := Catch2d
+	LIB_CATCH_PATH := build/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/lib/debug
+else
+	FLAGS += -Lbuild/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/lib
+	LIB_CATCH := Catch2
+	LIB_CATCH_PATH := build/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/lib
+endif
 
-FLAGS += -Lbuild/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/lib
 CFLAGS += -Ibuild/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/include
 CXXFLAGS += -Ibuild/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/include
 CPPFLAGS += -Ibuild/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/include

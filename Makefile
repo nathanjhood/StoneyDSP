@@ -76,8 +76,8 @@ endif
 all: dep libstoneydsp.$(LIB_EXT) $(TEST_TARGET)
 
 include ./version.mk
-include ./dep.mk
 include ./presets.mk
+include ./dep.mk
 
 # Distribution build
 libstoneydsp.$(LIB_EXT): $(OBJECTS)
@@ -85,8 +85,11 @@ libstoneydsp.$(LIB_EXT): $(OBJECTS)
 
 # Test executable
 ifdef STONEYDSP_BUILD_TEST
-$(TEST_TARGET): $(TEST_OBJ) libstoneydsp.$(LIB_EXT)
-	$(CXX) $(LDFLAGS) -o $@ $^ $(LIB_CATCH)
+
+$(LIB_CATCH_PATH)/lib$(LIB_CATCH).a: dep
+
+$(TEST_TARGET): $(TEST_OBJ) libstoneydsp.$(LIB_EXT) $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a
+	$(CXX) $(LDFLAGS) -o $@ $^
 
 run: $(TEST_TARGET)
 	./$(TEST_TARGET) $(TEST_ARGS)
