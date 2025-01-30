@@ -1,0 +1,105 @@
+name: windows
+
+on:
+  # Runs on all pushes
+  push:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# When pushing new commits, cancel any running builds on that branch
+concurrency:
+  group: windows-latest-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DISPLAY: :0
+  CMAKE_BUILD_PARALLEL_LEVEL: 3
+  CMAKE_INSTALL_PARALLEL_LEVEL: 3
+  VCPKG_MAX_CONCURRENCY: 3
+  VCPKG_MANIFEST_MODE: ON
+  VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  MSYSTEM: "MINGW64"
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+
+    steps:
+
+      # Requirements
+
+    - name: install System Deps
+      uses: msys2/setup-msys2@v2
+      with:
+        msystem: MINGW64
+        update: true
+        install: >-
+          --needed
+          base-devel
+          coreutils
+          git
+          curl
+          wget
+          make
+          tar
+          unzip
+          ccache
+          mingw-w64-x86_64-gcc
+          mingw-w64-x86_64-gdb
+          mingw-w64-x86_64-cmake
+          mingw-w64-x86_64-catch
+          mingw-w64-x86_64-ninja
+          autoconf
+          automake
+          libtool
+          mingw-w64-x86_64-jq
+          python
+          zstd
+          mingw-w64-x86_64-pkgconf
+          tree
+          ninja
+
+    - name: checkout StoneyDSP
+      uses: actions/checkout@v4
+      with:
+        submodules: true
+        fetch-depth: 0
+
+    # CI helper (don't do this at home)
+    - name: Enable GitHub Actions Cache backend
+      uses: actions/github-script@v7
+      with:
+        script: |
+          core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
+          core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
+
+    - name: make dep
+      shell: msys2 {0}
+      run: make dep -j 3 STONEYDSP_BUILD_TEST=1
+
+    # Developer workflow
+
+    - name: make workflow
+      shell: msys2 {0}
+      run: make workflow -j 3 STONEYDSP_BUILD_TEST=1
+
+    # Deployment workflow
+
+    - name: make
+      shell: msys2 {0}
+      run: make -j 3 STONEYDSP_BUILD_TEST=1
+
+    - name: make run
+      shell: msys2 {0}
+      run: make run -j 3 STONEYDSP_BUILD_TEST=1
+
+    # List all artefact directories
+
+    - name: tree
+      shell: msys2 {0}
+      run: |
+        tree ./install
