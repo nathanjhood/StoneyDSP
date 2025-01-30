@@ -2,28 +2,49 @@
 	"$schema": "https://cmake.org/cmake/help/latest/_downloads/3e2d73bff478d88a7de0de736ba5e361/schema.json",
 	"version": 10,
 	"cmakeMinimumRequired": {
-    "major": 3,
-    "minor": 31,
-    "patch": 0
-  },
+		"major": 3,
+		"minor": 31,
+		"patch": 0
+	},
 	"configurePresets": [
-    {
-      "name": "options",
-      "hidden": true,
-      "cacheVariables": {
-        "STONEYDSP_EXPERIMENTAL": {
-          "value": "OFF",
-          "type": "BOOL"
-        },
-        "STONEYDSP_BUILD_DOCS": {
-          "value": "OFF",
-          "type": "BOOL"
-        },
-        "STONEYDSP_BUILD_TESTS": {
-          "value": "ON",
-          "type": "BOOL"
-        }
+		{
+			"name": "options",
+			"hidden": true,
+			"cacheVariables": {
+				"STONEYDSP_EXPERIMENTAL": {
+					"value": "OFF",
+					"type": "BOOL"
+				},
+				"STONEYDSP_BUILD_DOCS": {
+					"value": "OFF",
+					"type": "BOOL"
+				},
+				"STONEYDSP_BUILD_CORE": {
+					"value": "ON",
+					"type": "BOOL"
+				},
+				"STONEYDSP_BUILD_SIMD": {
+					"value": "OFF",
+					"type": "BOOL"
+				},
+				"STONEYDSP_BUILD_DSP": {
+					"value": "OFF",
+					"type": "BOOL"
+				},
+				"STONEYDSP_BUILD_TEST": {
+					"value": "ON",
+					"type": "BOOL"
+				}
 			}
+		}
+	],
+	"packagePresets": [
+		{
+			"name": "options",
+			"hidden": true,
+			"vendorName": "StoneyDSP",
+			"packageName": "StoneyDSP",
+			"packageDirectory": "${sourceDir}/install"
 		}
 	]
 }
