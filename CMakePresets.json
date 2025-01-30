@@ -181,7 +181,9 @@
 			"environment": {
 				"RACK_USER_DIR": "$penv{HOME}/Library/Application Support/Rack2",
 				"ARCH_OS": "mac",
-				"ARCH_MAC": "1"
+				"ARCH_MAC": "1",
+				"CMAKE_OSX_ARCHITECTURES": "x86_64;arm64",
+				"VCPKG_OSX_ARCHITECTURES": "x86_64;arm64"
 			}
 		},
 		{
