@@ -11,10 +11,10 @@ OBJCOPY ?= objcopy
 include ./flags.mk
 
 # Directories
+BUILD_DIR := build
 INCLUDE_DIR := $(BUILD_DIR)/include
 SRC_DIR := src
 TEST_DIR := test
-BUILD_DIR := build
 
 BUILD_SHARED ?= 1
 
