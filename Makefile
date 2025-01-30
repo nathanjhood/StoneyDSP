@@ -86,7 +86,8 @@ libstoneydsp.$(LIB_EXT): $(OBJECTS)
 # Test executable
 ifdef STONEYDSP_BUILD_TEST
 
-$(LIB_CATCH_PATH)/lib$(LIB_CATCH).a: dep
+$(LIB_CATCH_PATH)/lib$(LIB_CATCH).a:
+	$(VCPKG) install
 
 $(TEST_TARGET): $(TEST_OBJ) libstoneydsp.$(LIB_EXT) $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a
 	$(CXX) $(LDFLAGS) -o $@ $^
