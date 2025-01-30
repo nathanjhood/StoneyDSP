@@ -59,6 +59,7 @@ jobs:
           mingw-w64-x86_64-jq
           python
           zstd
+          xxd
           mingw-w64-x86_64-pkgconf
           tree
           ninja
