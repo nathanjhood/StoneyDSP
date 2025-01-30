@@ -1,0 +1,77 @@
+name: ubuntu
+
+on:
+  # Runs on all pushes
+  push:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# When pushing new commits, cancel any running builds on that branch
+concurrency:
+  group: ubuntu-latest-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DISPLAY: :0
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  CMAKE_BUILD_PARALLEL_LEVEL: 3
+  CMAKE_INSTALL_PARALLEL_LEVEL: 3
+  VCPKG_MAX_CONCURRENCY: 3
+  VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
+
+jobs:
+  ubuntu:
+    runs-on: ubuntu-latest
+
+    steps:
+
+    # Requirements
+
+    # https://vcvrack.com/manual/Building#Setting-up-your-development-environment
+    - name: Install System Deps
+      shell: bash
+      run: |
+        sudo apt-get update
+        sudo apt install coreutils unzip git gdb valgrind cmake jq zstd pkg-config ninja-build ccache tree
+
+    - name: checkout StoneyVCV
+      uses: actions/checkout@v4
+      with:
+        submodules: true
+        fetch-depth: 0
+
+    # CI helpers (don't do this at home)
+    - name: Enable GitHub Actions Cache backend
+      uses: actions/github-script@v7
+      with:
+        script: |
+          core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
+          core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
+
+    - name: make dep
+      shell: bash
+      run: make dep -j 3
+
+    # Developer workflow
+
+    - name: make workflow
+      shell: bash
+      run: make workflow -j 3 STONEYDSP_BUILD_TEST=1
+
+    # Deployment workflow
+
+    - name: make
+      shell: bash
+      run: make -j 3 STONEYDSP_BUILD_TEST=1
+
+    - name: make run
+      shell: bash
+      run: make run -j 3 STONEYDSP_BUILD_TEST=1
+
+    # List all artefact directories
+
+    - name: tree
+      shell: bash
+      run: |
+        tree ${{ github.workspace }}/dist
+        tree ${{ github.workspace }}/install
