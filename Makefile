@@ -11,7 +11,7 @@ OBJCOPY ?= objcopy
 include ./flags.mk
 
 # Directories
-INCLUDE_DIR := include
+INCLUDE_DIR := $(BUILD_DIR)/include
 SRC_DIR := src
 TEST_DIR := test
 BUILD_DIR := build
@@ -133,6 +133,16 @@ $(BUILD_DIR)/test/%.cpp.o: $(TEST_DIR)/%.cpp
 
 build/%.html: %.md
 	markdown $< > $@
+
+PREFIX ?= /usr/local
+
+install: libstoneydsp.a
+	@mkdir -p $(PREFIX)/lib
+	@mkdir -p $(PREFIX)/include/stoneydsp
+	@cp libstoneydsp.a $(PREFIX)/lib/
+	@cp -r $(BUILD_DIR)/include/stoneydsp $(PREFIX)/include/
+	@echo "StoneyDSP Library and headers installed to $(PREFIX)"
+
 
 # Clean up build files
 clean:
