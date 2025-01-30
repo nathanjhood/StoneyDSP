@@ -1,18 +1,106 @@
 {
-  "name": "stoneydsp",
-  "version": "0.0.0",
-  "license": "MIT",
-  "description": "The StoneyDSP Audio Library",
-  "homepage": "https://github.com/StoneyDSP/StoneyDSP",
+	"name": "stoneydsp",
+	"version": "2.0.296",
+	"license": "MIT",
+	"description": "The StoneyDSP Audio Library.",
+	"homepage": "https://github.com/StoneyDSP/StoneyDSP",
 	"supports": "(linux & x64)|(osx & x64)|(osx & arm64)|(windows & mingw & x64)",
-  "dependencies": [
-    {
-      "name": "vcpkg-cmake",
-      "host": true
-    },
-    {
-      "name": "vcpkg-cmake-config",
-      "host": true
-    }
-  ]
+	"dependencies": [
+		{
+			"name": "vcpkg-cmake",
+			"host": true
+		},
+		{
+			"name": "vcpkg-cmake-config",
+			"host": true
+		},
+		{
+			"name": "catch2",
+			"version>=": "3.7.1",
+			"default-features": false,
+			"features": []
+		},
+		{
+			"name": "simde",
+			"version>=": "0.8.2",
+			"default-features": false,
+			"features": []
+		}
+	],
+	"default-features": [],
+	"features": {
+		"simd": {
+			"description": "SIMD data types for optimized performance.",
+			"dependencies": [
+				{
+					"name": "stoneydsp",
+					"version>=": "0.0.0",
+					"default-features": true
+				},
+				{
+					"name": "simde",
+					"version>=": "0.8.2",
+					"default-features": true
+				}
+			]
+		},
+		"dsp": {
+			"description": "The DSP (digital signal processing) features and functionalities of StoneyDSP.",
+			"dependencies": [
+				{
+					"name": "stoneydsp",
+					"version>=": "0.0.0",
+					"default-features": true
+				}
+			]
+		},
+		"catch2session": {
+			"description": "Unit-tests with Catch2.",
+			"dependencies": [
+				{
+					"name": "stoneydsp",
+					"version>=": "0.0.0",
+					"default-features": true
+				},
+				{
+					"name": "catch2",
+					"version>=": "3.7.1",
+					"default-features": true
+				}
+			]
+		},
+		"test": {
+			"description": "Unit-tests entry point.",
+			"dependencies": [
+				{
+					"name": "stoneydsp",
+					"version>=": "0.0.0",
+					"default-features": true,
+					"features": [
+						"catch2session"
+					]
+				}
+			]
+		},
+		"doc": {
+			"description": "Documentation with Doxygen.",
+			"dependencies": [
+				{
+					"name": "stoneydsp",
+					"version>=": "0.0.0",
+					"default-features": true
+				}
+			]
+		}
+	},
+	"overrides": [
+		{
+			"name": "catch2",
+			"version": "3.7.1"
+		},
+		{
+			"name": "simde",
+			"version": "0.8.2"
+		}
+	]
 }
