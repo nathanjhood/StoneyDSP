@@ -1,6 +1,13 @@
 # StoneyDSP
 
-The StoneyDSP Audio Library.
+The StoneyDSP audio Library.
+
+---
+[![windows](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/windows-latest.yml/badge.svg)](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/windows-latest.yml)
+[![macos](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/macos-latest.yml/badge.svg)](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/macos-latest.yml)
+[![ubuntu](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/ubuntu-latest.yml/badge.svg)](https://github.com/StoneyDSP/StoneyDSP/actions/workflows/ubuntu-latest.yml)
+
+---
 
 ## Contents
 
