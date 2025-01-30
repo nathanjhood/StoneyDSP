@@ -28,7 +28,7 @@ else
 endif
 
 # Source files
-CORE_SRC := $(wildcard src/stoneydsp/core/core.cpp)
+CORE_SRC := $(wildcard src/stoneydsp/core/core.cpp src/stoneydsp/core/core.mm)
 DSP_SRC := $(wildcard src/stoneydsp/dsp/dsp.cpp)
 SIMD_SRC := $(wildcard src/stoneydsp/simd/simd.cpp)
 LIB_SRC := $(wildcard src/stoneydsp/stoneydsp.cpp src/stoneydsp/stoneydsp.mm)
@@ -139,24 +139,24 @@ clean:
 	rm -rvf libstoneydsp.$(LIB_EXT) $(TEST_TARGET) $(BUILD_DIR)/src/*.o $(BUILD_DIR)/test/*.o
 
 # clean:
-# 	rm -rvf $(OBJ_DIR)/*.o
-# 	rm -rvf $(OBJ_DIR)/*.c.o
-# 	rm -rvf $(OBJ_DIR)/*.cpp.o
-# 	rm -rvf $(OBJ_DIR)/**/*.o
-# 	rm -rvf $(OBJ_DIR)/**/*.c.o
-# 	rm -rvf $(OBJ_DIR)/**/*.cpp.o
-# 	rm -rvf $(OBJ_DIR)/**/**/*.o
-# 	rm -rvf $(OBJ_DIR)/**/**/*.c.o
-# 	rm -rvf $(OBJ_DIR)/**/**/*.cpp.o
-# 	rm -rvf $(OBJ_DIR)/*.d
-# 	rm -rvf $(OBJ_DIR)/*.c.d
-# 	rm -rvf $(OBJ_DIR)/*.cpp.d
-# 	rm -rvf $(OBJ_DIR)/**/*.d
-# 	rm -rvf $(OBJ_DIR)/**/*.c.d
-# 	rm -rvf $(OBJ_DIR)/**/*.cpp.d
-# 	rm -rvf $(OBJ_DIR)/**/**/*.d
-# 	rm -rvf $(OBJ_DIR)/**/**/*.c.d
-# 	rm -rvf $(OBJ_DIR)/**/**/*.cpp.d
+# 	rm -rvf $(BUILD_DIR)/*.o
+# 	rm -rvf $(BUILD_DIR)/*.c.o
+# 	rm -rvf $(BUILD_DIR)/*.cpp.o
+# 	rm -rvf $(BUILD_DIR)/**/*.o
+# 	rm -rvf $(BUILD_DIR)/**/*.c.o
+# 	rm -rvf $(BUILD_DIR)/**/*.cpp.o
+# 	rm -rvf $(BUILD_DIR)/**/**/*.o
+# 	rm -rvf $(BUILD_DIR)/**/**/*.c.o
+# 	rm -rvf $(BUILD_DIR)/**/**/*.cpp.o
+# 	rm -rvf $(BUILD_DIR)/*.d
+# 	rm -rvf $(BUILD_DIR)/*.c.d
+# 	rm -rvf $(BUILD_DIR)/*.cpp.d
+# 	rm -rvf $(BUILD_DIR)/**/*.d
+# 	rm -rvf $(BUILD_DIR)/**/*.c.d
+# 	rm -rvf $(BUILD_DIR)/**/*.cpp.d
+# 	rm -rvf $(BUILD_DIR)/**/**/*.d
+# 	rm -rvf $(BUILD_DIR)/**/**/*.c.d
+# 	rm -rvf $(BUILD_DIR)/**/**/*.cpp.d
 # 	rm -rvf $(TEST_OBJ_DIR)/*.o
 # 	rm -rvf $(TEST_OBJ_DIR)/*.c.o
 # 	rm -rvf $(TEST_OBJ_DIR)/*.cpp.o
