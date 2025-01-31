@@ -170,6 +170,23 @@
 
 //==============================================================================
 
+// Define wide character support macros
+#if STONEYDSP_WINDOWS
+  #define STONEYDSP_SUPPORTS_WIDECHARS 1
+#else
+  #if __cplusplus >= 201103L || (__GNUC__ >= 5)
+    #define STONEYDSP_SUPPORTS_WIDECHARS 1
+  #endif
+#endif
+
+//==============================================================================
+
+// #if STONEYDSP_ARM && STONEYDSP_USING_INT64_2 != 0
+//  #define STONEYDSP_USING_INT64_2 1
+// #endif
+
+//==============================================================================
+
 #endif // STONEYDSP_CORE_SYSTEM_PLATFORM_H_INCLUDED
 
 //==============================================================================
