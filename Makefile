@@ -90,7 +90,7 @@ $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a:
 	$(VCPKG) install
 
 $(TEST_TARGET): $(TEST_OBJ) libstoneydsp.$(LIB_EXT) $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a
-	$(CXX) $(LDFLAGS) -o $@ $^
+	$(CXX) $(LDFLAGS) -o $@ $^ $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a
 
 run: $(TEST_TARGET)
 	./$(TEST_TARGET) $(TEST_ARGS)
