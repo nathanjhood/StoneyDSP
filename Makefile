@@ -18,6 +18,9 @@ LD := ld
 GDB := gdb
 OBJCOPY ?= objcopy
 CMAKE := cmake
+GIT := git
+ZIP := ZIP
+UNZIP := unzip
 
 include ./flags.mk
 
@@ -87,10 +90,52 @@ endif
 all: dep libstoneydsp.$(LIB_EXT) $(TEST_TARGET)
 
 include ./version.mk
-include ./dep.mk
+
+# include ./dep.mk
+
+# Fetch submodules
+submodules:
+	$(shell $(GIT) submodule update --init --recursive)
+.PHONY: submodules
+
+# Fetch vcpkg
+./dep/vcpkg: submodules
+
+# Bootstrap vcpkg
+./dep/vcpkg/bootstrap-vcpkg.sh: ./dep/vcpkg
+
+# Use vcpkg
+./dep/vcpkg/vcpkg: ./dep/vcpkg/bootstrap-vcpkg.sh
+
+.PHONY: ./dep/vcpkg ./dep/vcpkg/bootstrap-vcpkg.sh ./dep/vcpkg/vcpkg
+
+VCPKG_ROOT ?= ./dep/vcpkg
+VCPKG := $(VCPKG_ROOT)/vcpkg
+
+STONEYDSP_EXTERNAL_DEPS := catch2
+
+PKG_CONFIG_PATH += build/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/lib/pkgconfig
+
+ifdef DEBUG
+	FLAGS += -Lbuild/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/lib/debug
+	LIB_CATCH := Catch2d
+	LIB_CATCH_PATH := build/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/lib/debug
+else
+	FLAGS += -Lbuild/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/lib
+	LIB_CATCH := Catch2
+	LIB_CATCH_PATH := build/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/lib
+endif
+
+CFLAGS += -Ibuild/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/include
+CXXFLAGS += -Ibuild/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/include
+CPPFLAGS += -Ibuild/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/include
+
+ifdef STONEYDSP_BUILD_TEST
+	LDFLAGS += -L$(LIB_CATCH_PATH)
+	LDFLAGS += -lCatch2
+endif
 
 # include ./presets.mk
-CMAKE := cmake
 
 reconfigure: submodules
 	VCPKG_ROOT=$(VCPKG_ROOT) $(CMAKE) \
