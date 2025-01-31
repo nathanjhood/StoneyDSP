@@ -436,7 +436,7 @@ ifdef BUILD_TEST
 # Pattern rules for test files
 $(BUILD_DIR)/test/%.cpp.o: $(TEST_DIR)/%.cpp $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -I$(BUILD_DIR)/test -c $< -o $@
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -I$(BUILD_DIR)/test -c $< -o $@ $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a
 endif
 
 # build/%.bin.o: %
