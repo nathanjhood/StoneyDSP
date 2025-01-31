@@ -182,6 +182,12 @@
 				"RACK_USER_DIR": "$penv{HOME}/Library/Application Support/Rack2",
 				"ARCH_OS": "mac",
 				"ARCH_MAC": "1"
+			},
+			"cacheVariables": {
+				"CMAKE_OSX_DEPLOYMENT_TARGET": {
+					"type": "STRING",
+					"value": "10.9"
+				}
 			}
 		},
 		{
