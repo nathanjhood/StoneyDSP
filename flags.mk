@@ -1,6 +1,6 @@
 # Standards
-C_STANDARD ?= 11
-CXX_STANDARD ?= 11
+C_STANDARD ?= 17
+CXX_STANDARD ?= 17
 
 # The macro NDEBUG controls whether assert() statements are active or not.
 ifdef DEBUG
