@@ -14,9 +14,11 @@ ECHO := echo
 # Compilers and tools
 CC := gcc
 CXX := g++
-CPP := cpp
-LD := ld
-GDB := gdb
+CPP := $(CXX) -E
+ASM := $(CXX) -S
+AR := ar
+LD ?= ld
+GDB ?= gdb
 OBJCOPY ?= objcopy
 CMAKE := cmake
 GIT := git
@@ -434,7 +436,7 @@ ifdef BUILD_TEST
 # Pattern rules for test files
 $(BUILD_DIR)/test/%.cpp.o: $(TEST_DIR)/%.cpp $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -I$(BUILD_DIR)/test -c $< -o $@
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -I$(BUILD_DIR)/test -c $< $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a -o $@
 endif
 
 # build/%.bin.o: %
