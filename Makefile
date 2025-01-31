@@ -1,3 +1,13 @@
+# Default target executed when no arguments are given to make.
+default_target: all
+.PHONY : default_target
+
+# Allow only one "make -f Makefile2" at a time, but pass parallelism.
+.NOTPARALLEL:
+
+# The shell in which to execute make rules.
+SHELL = /bin/sh
+
 include ./arch.mk
 
 # Compilers and tools
@@ -7,6 +17,7 @@ CPP := cpp
 LD := ld
 GDB := gdb
 OBJCOPY ?= objcopy
+CMAKE := cmake
 
 include ./flags.mk
 
@@ -77,7 +88,63 @@ all: dep libstoneydsp.$(LIB_EXT) $(TEST_TARGET)
 
 include ./version.mk
 include ./dep.mk
-include ./presets.mk
+
+# include ./presets.mk
+CMAKE := cmake
+
+reconfigure: submodules
+	VCPKG_ROOT=$(VCPKG_ROOT) $(CMAKE) \
+	--preset $(PRESET) \
+	--fresh
+.PHONY: reconfigure
+
+configure: submodules
+	VCPKG_ROOT=$(VCPKG_ROOT) $(CMAKE) \
+	--preset $(PRESET)
+.PHONY: configure
+
+build: configure
+	$(CMAKE) \
+	--build $(PWD)/build \
+	--preset $(PRESET)
+.PHONY: build
+
+test: build
+	ctest \
+	--test-dir $(PWD)/build \
+	--preset $(PRESET)
+.PHONY: test
+
+package: test
+	$(CMAKE) \
+	--build $(PWD)/build \
+	--target $@
+.PHONY: package
+
+package_source: test
+	$(CMAKE) \
+	--build $(PWD)/build \
+	--target $@
+.PHONY: package_source
+
+workflow: $(VCPKG_ROOT)/vcpkg
+	VCPKG_ROOT=$(VCPKG_ROOT) $(CMAKE) \
+	--workflow \
+	--preset $(PRESET) \
+	--fresh
+.PHONY: workflow
+
+source: configure
+	$(CMAKE) \
+	--install $(PWD)/build \
+	--prefix $(PWD)/dist \
+	--component $@
+.PHONY: source
+
+# package: test
+# 	$(CMAKE) \
+#   --install $(PWD)/build \
+# 	--prefix $(PWD)/install
 
 # These are "main" Makefile targets which most Rack plugin devs expect...
 
@@ -112,11 +179,11 @@ $(BUILD_DIR)/src/%.cc.o: $(SRC_DIR)/%.cc
 
 $(BUILD_DIR)/src/%.c.o: $(SRC_DIR)/%.c
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -fPIC -c $< -o $@
+	$(CC) $(CXXFLAGS) $(INCLUDES) -fPIC -c $< -o $@
 
 $(BUILD_DIR)/src/%.m.o: $(SRC_DIR)/%.m
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -fPIC -c $< -o $@
+	$(CC) $(CXXFLAGS) $(INCLUDES) -fPIC -c $< -o $@
 
 $(BUILD_DIR)/src/%.mm.o: $(SRC_DIR)/%.mm
 	@mkdir -p $(dir $@)
@@ -144,6 +211,16 @@ endif
 
 build/%.html: %.md
 	markdown $< > $@
+
+# Include the docs target
+./build/docs/html: configure
+	cd docs
+	doxygen ./docs/Doxyfile
+	cd $(PWD)
+
+docs: $(PWD)/build/docs/html
+
+.PHONY: docs
 
 PREFIX ?= /usr/local
 
