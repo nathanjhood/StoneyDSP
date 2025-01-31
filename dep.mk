@@ -7,7 +7,6 @@ include ./arch.mk
 # Fetch submodules
 submodules:
 	$(shell $(GIT) submodule update --init --recursive)
-
 .PHONY: submodules
 
 # Fetch vcpkg
@@ -43,8 +42,7 @@ CXXFLAGS += -Ibuild/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/include
 CPPFLAGS += -Ibuild/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/include
 
 ifdef STONEYDSP_BUILD_TEST
-	LDFLAGS += -Ibuild/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/include
-	LDFLAGS += -Lbuild/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/lib
+	LDFLAGS += -L$(LIB_CATCH_PATH)
 	LDFLAGS += -lCatch2
 endif
 

@@ -21,10 +21,10 @@ BUILD_SHARED ?= 1
 # Library type
 ifdef BUILD_SHARED
 	LIB_EXT := so
-	LIB_FLAGS += -shared
+	BUILD_SHARED_FLAG := -shared
 else
 	LIB_EXT := a
-	LIB_FLAGS +=
+	BUILD_SHARED_FLAG :=
 endif
 
 # Source files
@@ -86,7 +86,7 @@ dep: reconfigure
 
 # Distribution build
 libstoneydsp.$(LIB_EXT): $(OBJECTS)
-	$(CXX) $(LIB_FLAGS) -o $@ $^
+	$(CXX) $(BUILD_SHARED_FLAG) -o $@ $^
 
 # Test executable
 ifdef BUILD_TEST
@@ -94,38 +94,39 @@ $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a: $(VCPKG)
 	$(VCPKG) install
 
 $(TEST_TARGET): $(TEST_OBJ) libstoneydsp.$(LIB_EXT) $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a
-	$(CXX) $(LDFLAGS) -o $@ $^
+	$(CXX) $(CXXFLAGS) $^ $(LDFLAGS) -o $@
 
 run: $(TEST_TARGET)
-	./$(TEST_TARGET) $(TEST_ARGS)
+	$(TEST_TARGET) $(TEST_ARGS)
+.PHONY: run
 endif
 
 # Pattern rules for other file extensions
 $(BUILD_DIR)/src/%.cpp.o: $(SRC_DIR)/%.cpp
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -fPIC -c $< -o $@
 
 $(BUILD_DIR)/src/%.cc.o: $(SRC_DIR)/%.cc
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -fPIC -c $< -o $@
 
 $(BUILD_DIR)/src/%.c.o: $(SRC_DIR)/%.c
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -fPIC -c $< -o $@
 
 $(BUILD_DIR)/src/%.m.o: $(SRC_DIR)/%.m
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -fPIC -c $< -o $@
 
 $(BUILD_DIR)/src/%.mm.o: $(SRC_DIR)/%.mm
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -fPIC -c $< -o $@
 
 ifdef BUILD_TEST
 # Pattern rules for test files
 $(BUILD_DIR)/test/%.cpp.o: $(TEST_DIR)/%.cpp $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -I$(BUILD_DIR)/test -c $< -o $@ $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -I$(BUILD_DIR)/test -fPIC -c $< -o $@
 endif
 
 # build/%.bin.o: %
@@ -197,3 +198,31 @@ clean:
 # 	rm -rvf $(TEST_OBJ_DIR)/**/**/*.cpp.d
 # 	rm -rvf $(OBJ_DIR)/MakeFiles
 # 	rm -rvf $(TEST_TARGET)
+
+# Help Target
+help:
+	@echo "The following are some of the valid targets for this Makefile:"
+	@echo "... all (the default if no target is provided)"
+	@echo "... clean"
+	@echo "... depend"
+	@echo "... edit_cache"
+	@echo "... install"
+	@echo "... install/local"
+	@echo "... install/strip"
+	@echo "... list_install_components"
+	@echo "... package"
+	@echo "... package_source"
+	@echo "... rebuild_cache"
+	@echo "... catch2session"
+	@echo "... core"
+	@echo "... test"
+	@echo "... src/stoneydsp/stoneydsp.o"
+	@echo "... src/stoneydsp/stoneydsp.i"
+	@echo "... src/stoneydsp/stoneydsp.s"
+	@echo "... test/catch2session.o"
+	@echo "... test/catch2session.i"
+	@echo "... test/catch2session.s"
+	@echo "... test/main.o"
+	@echo "... test/main.i"
+	@echo "... test/main.s"
+.PHONY : help
