@@ -43,11 +43,11 @@ CFLAGS += -Ibuild/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/include
 CXXFLAGS += -Ibuild/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/include
 CPPFLAGS += -Ibuild/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/include
 
-# ifdef STONEYDSP_BUILD_TEST
-# 	LDFLAGS += -Ibuild/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/include
-# 	LDFLAGS += -Lbuild/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/lib
-# 	LDFLAGS += -lCatch2
-# endif
+ifdef STONEYDSP_BUILD_TEST
+	LDFLAGS += -Ibuild/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/include
+	LDFLAGS += -Lbuild/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/lib
+	LDFLAGS += -lCatch2
+endif
 
 # ifneq ($(strip $(shell PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) pkg-config --cflags-only-I $(STONEYDSP_EXTERNAL_DEPS) 2>/dev/null)),)
 # 	STONEYDSP_CFLAGS += -isystem $(strip $(shell PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) pkg-config --cflags-only-I $(STONEYDSP_EXTERNAL_DEPS) 2>/dev/null))
