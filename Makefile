@@ -2,8 +2,8 @@
 default_target: all
 .PHONY : default_target
 
-# Allow only one "make -f Makefile2" at a time, but pass parallelism.
-.NOTPARALLEL:
+# # Allow only one "make -f Makefile2" at a time, but pass parallelism.
+# .NOTPARALLEL:
 
 # The shell in which to execute make rules.
 SHELL = /bin/sh
