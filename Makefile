@@ -89,7 +89,7 @@ $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a: $(VCPKG)
 	$(VCPKG) install
 
 $(TEST_TARGET): $(TEST_OBJ) libstoneydsp.$(LIB_EXT) $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a
-	$(CXX) $(LDFLAGS) -o $@ $^
+	$(CXX) $(LDFLAGS) -o $@ $^ $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a
 
 run: $(TEST_TARGET)
 	./$(TEST_TARGET) $(TEST_ARGS)
@@ -119,7 +119,7 @@ $(BUILD_DIR)/src/%.mm.o: $(SRC_DIR)/%.mm
 # Pattern rules for test files
 $(BUILD_DIR)/test/%.cpp.o: $(TEST_DIR)/%.cpp
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -I$(BUILD_DIR)/test -c $< -o $@
 
 # build/%.bin.o: %
 # 	@mkdir -p $(@D)
