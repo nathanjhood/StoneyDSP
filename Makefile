@@ -322,7 +322,7 @@ else
 	LIB_CATCH_PATH := build/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/lib
 endif
 
-INCLUDES += -Ibuild/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/include
+INCLUDES += -isystem -Ibuild/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/include
 
 ifdef BUILD_TEST
 	LDFLAGS += -L$(LIB_CATCH_PATH)
