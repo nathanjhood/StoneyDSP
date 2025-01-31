@@ -18,18 +18,6 @@
 
 //==============================================================================
 
-// TODO: remove this and include the appropriate other file instead
-#ifndef STONEYDSP_STRINGIFY
-  # define STONEYDSP_STRINGIFY_HELPER(n) #n
-  /**
-   * @brief Handy stringify pre-processor macro.
-   * @param n The value to stringify.
-   */
-  # define STONEYDSP_STRINGIFY(n) STONEYDSP_STRINGIFY_HELPER(n)
-#endif
-
-//==============================================================================
-
 #if defined (__clang__)
   #define STONEYDSP_CLANG 1
 	#define STONEYDSP_COMPILER_VERSION STONEYDSP_STRINGIFY(__clang__)
