@@ -156,7 +156,7 @@ install: libstoneydsp.a
 
 # Clean up build files
 clean:
-	rm -rvf libstoneydsp.$(LIB_EXT) $(TEST_TARGET) $(BUILD_DIR)/src/*.o $(BUILD_DIR)/test/*.o
+	rm -rvf libstoneydsp.$(LIB_EXT) $(TEST_TARGET) $(BUILD_DIR)/src $(BUILD_DIR)/test
 
 # clean:
 # 	rm -rvf $(BUILD_DIR)/*.o
