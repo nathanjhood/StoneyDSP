@@ -62,10 +62,10 @@ OBJECTS += $(LIB_OBJ)
 INCLUDES += -I$(INCLUDE_DIR)
 
 # Test files
-ifdef STONEYDSP_BUILD_TEST
+ifdef BUILD_TEST
 	TEST_SRC := $(wildcard test/main.cpp test/catch2session.cpp)
 	TEST_OBJ := $(TEST_SRC:$(TEST_DIR)/%.cpp=$(BUILD_DIR)/test/%.cpp.o)
-	FLAGS += -DSTONEYDSP_BUILD_TEST=$(STONEYDSP_BUILD_TEST)
+	FLAGS += -DBUILD_TEST=$(BUILD_TEST)
 	OBJECTS += $(TEST_OBJ)
 	TEST_TARGET := $(BUILD_DIR)/test/main
 endif
@@ -79,17 +79,22 @@ include ./version.mk
 include ./dep.mk
 include ./presets.mk
 
+# These are "main" Makefile targets which most Rack plugin devs expect...
+
+# Dependencies
+dep: reconfigure
+
 # Distribution build
 libstoneydsp.$(LIB_EXT): $(OBJECTS)
 	$(CXX) $(LIB_FLAGS) -o $@ $^
 
 # Test executable
-ifdef STONEYDSP_BUILD_TEST
+ifdef BUILD_TEST
 $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a: $(VCPKG)
 	$(VCPKG) install
 
 $(TEST_TARGET): $(TEST_OBJ) libstoneydsp.$(LIB_EXT) $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a
-	$(CXX) $(LDFLAGS) -o $@ $^ $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a
+	$(CXX) $(LDFLAGS) -o $@ $^
 
 run: $(TEST_TARGET)
 	./$(TEST_TARGET) $(TEST_ARGS)
@@ -116,10 +121,12 @@ $(BUILD_DIR)/src/%.mm.o: $(SRC_DIR)/%.mm
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) $(INCLUDES) -c $< -o $@
 
+ifdef BUILD_TEST
 # Pattern rules for test files
-$(BUILD_DIR)/test/%.cpp.o: $(TEST_DIR)/%.cpp
+$(BUILD_DIR)/test/%.cpp.o: $(TEST_DIR)/%.cpp $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) $(INCLUDES) -I$(BUILD_DIR)/test -c $< -o $@
+	$(CXX) $(CXXFLAGS) $(INCLUDES) -I$(BUILD_DIR)/test -c $< -o $@ $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a
+endif
 
 # build/%.bin.o: %
 # 	@mkdir -p $(@D)

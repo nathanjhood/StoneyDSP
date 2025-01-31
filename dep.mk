@@ -24,8 +24,7 @@ submodules:
 VCPKG_ROOT ?= ./dep/vcpkg
 VCPKG := $(VCPKG_ROOT)/vcpkg
 
-STONEYDSP_EXTERNAL_DEPS :=
-STONEYDSP_EXTERNAL_DEPS += catch2
+STONEYDSP_EXTERNAL_DEPS := catch2
 
 PKG_CONFIG_PATH += build/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/lib/pkgconfig
 

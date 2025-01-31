@@ -71,8 +71,3 @@ source: configure
 docs: $(PWD)/build/docs/html
 
 .PHONY: docs
-
-# These are "main" Makefile targets which most Rack plugin devs expect
-dep: reconfigure
-
-.PHONY: dep
