@@ -76,8 +76,8 @@ endif
 all: dep libstoneydsp.$(LIB_EXT) $(TEST_TARGET)
 
 include ./version.mk
-include ./presets.mk
 include ./dep.mk
+include ./presets.mk
 
 # Distribution build
 libstoneydsp.$(LIB_EXT): $(OBJECTS)
