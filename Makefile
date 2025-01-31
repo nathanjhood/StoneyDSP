@@ -30,8 +30,6 @@ HASH_ALGORITHM ?= $(XXD)
 # Targets
 .PHONY: all clean dep
 
-all: dep libstoneydsp.$(LIB_EXT) $(TEST_TARGET)
-
 SOURCES :=
 OBJECTS :=
 INCLUDES :=
@@ -329,7 +327,7 @@ ifdef BUILD_TEST
 	LDFLAGS += -lCatch2
 endif
 
-###################################<<<-Part 6: Dependencies and workflow targets
+###################################<<<-Part 6: CMake and workflow targets
 
 reconfigure: submodules
 	VCPKG_ROOT=$(VCPKG_ROOT) $(CMAKE) \
@@ -477,6 +475,11 @@ install: libstoneydsp.a
 	@echo "StoneyDSP Library and headers installed to $(PREFIX)"
 
 #############################################<<<-Part 10: Clean, Help, and utils
+
+# default target
+all: dep libstoneydsp.$(LIB_EXT) $(TEST_TARGET)
+
+.DEFAULT_TARGET: all
 
 # Clean up build files
 clean:
