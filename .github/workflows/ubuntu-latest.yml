@@ -48,25 +48,25 @@ jobs:
           core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
           core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
 
-    - name: make dep
-      shell: bash
-      run: make dep -j 3
-
     # Developer workflow
 
     - name: make workflow
       shell: bash
-      run: make workflow -j 3 STONEYDSP_BUILD_TEST=1
+      run: make workflow -j 3 BUILD_TEST=1
 
     # Deployment workflow
 
+    - name: make dep
+      shell: bash
+      run: make dep -j 3 BUILD_TEST=1
+
     - name: make
       shell: bash
-      run: make -j 3 STONEYDSP_BUILD_TEST=1
+      run: make -j 3 BUILD_TEST=1
 
     - name: make run
       shell: bash
-      run: make run -j 3 STONEYDSP_BUILD_TEST=1
+      run: make run -j 3 BUILD_TEST=1
 
     # List all artefact directories
 
