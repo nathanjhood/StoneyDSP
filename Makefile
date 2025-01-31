@@ -322,7 +322,7 @@ else
 	LIB_CATCH_PATH := build/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/lib
 endif
 
-INCLUDES += -isystem -Ibuild/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/include
+INCLUDES += -Ibuild/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/include
 
 ifdef BUILD_TEST
 	LDFLAGS += -L$(LIB_CATCH_PATH)
@@ -436,7 +436,7 @@ ifdef BUILD_TEST
 # Pattern rules for test files
 $(BUILD_DIR)/test/%.cpp.o: $(TEST_DIR)/%.cpp $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -I$(BUILD_DIR)/test -c $< $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a -o $@
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) -I$(BUILD_DIR)/test $(INCLUDES) -c $< $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a -o $@
 endif
 
 # build/%.bin.o: %
