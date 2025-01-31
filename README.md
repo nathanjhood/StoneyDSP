@@ -11,15 +11,50 @@ The StoneyDSP audio Library.
 
 ## Contents
 
+- [Quickstart]
+- [Requirements]
+- [Building]
+  - [Make]
+  - [CMake]
+  - [Presets]
+  - [Workflows]
 - [Features](#features)
-- [FAQ](#faq)
   - [core](#core)
   - [simd](#simd)
   - [dsp](#dsp)
   - [test](#test)
   - [doc](#doc)
+- [FAQ](#faq)
 - [License](#license)
-- [Acknowledgements](#acknowledgements)
+- [Acknowledgements]
+
+## Quickstart
+
+TODO
+
+## Requirements
+
+TODO
+
+## Building
+
+TODO
+
+- ### Make
+
+  TODO
+
+- ### CMake
+
+  TODO
+
+- ### Presets
+
+  TODO
+
+- ### Workflows
+
+  TODO
 
 ## Features
 
@@ -121,3 +156,5 @@ FULL STONEYDSP TERMS:
 - [STONEYDSP PRIVACY POLICY](https://www.stoneydsp.com/privacy-policy)
 
 ## Acknowledgements
+
+TODO
