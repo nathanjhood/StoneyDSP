@@ -9,7 +9,7 @@
 #
 # For more information, see this issue: https://github.com/Microsoft/web-build-tools/issues/1088
 #
-*.json                       linguist-language=JSON-with-Comments
+*.json linguist-language=JSON-with-Comments
 
 *.{cmd,[cC][mM][dD]} text eol=crlf
 *.{bat,[bB][aA][tT]} text eol=crlf
@@ -33,9 +33,8 @@ CMakeLists.txt text
 
 # Keep these with LFs to make sure uploaded, hashed etc with LF
 LICENSE eol=lf
-COPYING eol=lf
-HACKING eol=lf
 AUTHORS eol=lf
+VERSION eol=lf
 
 *.gif binary
 *.mp4 binary

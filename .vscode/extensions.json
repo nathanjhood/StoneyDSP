@@ -1,14 +1,17 @@
 {
 	"recommendations": [
 		"cschlosser.doxdocgen",
-		"ms-vscode.cmake-tools",
-		"ms-vscode.cpptools",
-		"josetr.cmake-language-support",
-		"josetr.cmake-language-support-vscode",
-		"editorconfig.editorconfig"
+		"EditorConfig.EditorConfig",
+    "ms-vscode.makefile-tools",
+    "ms-vscode.cpptools-extension-pack",
+    "ms-vscode.cpptools",
+    "ms-vscode.cpptools-themes",
+    "ms-vscode.cmake-tools",
+    "josetr.cmake-language-support-vscode"
 	],
 	"unwantedRecommendations": [
-		"twxs.cmake",
-		"fougas.msys2"
+    "twxs.cmake",
+    "jackboosy.vcpkg-cmake-tools",
+    "xaver.clang-format"
 	]
 }
