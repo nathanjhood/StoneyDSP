@@ -409,7 +409,7 @@ catch2: $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a
 .PHONY: catch2
 
 $(TEST_TARGET): $(TEST_OBJ) libstoneydsp.$(LIB_EXT) catch2
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) $< $(OBJECTS) $(LDFLAGS) -l$(LIB_CATCH) -o $@
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) $< $(LDFLAGS) -l$(LIB_CATCH) -o $@
 
 run: $(TEST_TARGET)
 	$(TEST_TARGET) $(TEST_ARGS)
@@ -442,9 +442,9 @@ $(BUILD_DIR)/src/%.mm.o: $(SRC_DIR)/%.mm
 ifdef BUILD_TEST
 INCLUDES += -I$(BUILD_DIR)/test
 # Pattern rules for test files
-$(BUILD_DIR)/test/%.cpp.o: $(TEST_DIR)/%.cpp $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a
+$(BUILD_DIR)/test/%.cpp.o: $(TEST_DIR)/%.cpp catch2
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -c $< -o $@
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -c $< $(LDFLAGS) -l$(LIB_CATCH) -o $@
 endif
 
 # build/%.bin.o: %
