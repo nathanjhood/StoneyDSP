@@ -404,10 +404,12 @@ libstoneydsp.$(LIB_EXT): $(OBJECTS)
 # Test executable
 ifdef BUILD_TEST
 $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a: dep
-# .PHONY: $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a
 
-$(TEST_TARGET): $(TEST_OBJ) libstoneydsp.$(LIB_EXT) $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -Wl,-rpath=. $< $(LDFLAGS) -o $@ -l$(LIB_CATCH)
+catch2: $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a
+.PHONY: catch2
+
+$(TEST_TARGET): $(TEST_OBJ) libstoneydsp.$(LIB_EXT) catch2
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) $< $(LDFLAGS) -l$(LIB_CATCH) -o $@
 
 run: $(TEST_TARGET)
 	$(TEST_TARGET) $(TEST_ARGS)
