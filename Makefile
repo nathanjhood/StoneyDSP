@@ -164,9 +164,9 @@ CPPFLAGS += -MP
 
 FLAGS += -fPIC
 
-CPPFLAGS += -fmacro-prefix-map=$(MAKEFILE_DIR)/include=.
-CPPFLAGS += -fmacro-prefix-map=$(MAKEFILE_DIR)/src=.
-CPPFLAGS += -fmacro-prefix-map=$(MAKEFILE_DIR)/test=.
+# CPPFLAGS += -fmacro-prefix-map=$(MAKEFILE_DIR)/include=.
+# CPPFLAGS += -fmacro-prefix-map=$(MAKEFILE_DIR)/src=.
+# CPPFLAGS += -fmacro-prefix-map=$(MAKEFILE_DIR)/test=.
 
 # Directories
 BUILD_DIR := build
