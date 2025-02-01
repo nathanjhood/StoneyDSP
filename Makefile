@@ -408,7 +408,7 @@ $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a: dep
 catch2: $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a
 .PHONY: catch2
 
-$(TEST_TARGET): $(TEST_OBJ) libstoneydsp.$(LIB_EXT) catch2
+$(TEST_TARGET): $(OBJECTS) libstoneydsp.$(LIB_EXT) catch2
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) $< $(LDFLAGS) -l$(LIB_CATCH) -o $@
 
 run: $(TEST_TARGET)
