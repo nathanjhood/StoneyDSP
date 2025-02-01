@@ -12,23 +12,24 @@
 #ifndef STONEYDSP_TEST_CATCH2_SESSION_HPP_INCLUDED
 #define STONEYDSP_TEST_CATCH2_SESSION_HPP_INCLUDED
 
-#if defined (STONEYDSP_BUILD_TEST)
+#if defined(STONEYDSP_BUILD_TEST)
 
-#include <stoneydsp/stoneydsp.h>
+#include "stoneydsp/stoneydsp.h"
 
-#include <vector>
-#include <string>
 #include <sstream>
+#include <string>
+#include <vector>
 
-STONEYDSP_NAMESPACE_BEGIN(stoneydsp)
-STONEYDSP_NAMESPACE_BEGIN(test)
+STONEYDSP_NAMESPACE_BEGIN (stoneydsp)
+STONEYDSP_NAMESPACE_BEGIN (test)
 using args_t = ::std::string;
-int STONEYDSP_PUBLIC_FUNCTION run();
+int STONEYDSP_PUBLIC_FUNCTION run ();
 STONEYDSP_NAMESPACE_END
 STONEYDSP_NAMESPACE_END
 
 STONEYDSP_EXTERN_C_BEGIN
-typedef STONEYDSP_NAMESPACE_QUAL(stoneydsp::test)args_t stoneydsp_test_args_t;
+typedef STONEYDSP_NAMESPACE_QUAL (stoneydsp::test) args_t
+    stoneydsp_test_args_t;
 typedef stoneydsp_test_args_t stoneydsp_test_args;
 STONEYDSP_API extern stoneydsp_test_args stoneydspTestArgs;
 STONEYDSP_EXTERN_C_END
