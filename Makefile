@@ -234,18 +234,20 @@ ifeq ($(BUILD_SIMD),1)
 	OBJECTS += $(SIMD_OBJ)
 	DEFINES += -DSTONEYDSP_BUILD_SIMD=$(BUILD_SIMD)
 endif
+# Always include the library source
+SOURCES += $(LIB_SRC)
+OBJECTS += $(LIB_OBJ)
+INCLUDES += -I$(INCLUDE_DIR)
+# Optional test objects
 ifeq ($(BUILD_TEST),1)
 	TEST_TARGET := $(BUILD_DIR)/test/main
-	TEST_SRC := $(wildcard test/main.cpp test/catch2session.cpp)
+	TEST_SRC := $(wildcard test/catch2session.cpp)
 	TEST_OBJ := $(TEST_SRC:$(TEST_DIR)/%.cpp=$(BUILD_DIR)/test/%.cpp.o)
 	# OBJECTS += $(TEST_OBJ)
 	DEFINES += -DSTONEYDSP_BUILD_TEST=$(BUILD_TEST)
 endif
 
-# Always include the library source
-SOURCES += $(LIB_SRC)
-OBJECTS += $(LIB_OBJ)
-INCLUDES += -I$(INCLUDE_DIR)
+
 
 ##################################<<<-Part 5: Dependencies and submodule targets
 
@@ -409,7 +411,7 @@ catch2: $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a
 .PHONY: catch2
 
 $(TEST_TARGET): $(TEST_OBJ) libstoneydsp.$(LIB_EXT) catch2
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) $< $(OBJECTS) $(LDFLAGS) -o $@
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) $< $(OBJECTS) test/main.cpp $(LDFLAGS) -o $@
 
 run: $(TEST_TARGET)
 	$(TEST_TARGET) $(TEST_ARGS)
