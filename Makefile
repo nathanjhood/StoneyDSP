@@ -238,7 +238,7 @@ ifeq ($(BUILD_TEST),1)
 	TEST_TARGET := $(BUILD_DIR)/test/main
 	TEST_SRC := $(wildcard test/main.cpp test/catch2session.cpp)
 	TEST_OBJ := $(TEST_SRC:$(TEST_DIR)/%.cpp=$(BUILD_DIR)/test/%.cpp.o)
-	OBJECTS += $(TEST_OBJ)
+	# OBJECTS += $(TEST_OBJ)
 	DEFINES += -DSTONEYDSP_BUILD_TEST=$(BUILD_TEST)
 endif
 
@@ -331,7 +331,7 @@ INCLUDES += -Ibuild/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/include
 
 ifdef BUILD_TEST
 	LDFLAGS += -L$(LIB_CATCH_PATH)
-	# LDFLAGS += -l$(LIB_CATCH)
+	LDFLAGS += -l$(LIB_CATCH)
 endif
 
 ###################################<<<-Part 6: CMake and workflow targets
@@ -409,7 +409,7 @@ catch2: $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a
 .PHONY: catch2
 
 $(TEST_TARGET): $(TEST_OBJ) libstoneydsp.$(LIB_EXT) catch2
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) $< $(LDFLAGS) -l$(LIB_CATCH) -o $@
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) $< $(LDFLAGS) -o $@
 
 run: $(TEST_TARGET)
 	$(TEST_TARGET) $(TEST_ARGS)
@@ -444,7 +444,7 @@ INCLUDES += -I$(BUILD_DIR)/test
 # Pattern rules for test files
 $(BUILD_DIR)/test/%.cpp.o: $(TEST_DIR)/%.cpp catch2
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -c $< $(LDFLAGS) -l$(LIB_CATCH) -o $@
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -c $< -o $@
 endif
 
 # build/%.bin.o: %
