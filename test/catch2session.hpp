@@ -14,6 +14,8 @@
 
 #if defined(STONEYDSP_BUILD_TEST)
 
+#include <catch2/catch_session.hpp>
+
 #include "stoneydsp/stoneydsp.h"
 
 #include <sstream>
