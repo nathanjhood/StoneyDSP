@@ -30,7 +30,10 @@ SHA1SUM := sha1sum
 HASH_ALGORITHM ?= $(XXD)
 
 # Targets
-.PHONY: all clean dep
+.PHONY: all clean dep install help
+
+# Get the directory of the Makefile
+MAKEFILE_DIR := $(patsubst %/,%,$(dir $(realpath $(firstword $(MAKEFILE_LIST)))))
 
 SOURCES :=
 OBJECTS :=
@@ -160,6 +163,10 @@ CPPFLAGS += -MMD
 CPPFLAGS += -MP
 
 FLAGS += -fPIC
+
+CPPFLAGS += -fmacro-prefix-map=$(MAKEFILE_DIR)/include=.
+CPPFLAGS += -fmacro-prefix-map=$(MAKEFILE_DIR)/src=.
+CPPFLAGS += -fmacro-prefix-map=$(MAKEFILE_DIR)/test=.
 
 # Directories
 BUILD_DIR := build
@@ -320,11 +327,11 @@ else
 	LIB_CATCH_PATH := build/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/lib
 endif
 
-INCLUDES += -isystem -Ibuild/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/include
+INCLUDES += -Ibuild/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/include
 
 ifdef BUILD_TEST
 	LDFLAGS += -L$(LIB_CATCH_PATH)
-	LDFLAGS += -lCatch2
+	# LDFLAGS += -l$(LIB_CATCH)
 endif
 
 ###################################<<<-Part 6: CMake and workflow targets
@@ -392,7 +399,7 @@ dep: reconfigure
 
 # Distribution build
 libstoneydsp.$(LIB_EXT): $(OBJECTS)
-	$(CXX) $(BUILD_SHARED_FLAG) -o $@ $^
+	$(CXX) $(BUILD_SHARED_FLAG) $(CPPFLAGS) $(CXXFLAGS) $(FLAGS) $(DEFINES) -o $@ $^
 
 # Test executable
 ifdef BUILD_TEST
@@ -400,7 +407,7 @@ $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a: dep
 # .PHONY: $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a
 
 $(TEST_TARGET): $(TEST_OBJ) libstoneydsp.$(LIB_EXT) $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(FLAGS) $(DEFINES) $^ $(LDFLAGS) -o $@
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(FLAGS) $(DEFINES) $< $(LDFLAGS) -o $@ -l$(LIB_CATCH)
 
 run: $(TEST_TARGET)
 	$(TEST_TARGET) $(TEST_ARGS)
@@ -431,10 +438,11 @@ $(BUILD_DIR)/src/%.mm.o: $(SRC_DIR)/%.mm
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -c $< -o $@
 
 ifdef BUILD_TEST
+INCLUDES += -I$(BUILD_DIR)/test
 # Pattern rules for test files
 $(BUILD_DIR)/test/%.cpp.o: $(TEST_DIR)/%.cpp $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) -I$(BUILD_DIR)/test $(INCLUDES) $(LDFLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -c $< -o $@
 endif
 
 # build/%.bin.o: %
@@ -487,6 +495,7 @@ clean:
 
 # Help Target
 help:
+	@echo "The directory of the Makefile is: $(MAKEFILE_DIR)"
 	@echo "The following are some of the valid targets for this Makefile:"
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
