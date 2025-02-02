@@ -210,7 +210,7 @@
 				}
 			},
 			"environment": {
-				"MSYSTEM": "MINGW64",
+				"MSYSTEM": "$penv{MSYSTEM}",
 				"VCPKG_DEFAULT_TRIPLET": "x64-mingw-dynamic",
 				"VCPKG_DEFAULT_TARGET_TRIPLET": "x64-mingw-dynamic",
 				"PKG_CONFIG_PATH": "${sourceDir}/build/vcpkg_installed/x64-mingw-dynamic/lib/pkgconfig${pathListSep}$penv{PKG_CONFIG_PATH}"
