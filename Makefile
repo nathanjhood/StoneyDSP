@@ -62,6 +62,9 @@ ifneq (,$(findstring -darwin,$(MACHINE)))
 else ifneq (,$(findstring -mingw32,$(MACHINE)))
 	ARCH_WIN := 1
 	ARCH_OS := win
+else ifneq (,$(findstring -windows,$(MACHINE)))
+	ARCH_WIN := 1
+	ARCH_OS := win
 else ifneq (,$(findstring -linux,$(MACHINE)))
 	ARCH_LIN := 1
 	ARCH_OS := lin
