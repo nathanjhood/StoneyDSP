@@ -80,8 +80,8 @@
     | :-      |                                  | :-: | :-: |  :-:  |
     | Linux   | GNU                              |     |  ✔️  |       |
     | Linux   | Clang                            |     |  ✔️  |       |
-    | Apple   | GNU                              |     |     |   ✔️   |
-    | Apple   | Clang                            |     |     |   ✔️   |
+    | Apple   | GNU                              |     |  ✔️  |   ✔️   |
+    | Apple   | Clang                            |     |  ✔️  |   ✔️   |
     | Windows | MSVC                             |     |     |       |
     | Windows | Clang MinGW universal c runtime  |     |  ✔️  |       |
     | Windows | GNU MinGW universal c runtime    |     |  ✔️  |       |

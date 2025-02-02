@@ -43,7 +43,10 @@ else
 	MACHINE ?= $(shell $(CC) -dumpmachine)
 endif
 
-ifneq (,$(findstring x86_64-,$(MACHINE)))
+ifneq (,$(findstring i686-,$(MACHINE)))
+	ARCH_X86 := 1
+	ARCH_CPU := x86
+else ifneq (,$(findstring x86_64-,$(MACHINE)))
 	ARCH_X64 := 1
 	ARCH_CPU := x64
 else ifneq (,$(findstring arm64-,$(MACHINE)))
@@ -73,6 +76,11 @@ $(error Could not determine operating system of $(MACHINE))
 endif
 
 ARCH_NAME = $(ARCH_OS)-$(ARCH_CPU)
+
+ifdef ARCH_X86
+	TRIPLET_ARCH := x86
+	PRESET_ARCH := x86
+endif
 
 ifdef ARCH_X64
 	TRIPLET_ARCH := x64

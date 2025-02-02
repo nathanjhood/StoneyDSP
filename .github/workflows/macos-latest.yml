@@ -15,8 +15,6 @@ env:
   DISPLAY: :0
   CMAKE_BUILD_PARALLEL_LEVEL: 3
   CMAKE_INSTALL_PARALLEL_LEVEL: 3
-  CMAKE_OSX_ARCHITECTURES: "arm64"
-  VCPKG_OSX_ARCHITECTURES: "arm64"
   VCPKG_MAX_CONCURRENCY: 3
   VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -29,6 +27,8 @@ jobs:
     strategy:
       matrix:
         compiler: [gcc, clang]
+        architecture: [x86_64, arm64]
+        # TODO: i686
 
     steps:
 
@@ -51,6 +51,11 @@ jobs:
       run: |
         echo "CC=clang" >> $GITHUB_ENV
         echo "CXX=clang++" >> $GITHUB_ENV
+
+    - name: Configure architecture environment
+      run: |
+        echo "CMAKE_OSX_ARCHITECTURES=${{ matrix.architecture }}" >> $GITHUB_ENV
+        echo "VCPKG_OSX_ARCHITECTURES=${{ matrix.architecture }}" >> $GITHUB_ENV
 
     - name: Configure compiler environment
       run: |
