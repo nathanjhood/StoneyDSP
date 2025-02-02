@@ -26,13 +26,36 @@ jobs:
   macos:
     runs-on: macos-latest
 
+    strategy:
+      matrix:
+        compiler: [gcc, clang]
+
     steps:
 
       # Requirements
 
     - name: Install System Deps
       run: |
-        brew install coreutils gcc git wget cmake autoconf automake libtool jq python zstd pkg-config sccache ninja tree
+        brew install coreutils git wget cmake autoconf automake libtool jq python zstd pkg-config sccache ninja tree
+
+    - name: Set up GCC
+      if: matrix.compiler == 'gcc'
+      run: |
+        brew install gcc
+        echo "CC=$(brew --prefix gcc)/bin/gcc-$(brew list gcc | grep -o 'gcc-[0-9][0-9]*')" >> $GITHUB_ENV
+        echo "CXX=$(brew --prefix gcc)/bin/g++-$(brew list gcc | grep -o 'g++-[0-9][0-9]*')" >> $GITHUB_ENV
+
+    - name: Set up Clang
+      if: matrix.compiler == 'clang'
+      run: |
+        echo "CC=clang" >> $GITHUB_ENV
+        echo "CXX=clang++" >> $GITHUB_ENV
+
+    - name: Configure compiler environment
+      run: |
+        echo "Using compiler: ${{ matrix.compiler }}"
+        echo "CC=$CC"
+        echo "CXX=$CXX"
 
     - name: checkout StoneyDSP
       uses: actions/checkout@v4
