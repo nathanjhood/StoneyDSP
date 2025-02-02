@@ -12,8 +12,8 @@ SHELL := /bin/sh
 ECHO := echo
 
 # Compilers and tools
-CC := gcc
-CXX := g++
+CC := cc
+CXX := c++
 CPP := $(CXX) -E
 ASM := $(CXX) -S
 AR := ar
@@ -155,6 +155,10 @@ CPPFLAGS += $(OPTIMIZATION)
 CPPFLAGS += -Wall
 CPPFLAGS += -Wextra
 
+ifdef VERBOSE
+	FLAGS += -v
+endif
+
 ifdef DEBUG
 	CPPFLAGS += -Wno-unused-parameter
 	CPPFLAGS += -Werror
@@ -166,7 +170,6 @@ else ifdef VERBOSE
 endif
 
 FLAGS += -fPIC
-
 # FLAGS += -save-temps
 
 # CPPFLAGS += -fmacro-prefix-map=$(BUILD_DIR)/include=include
