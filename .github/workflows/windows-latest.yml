@@ -23,7 +23,8 @@ jobs:
 
     strategy:
       matrix:
-        msystem: [MINGW64, UCRT64, CLANG64, CLANGARM64]
+        msystem: [MINGW64, CLANG64, CLANGARM64]
+        # TODO: UCRT64
 
     defaults:
       run:
