@@ -1,4 +1,14 @@
 {
+	"makefile.configurations": [
+		{
+			"name": "Default",
+			"makeArgs": [
+				"BUILD_CORE=1",
+				"BUILD_TEST=1",
+				"DEBUG=1"
+			]
+		}
+	],
 	"makefile.launchConfigurations": [
 		{
 			"cwd": "${workspaceFolder}/build/bin",
@@ -164,13 +174,10 @@
 	"C_Cpp.codeAnalysis.clangTidy.headerFilter": null,
 	"C_Cpp.codeAnalysis.clangTidy.fallbackConfig": "{BasedOnStyle: gnu, Checks: '-*,clang-analyzer-*'}",
 	"C_Cpp.autocomplete": "default",
-	"C_Cpp.default.cStandard": "gnu11",
-	"C_Cpp.default.cppStandard": "gnu++11",
+	"C_Cpp.default.cStandard": "c11",
+	"C_Cpp.default.cppStandard": "c++11",
 	"C_Cpp.default.intelliSenseMode": "linux-gcc-x64",
 	"C_Cpp.default.compilerPath": "/usr/bin/gcc",
-	"C_Cpp.default.defines": [
-		"_DEBUG"
-	],
 	"C_Cpp.default.mergeConfigurations": true,
 	"C_Cpp.default.includePath": [
 		"${workspaceFolder}/include"

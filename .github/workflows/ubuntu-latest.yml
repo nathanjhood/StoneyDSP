@@ -23,6 +23,10 @@ jobs:
   ubuntu:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        compiler: [gcc, clang]
+
     steps:
 
     # Requirements
@@ -33,6 +37,24 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt install coreutils unzip git gdb valgrind cmake jq zstd pkg-config ninja-build ccache tree
+
+    - name: Set up compiler
+      run: |
+        if [ "${{ matrix.compiler }}" == "gcc" ]; then
+          sudo apt-get install -y gcc
+        elif [ "${{ matrix.compiler }}" == "clang" ]; then
+          sudo apt-get install -y clang
+        fi
+
+    - name: Configure compiler
+      run: |
+        if [ "${{ matrix.compiler }}" == "gcc" ]; then
+          export CC=gcc
+          export CXX=g++
+        elif [ "${{ matrix.compiler }}" == "clang" ]; then
+          export CC=clang
+          export CXX=clang++
+        fi
 
     - name: checkout StoneyDSP
       uses: actions/checkout@v4
