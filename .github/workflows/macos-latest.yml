@@ -28,6 +28,7 @@ jobs:
       matrix:
         compiler: [gcc, clang]
         architecture: [x86_64, arm64]
+        # TODO: i686
 
     steps:
 
