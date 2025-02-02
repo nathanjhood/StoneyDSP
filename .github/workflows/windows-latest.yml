@@ -1,4 +1,4 @@
-name: Build on Windows
+name: Windows
 
 on:
   push:
@@ -48,57 +48,46 @@ jobs:
           git
           curl
           wget
+          cmake
+          ninja
           make
           tar
+          zip
           unzip
           ccache
           autoconf
           automake
           libtool
-          python
           zstd
           vim
           tree
-          ninja
 
     - name: Install specific toolchain
       run: |
         if [ "${{ matrix.msystem }}" == "MINGW64" ]; then
           pacman -S --needed \
-            mingw-w64-x86_64-gcc \
-            mingw-w64-x86_64-gdb \
+            mingw-w64-x86_64-toolchain \
             mingw-w64-x86_64-cmake \
-            mingw-w64-x86_64-catch \
             mingw-w64-x86_64-ninja \
-            mingw-w64-x86_64-jq \
-            mingw-w64-x86_64-pkgconf
+            mingw-w64-x86_64-ninja \
         elif [ "${{ matrix.msystem }}" == "UCRT64" ]; then
           pacman -S --needed \
-            mingw-w64-ucrt-x86_64-gcc \
-            mingw-w64-ucrt-x86_64-gdb \
+            mingw-w64-ucrt-x86_64-toolchain \
             mingw-w64-ucrt-x86_64-cmake \
-            mingw-w64-ucrt-x86_64-catch \
             mingw-w64-ucrt-x86_64-ninja \
-            mingw-w64-ucrt-x86_64-jq \
-            mingw-w64-ucrt-x86_64-pkgconf
+            mingw-w64-ucrt-x86_64-make \
         elif [ "${{ matrix.msystem }}" == "CLANG64" ]; then
           pacman -S --needed \
-            mingw-w64-clang-x86_64-gcc \
-            mingw-w64-clang-x86_64-gdb \
+            mingw-w64-clang-x86_64-toolchain \
             mingw-w64-clang-x86_64-cmake \
-            mingw-w64-clang-x86_64-catch \
             mingw-w64-clang-x86_64-ninja \
-            mingw-w64-clang-x86_64-jq \
-            mingw-w64-clang-x86_64-pkgconf
+            mingw-w64-clang-x86_64-make \
         elif [ "${{ matrix.msystem }}" == "CLANGARM64" ]; then
           pacman -S --needed \
-            mingw-w64-clang-aarch64-gcc \
-            mingw-w64-clang-aarch64-gdb \
+            mingw-w64-clang-aarch64-toolchain \
             mingw-w64-clang-aarch64-cmake \
-            mingw-w64-clang-aarch64-catch \
             mingw-w64-clang-aarch64-ninja \
-            mingw-w64-clang-aarch64-jq \
-            mingw-w64-clang-aarch64-pkgconf
+            mingw-w64-clang-aarch64-make \
         fi
 
     - name: Enable GitHub Actions Cache backend
