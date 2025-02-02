@@ -28,9 +28,7 @@ XXD := xxd
 MD5SUM := md5sum
 SHA1SUM := sha1sum
 HASH_ALGORITHM ?= $(XXD)
-
-# Targets
-.PHONY: all clean dep install help
+PKG_CONFIG ?= pkg-config
 
 # Get the directory of the Makefile
 MAKEFILE_DIR := $(patsubst %/,%,$(dir $(realpath $(firstword $(MAKEFILE_LIST)))))
@@ -128,8 +126,16 @@ preset:
 C_STANDARD ?= 14
 CXX_STANDARD ?= 14
 
-CFLAGS += -std=c$(C_STANDARD)
-CXXFLAGS += -std=c++$(CXX_STANDARD)
+ifdef USE_GNU_EXTENSIONS
+	C_DIALECT := gnu
+	CXX_DIALECT := gnu
+else
+	C_DIALECT := c
+	CXX_DIALECT := c++
+endif
+
+CFLAGS += -std=$(C_DIALECT)$(C_STANDARD)
+CXXFLAGS += -std=$(CXX_DIALECT)$(CXX_STANDARD)
 
 # Optional debugger symbols
 ifdef DEBUG
@@ -159,14 +165,15 @@ else ifdef VERBOSE
 	CPPFLAGS += -pedantic
 endif
 
-CPPFLAGS += -MMD
-CPPFLAGS += -MP
-
 FLAGS += -fPIC
 
-# CPPFLAGS += -fmacro-prefix-map=$(MAKEFILE_DIR)/include=.
-# CPPFLAGS += -fmacro-prefix-map=$(MAKEFILE_DIR)/src=.
-# CPPFLAGS += -fmacro-prefix-map=$(MAKEFILE_DIR)/test=.
+# FLAGS += -save-temps
+
+# CPPFLAGS += -fmacro-prefix-map=$(BUILD_DIR)/include=include
+# CPPFLAGS += -fmacro-prefix-map=$(BUILD_DIR)/src=src
+# CPPFLAGS += -fmacro-prefix-map=$(BUILD_DIR)/test=test
+
+#############################################<<<-Part 3: Source and Object Files
 
 # Directories
 BUILD_DIR := build
@@ -175,19 +182,23 @@ SRC_DIR := src
 TEST_DIR := test
 INCLUDE_DIR := $(BUILD_DIR)/include
 
-#############################################<<<-Part 3: Source and Object Files
-
 # Source files
-CORE_SRC := $(wildcard src/stoneydsp/core/core.cpp)
-DSP_SRC := $(wildcard src/stoneydsp/dsp/dsp.cpp)
-SIMD_SRC := $(wildcard src/stoneydsp/simd/simd.cpp)
-LIB_SRC := $(wildcard src/stoneydsp/stoneydsp.cpp)
+CORE_SRCS := $(wildcard $(SRC_DIR)/stoneydsp/core/core.cpp)
+DSP_SRCS := $(wildcard $(SRC_DIR)/stoneydsp/dsp/dsp.cpp)
+SIMD_SRCS := $(wildcard $(SRC_DIR)/stoneydsp/simd/simd.cpp)
+LIB_SRCS := $(wildcard $(SRC_DIR)/stoneydsp/stoneydsp.cpp)
 
 # Object files
-CORE_OBJ := $(CORE_SRC:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/src/%.cpp.o)
-DSP_OBJ := $(DSP_SRC:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/src/%.cpp.o)
-SIMD_OBJ := $(SIMD_SRC:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/src/%.cpp.o)
-LIB_OBJ := $(LIB_SRC:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/src/%.cpp.o)
+CORE_OBJS := $(CORE_SRCS:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/src/%.cpp.o)
+DSP_OBJS := $(DSP_SRCS:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/src/%.cpp.o)
+SIMD_OBJS := $(SIMD_SRCS:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/src/%.cpp.o)
+LIB_OBJS := $(LIB_SRCS:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/src/%.cpp.o)
+
+# Dep files
+CORE_DEPS := $(CORE_OBJS:.o=.d)
+DSP_DEPS := $(DSP_OBJS:.o=.d)
+SIMD_DEPS := $(SIMD_OBJS:.o=.d)
+LIB_DEPS := $(LIB_OBJS:.o=.d)
 
 ###########################################<<<-Part 4: Feature Flags and Targets
 
@@ -216,38 +227,41 @@ BUILD_CORE ?= 1
 BUILD_DSP ?= 0
 BUILD_SIMD ?= 0
 
+# Always include the library source
+SOURCES += $(LIB_SRCS)
+OBJECTS += $(LIB_OBJS)
+INCLUDES += -I$(INCLUDE_DIR)
+
 ifeq ($(EXPERIMENTAL),1)
 	DEFINES += -DSTONEYDSP_EXPERIMENTAL=$(EXPERIMENTAL)
 endif
 ifeq ($(BUILD_CORE),1)
-	SOURCES += $(CORE_SRC)
-	OBJECTS += $(CORE_OBJ)
+	SOURCES += $(CORE_SRCS)
+	OBJECTS += $(CORE_OBJS)
+	DEPS := $(CORE_DEPS)
 	DEFINES += -DSTONEYDSP_BUILD_CORE=$(BUILD_CORE)
 endif
 ifeq ($(BUILD_DSP),1)
-	SOURCES += $(DSP_SRC)
-	OBJECTS += $(DSP_OBJ)
+	SOURCES += $(DSP_SRCS)
+	OBJECTS += $(DSP_OBJS)
+	DEPS := $(DSP_DEPS)
 	DEFINES += -DSTONEYDSP_BUILD_DSP=$(BUILD_DSP)
 endif
 ifeq ($(BUILD_SIMD),1)
-	SOURCES += $(SIMD_SRC)
-	OBJECTS += $(SIMD_OBJ)
+	SOURCES += $(SIMD_SRCS)
+	OBJECTS += $(SIMD_OBJS)
+	DEPS := $(SIMD_DEPS)
 	DEFINES += -DSTONEYDSP_BUILD_SIMD=$(BUILD_SIMD)
 endif
-# Always include the library source
-SOURCES += $(LIB_SRC)
-OBJECTS += $(LIB_OBJ)
-INCLUDES += -I$(INCLUDE_DIR)
+
 # Optional test objects
 ifeq ($(BUILD_TEST),1)
 	TEST_TARGET := $(BUILD_DIR)/test/main
-	TEST_SRC := $(wildcard test/catch2session.cpp)
-	TEST_OBJ := $(TEST_SRC:$(TEST_DIR)/%.cpp=$(BUILD_DIR)/test/%.cpp.o)
-	# OBJECTS += $(TEST_OBJ)
+	TEST_SRCS := $(wildcard test/catch2session.cpp)
+	TEST_OBJS := $(TEST_SRCS:$(TEST_DIR)/%.cpp=$(BUILD_DIR)/test/%.cpp.o)
+	TEST_DEPS := $(TEST_OBJS:.o=.d)
 	DEFINES += -DSTONEYDSP_BUILD_TEST=$(BUILD_TEST)
 endif
-
-
 
 ##################################<<<-Part 5: Dependencies and submodule targets
 
@@ -299,22 +313,22 @@ version-all: version-major version-minor version-patch version-tweak
 	@echo $(STONEYDSP_VERSION_MAJOR).$(STONEYDSP_VERSION_MINOR).$(STONEYDSP_VERSION_PATCH)-r$(STONEYDSP_VERSION_BUILD)
 .PHONY: version-all
 
+./.git/modules:
+	$(GIT) submodule update --init --recursive
+
+./.git/modules/dep: ./.git/modules
 
 # Fetch submodules
-submodules:
-	$(shell $(GIT) submodule update --init --recursive)
-.PHONY: submodules
-
-# Fetch vcpkg
-./dep/vcpkg: submodules
+./.git/modules/dep/vcpkg: ./.git/modules/dep
 
 # Bootstrap vcpkg
-./dep/vcpkg/bootstrap-vcpkg.sh: ./dep/vcpkg
+./dep/vcpkg/bootstrap-vcpkg.sh: ./.git/modules/dep/vcpkg
+	$(GIT) submodule update --init --recursive
 
 # Use vcpkg
 ./dep/vcpkg/vcpkg: ./dep/vcpkg/bootstrap-vcpkg.sh
 
-.PHONY: ./dep/vcpkg ./dep/vcpkg/bootstrap-vcpkg.sh ./dep/vcpkg/vcpkg
+# ./dep/vcpkg: ./.git/modules/dep/vcpkg
 
 VCPKG_ROOT ?= ./dep/vcpkg
 VCPKG := $(VCPKG_ROOT)/vcpkg
@@ -323,10 +337,12 @@ VCPKG := $(VCPKG_ROOT)/vcpkg
 
 ifdef DEBUG
 	LIB_CATCH := Catch2d
-	LIB_CATCH_PATH := build/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/lib/debug
+	LIB_CATCH_PATH := build/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/debug/lib
+	# PKG_CONFIG_PATH +=build/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/debug/lib/pkgconfig
 else
 	LIB_CATCH := Catch2
 	LIB_CATCH_PATH := build/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/lib
+	# PKG_CONFIG_PATH +=build/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/lib/pkgconfig
 endif
 
 INCLUDES += -Ibuild/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/include
@@ -338,13 +354,13 @@ endif
 
 ###################################<<<-Part 6: CMake and workflow targets
 
-reconfigure: submodules
+reconfigure: ./dep/vcpkg/vcpkg
 	VCPKG_ROOT=$(VCPKG_ROOT) $(CMAKE) \
 	--preset $(PRESET) \
 	--fresh
 .PHONY: reconfigure
 
-configure: submodules
+configure: ./dep/vcpkg/vcpkg
 	VCPKG_ROOT=$(VCPKG_ROOT) $(CMAKE) \
 	--preset $(PRESET)
 .PHONY: configure
@@ -356,7 +372,7 @@ build: configure
 .PHONY: build
 
 test: build
-	ctest \
+	$(CTEST) \
 	--test-dir $(PWD)/build \
 	--preset $(PRESET)
 .PHONY: test
@@ -373,7 +389,7 @@ package_source: test
 	--target $@
 .PHONY: package_source
 
-workflow: $(VCPKG_ROOT)/vcpkg
+workflow: ./dep/vcpkg/vcpkg
 	VCPKG_ROOT=$(VCPKG_ROOT) $(CMAKE) \
 	--workflow \
 	--preset $(PRESET) \
@@ -392,61 +408,104 @@ source: configure
 #   --install $(PWD)/build \
 # 	--prefix $(PWD)/install
 
-# These are "main" Makefile targets which most Rack plugin devs expect...
+# # Dependencies
+# dep: configure
 
-# Dependencies
-dep: reconfigure
+# .PHONY: dep
 
-####################################<<<-Part 7: Libraries and executable targets
+############################################<<<-Libraries and executable targets
+
+TARGET := $(BUILD_DIR)/lib/libstoneydsp.$(LIB_EXT)
 
 # Distribution build
-libstoneydsp.$(LIB_EXT): $(OBJECTS)
-	$(CXX) $(BUILD_SHARED_FLAG) $(CPPFLAGS) $(CXXFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -o $@ $^
+$(TARGET): $(OBJECTS)
+	@mkdir -p $(dir $@)
+	$(CXX) $(BUILD_SHARED_FLAG) $(CPPFLAGS) $(CXXFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -o $@ $<
 
 # Test executable
 ifdef BUILD_TEST
-$(LIB_CATCH_PATH)/lib$(LIB_CATCH).a: dep
+$(LIB_CATCH_PATH)/lib$(LIB_CATCH).a: configure
 
 catch2: $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a
+
 .PHONY: catch2
 
-$(TEST_TARGET): $(TEST_OBJ) libstoneydsp.$(LIB_EXT) catch2
+$(TEST_TARGET): $(TEST_OBJS) $(TARGET) $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a
+	@mkdir -p $(dir $@)
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) $< $(OBJECTS) test/main.cpp $(LDFLAGS) -o $@
 
 run: $(TEST_TARGET)
 	$(TEST_TARGET) $(TEST_ARGS)
+
 .PHONY: run
 endif
 
 ##################################################<<<-Part 8: Patterns and rules
 
-# Pattern rules for other file extensions
-$(BUILD_DIR)/src/%.cpp.o: $(SRC_DIR)/%.cpp
-	@mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -c $< -o $@
+$(BUILD_DIR)/include: configure
+	@echo "Configured CMake"
 
-$(BUILD_DIR)/src/%.cc.o: $(SRC_DIR)/%.cc
-	@mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -c $< -o $@
+## <CC>
 
-$(BUILD_DIR)/src/%.c.o: $(SRC_DIR)/%.c
+## '*.c' - Pre-Processor
+$(BUILD_DIR)/src/%.c.i: $(SRC_DIR)/%.c $(BUILD_DIR)/include
 	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -c $< -o $@
+	$(CPP) $(CFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -x c $< -o $@
+## '*.c.s' - Assembler
+$(BUILD_DIR)/src/%.c.s: $(BUILD_DIR)/src/%.c.i
+	@mkdir -p $(dir $@)
+	$(ASM) $(CFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -x c-cpp-output $< -o $@
+## '*.c.o' - Compiler
+$(BUILD_DIR)/src/%.c.o: $(BUILD_DIR)/src/%.c.s
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -x assembler $< -o $@
+# ## '*.cpp.d' - Dependency tracking
+# $(BUILD_DIR)/src/%.c.d: $(SRC_DIR)/%.c
+# 	@mkdir -p $(dir $@)
+# 	$(CC) $(CFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -x c -MM -MF $@ -MT $(@:.d=.o) $<
+# -include $(DEPS)
+## <CXX>
 
-$(BUILD_DIR)/src/%.m.o: $(SRC_DIR)/%.m
+## '*.cpp.i' - Pre-Processor
+$(BUILD_DIR)/src/%.cpp.i: $(SRC_DIR)/%.cpp $(BUILD_DIR)/include
 	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -c $< -o $@
+	$(CPP) $(CXXFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -x c++ $< -o $@
+## '*.cpp.s' - Assembler
+$(BUILD_DIR)/src/%.cpp.s: $(BUILD_DIR)/src/%.cpp.i
+	@mkdir -p $(dir $@)
+	$(ASM) $(CXXFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -x c++-cpp-output $< -o $@
+## '*.cpp.o' - Compiler
+$(BUILD_DIR)/src/%.cpp.o: $(BUILD_DIR)/src/%.cpp.s
+	@mkdir -p $(dir $@)
+	$(CXX) -c $(CXXFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -x assembler-with-cpp $< -o $@
+# ## '*.cpp.d' - Dependency tracking
+# $(BUILD_DIR)/src/%.cpp.d: $(SRC_DIR)/%.cpp
+# 	@mkdir -p $(dir $@)
+# 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -x c++ -MM -MF $@ -MT $(@:.d=.o) $<
+# -include $(DEPS)
 
-$(BUILD_DIR)/src/%.mm.o: $(SRC_DIR)/%.mm
+$(BUILD_DIR)/src/%.m.o: $(SRC_DIR)/%.m $(BUILD_DIR)/include
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -c $< -o $@
+	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) $< -o $@
+
+
+$(BUILD_DIR)/src/%.mm.o: $(SRC_DIR)/%.mm $(BUILD_DIR)/include
+	@mkdir -p $(dir $@)
+	$(CXX) -c $(CXXFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) $< -o $@
 
 ifdef BUILD_TEST
 INCLUDES += -I$(BUILD_DIR)/test
+
 # Pattern rules for test files
-$(BUILD_DIR)/test/%.cpp.o: $(TEST_DIR)/%.cpp catch2
+$(BUILD_DIR)/test/%.cpp.o: $(TEST_DIR)/%.cpp $(BUILD_DIR)/include
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -c $< -o $@
+
+# # Test entry point depfiles
+# $(BUILD_DIR)/test/%.cpp.d: $(TEST_DIR)/%.cpp
+# 	@mkdir -p $(dir $@)
+# 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -x c++ -MM -MF $@ -MT $(@:.d=.o) $<
+# -include $(TEST_DEPS)
 endif
 
 # build/%.bin.o: %
@@ -462,50 +521,79 @@ endif
 # 	xxd -i $< | $(CC) $(MAC_SDK_FLAGS) -c -o $@ -xc -
 # endif
 
-build/%.html: %.md
-	markdown $< > $@
-
-# Include the docs target
-./build/docs/html: configure
-	cd docs
-	doxygen ./docs/Doxyfile
-	cd $(PWD)
-
-docs: $(PWD)/build/docs/html
-
-.PHONY: docs
-
 ##########################################<<<-Part 9: Packaging and distribution
 
 PREFIX ?= /usr/local
 
-install: libstoneydsp.a
+install: $(TARGET)
 	@mkdir -p $(PREFIX)/lib
 	@mkdir -p $(PREFIX)/include/stoneydsp
-	@cp libstoneydsp.a $(PREFIX)/lib/
+	@cp $(TARGET) $(PREFIX)/lib/
 	@cp -r $(BUILD_DIR)/include/stoneydsp $(PREFIX)/include/
 	@echo "StoneyDSP Library and headers installed to $(PREFIX)"
+
+$(BUILD_DIR)/%.html: %.md
+	@mkdir -p $(dir $@)
+	markdown $< > $@
+
+# Include the doc target
+$(BUILD_DIR)/doc/html: configure
+	doxygen ./doc/Doxyfile
+
+doc: $(BUILD_DIR)/doc/html
+	@mkdir -p $(dir $@)
+.PHONY: doc
 
 #############################################<<<-Part 10: Clean, Help, and utils
 
 # default target
-all: dep libstoneydsp.$(LIB_EXT) $(TEST_TARGET)
+all: $(TARGET) $(TEST_TARGET)
 
-.DEFAULT_TARGET: all
+# Fetch submodules
+submodules:
+	$(GIT) submodule update --init --recursive
+.PHONY: submodules
+
+DEBUG_FLAGS := -g -O0
+RELEASE_FLAGS := -O2
+
+debug: CFLAGS += $(DEBUG_FLAGS)
+debug: $(TARGET)
+
+.PHONY: debug
+
+release: CFLAGS += $(RELEASE_FLAGS)
+release: $(TARGET)
+
+.PHONY: release
 
 # Clean up build files
 clean:
-	rm -rvf libstoneydsp.$(LIB_EXT) $(TEST_TARGET) $(BUILD_DIR)/src $(BUILD_DIR)/test
+	@rm -rvf $(BUILD_DIR)/include $(BUILD_DIR)/src $(BUILD_DIR)/test $(TARGET) $(TEST_TARGET)
+
+wipe: clean
+	@rm -rvf $(BUILD_DIR)
 
 # Help Target
 help:
 	@echo "The directory of the Makefile is: $(MAKEFILE_DIR)"
 	@echo "The following are some of the valid targets for this Makefile:"
 	@echo "... all (the default if no target is provided)"
-	@echo "... clean"
 	@echo "... dep"
+	@echo "... catch2"
+	@echo "... submodules"
+	@echo "... doc"
+	@echo "... configure"
+	@echo "... build"
+	@echo "... test"
 	@echo "... run"
 	@echo "... install"
 	@echo "... package"
 	@echo "... package_source"
-.PHONY : help
+	@echo "... workflow"
+	@echo "... clean"
+	@echo "... version"
+	@echo "... help"
+.PHONY: help
+
+.DEFAULT_TARGET: all
