@@ -944,11 +944,12 @@ WARN_LOGFILE           =
 # Note: If this tag is empty the current directory is searched.
 
 INPUT                  += README.md
-INPUT                  += docs/index.md
-INPUT                  += docs/core.md
-INPUT                  += docs/dsp.md
-INPUT                  += docs/simd.md
-INPUT                  += docs/presets.md
+INPUT                  += doc/index.md
+INPUT                  += doc/core.md
+INPUT                  += doc/dsp.md
+INPUT                  += doc/simd.md
+INPUT                  += doc/presets.md
+INPUT                  += doc/exports.md
 INPUT                  += build/include
 
 # This tag can be used to specify the character encoding of the source files
@@ -1048,7 +1049,6 @@ RECURSIVE              = YES
 # Note that relative paths are relative to the directory from which doxygen is
 # run.
 
-EXCLUDE                += README.md
 EXCLUDE                += docs/Makefile
 EXCLUDE                += test
 EXCLUDE                += Makefile

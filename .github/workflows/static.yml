@@ -59,11 +59,13 @@ jobs:
 
       - name: Configure StoneyDSP
         working-directory: ${{ github.workspace }}
-        run: make configure
+        run: |
+          make configure BUILD_CORE=1
 
       - name: Make Doxygen
         working-directory: ${{ github.workspace }}
-        run: doxygen ${{ github.workspace }}/doc/Doxyfile
+        run: |
+          make doc BUILD_CORE=1
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
