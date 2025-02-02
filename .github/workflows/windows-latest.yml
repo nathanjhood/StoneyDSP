@@ -1,12 +1,9 @@
-name: windows
+name: Build on Windows
 
 on:
-  # Runs on all pushes
   push:
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# When pushing new commits, cancel any running builds on that branch
 concurrency:
   group: windows-latest-${{ github.ref }}
   cancel-in-progress: true
@@ -19,23 +16,30 @@ env:
   VCPKG_MANIFEST_MODE: ON
   VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  MSYSTEM: "MINGW64"
 
 jobs:
-  windows:
+  build:
     runs-on: windows-latest
+
+    strategy:
+      matrix:
+        msystem: [MINGW64, UCRT64, CLANG64, CLANGARM64]
+
     defaults:
       run:
         shell: msys2 {0}
 
     steps:
+    - name: Checkout source code
+      uses: actions/checkout@v4
+      with:
+        submodules: true
+        fetch-depth: 0
 
-      # Requirements
-
-    - name: install System Deps
+    - name: Set up MSYS2 with ${{ matrix.msystem }}
       uses: msys2/setup-msys2@v2
       with:
-        msystem: MINGW64
+        msystem: ${{ matrix.msystem }}
         update: true
         install: >-
           --needed
@@ -48,29 +52,55 @@ jobs:
           tar
           unzip
           ccache
-          mingw-w64-x86_64-gcc
-          mingw-w64-x86_64-gdb
-          mingw-w64-x86_64-cmake
-          mingw-w64-x86_64-catch
-          mingw-w64-x86_64-ninja
           autoconf
           automake
           libtool
-          mingw-w64-x86_64-jq
           python
           zstd
           vim
-          mingw-w64-x86_64-pkgconf
           tree
           ninja
 
-    - name: checkout StoneyDSP
-      uses: actions/checkout@v4
-      with:
-        submodules: true
-        fetch-depth: 0
+    - name: Install specific toolchain
+      run: |
+        if [ "${{ matrix.msystem }}" == "MINGW64" ]; then
+          pacman -S --needed \
+            mingw-w64-x86_64-gcc \
+            mingw-w64-x86_64-gdb \
+            mingw-w64-x86_64-cmake \
+            mingw-w64-x86_64-catch \
+            mingw-w64-x86_64-ninja \
+            mingw-w64-x86_64-jq \
+            mingw-w64-x86_64-pkgconf
+        elif [ "${{ matrix.msystem }}" == "UCRT64" ]; then
+          pacman -S --needed \
+            mingw-w64-ucrt-x86_64-gcc \
+            mingw-w64-ucrt-x86_64-gdb \
+            mingw-w64-ucrt-x86_64-cmake \
+            mingw-w64-ucrt-x86_64-catch \
+            mingw-w64-ucrt-x86_64-ninja \
+            mingw-w64-ucrt-x86_64-jq \
+            mingw-w64-ucrt-x86_64-pkgconf
+        elif [ "${{ matrix.msystem }}" == "CLANG64" ]; then
+          pacman -S --needed \
+            mingw-w64-clang-x86_64-gcc \
+            mingw-w64-clang-x86_64-gdb \
+            mingw-w64-clang-x86_64-cmake \
+            mingw-w64-clang-x86_64-catch \
+            mingw-w64-clang-x86_64-ninja \
+            mingw-w64-clang-x86_64-jq \
+            mingw-w64-clang-x86_64-pkgconf
+        elif [ "${{ matrix.msystem }}" == "CLANGARM64" ]; then
+          pacman -S --needed \
+            mingw-w64-clang-aarch64-gcc \
+            mingw-w64-clang-aarch64-gdb \
+            mingw-w64-clang-aarch64-cmake \
+            mingw-w64-clang-aarch64-catch \
+            mingw-w64-clang-aarch64-ninja \
+            mingw-w64-clang-aarch64-jq \
+            mingw-w64-clang-aarch64-pkgconf
+        fi
 
-    # CI helper (don't do this at home)
     - name: Enable GitHub Actions Cache backend
       uses: actions/github-script@v7
       with:
@@ -78,25 +108,18 @@ jobs:
           core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
           core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
 
-    # Developer workflow
-
-    - name: make workflow
+    - name: Build with make
       shell: msys2 {0}
       run: make workflow BUILD_TEST=1
 
-    # Deployment workflow
-
-    - name: make
+    - name: Deployment build
       shell: msys2 {0}
       run: make BUILD_TEST=1
 
-    - name: make run
+    - name: Run build
       shell: msys2 {0}
       run: make run BUILD_TEST=1
 
-    # List all artefact directories
-
-    - name: tree
+    - name: List artefact directories
       shell: msys2 {0}
-      run: |
-        tree ./install
+      run: tree ./install
