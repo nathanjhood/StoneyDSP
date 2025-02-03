@@ -429,6 +429,14 @@ source: configure
 
 # .PHONY: dep
 
+CMAKE_CACHE := $(BUILD_DIR)/CMakeCache.txt
+
+$(CMAKE_CACHE): configure
+
+COMPILE_COMMANDS := $(BUILD_DIR)/compile_commands.json
+
+$(COMPILE_COMMANDS): $(CMAKE_CACHE)
+
 ############################################<<<-Libraries and executable targets
 
 TARGET := $(BUILD_DIR)/lib/libstoneydsp.$(LIB_EXT)
@@ -440,7 +448,7 @@ $(TARGET): $(OBJECTS)
 
 # Test executable
 ifdef BUILD_TEST
-$(LIB_CATCH_PATH)/lib$(LIB_CATCH).a: configure
+$(LIB_CATCH_PATH)/lib$(LIB_CATCH).a: $(CMAKE_CACHE)
 
 catch2: $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a
 
@@ -458,7 +466,7 @@ endif
 
 ##################################################<<<-Part 8: Patterns and rules
 
-$(BUILD_DIR)/include: configure
+$(BUILD_DIR)/include: $(CMAKE_CACHE)
 	@echo "Configured CMake"
 
 ## <CC>
@@ -552,8 +560,8 @@ $(BUILD_DIR)/%.html: %.md
 	@mkdir -p $(dir $@)
 	markdown $< > $@
 
-# Include the doc target
-$(BUILD_DIR)/doc/html: configure
+## Include the doc target
+$(BUILD_DIR)/doc/html: $(CMAKE_CACHE)
 	doxygen ./doc/Doxyfile
 
 doc: $(BUILD_DIR)/doc/html
@@ -583,14 +591,35 @@ release: $(TARGET)
 
 .PHONY: release
 
-# Clean up build files
+## Clean up build files
 clean:
-	@rm -rvf $(BUILD_DIR)/include $(BUILD_DIR)/src $(BUILD_DIR)/test $(TARGET) $(TEST_TARGET)
+	@rm -rvf $(BUILD_DIR)/doc
+	@rm -rvf $(BUILD_DIR)/bin
+	@rm -rvf $(BUILD_DIR)/lib
+	@rm -rvf $(BUILD_DIR)/test
+	@rm -rvf $(BUILD_DIR)/src
+	@rm -rvf $(BUILD_DIR)/include
+	@rm -rvf $(BUILD_DIR)/.ninja_deps
+	@rm -rvf $(BUILD_DIR)/.ninja_log
+	@rm -rvf $(BUILD_DIR)/build.ninja
+	@rm -rvf $(BUILD_DIR)/cmake_install.cmake
+	@rm -rvf $(BUILD_DIR)/CPackConfig.cmake
+	@rm -rvf $(BUILD_DIR)/CPackSourceConfig.cmake
+	@rm -rvf $(BUILD_DIR)/CMakeFiles
+	@rm -rvf $(BUILD_DIR)/MakeFiles
+	@rm -rvf $(TARGET)
+	@rm -rvf $(TEST_TARGET)
+	@rm -rvf $(CMAKE_CACHE)
+	@rm -rvf $(COMPILE_COMMANDS)
+	@rm -rvf $(BUILD_DIR)/compile_commands_cmake.json
+	@rm -rvf $(BUILD_DIR)/compile_commands_make.json
+.PHONY: clean
 
 wipe: clean
 	@rm -rvf $(BUILD_DIR)
+.PHONY: wipe
 
-# Help Target
+## Help Target
 help:
 	@echo "The directory of the Makefile is: $(MAKEFILE_DIR)"
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -611,5 +640,7 @@ help:
 	@echo "... version"
 	@echo "... help"
 .PHONY: help
+
+.PRECIOUS: $(CMAKE_CACHE)
 
 .DEFAULT_TARGET: all
