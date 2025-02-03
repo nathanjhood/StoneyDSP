@@ -27,8 +27,8 @@ jobs:
     strategy:
       matrix:
         compiler: [gcc, clang]
-        architecture: [x86_64, arm64]
-        # TODO: i686
+        architecture: [i686, x86_64, arm64]
+        # TODO: cross-compiling support?
 
     steps:
 
