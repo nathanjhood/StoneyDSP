@@ -72,22 +72,19 @@
 
   To this end, we very much appreciate field reports and user-feedback, and will aim to support all cases where sufficient resources are available to do so.
 
-  **try telling that to the boss...*
-
   Please note that this table denotes the platforms and architectures we currently test - and in some cases, deploy - against; it does *not* attempt to reflect the current status of any branch or CI run, only that we actively support the platform (or not).
 
   - ### Support Matrix:
 
-    |                       | x86 | x64 | arm64 |
-    | :-                    | :-: | :-: |  :-:  |
-    | Linux   (GNU)         |     |  ✔️  |       |
-    | Linux   (Clang)       |     |     |       |
-    | Apple   (GNU)         |     |     |   ✔️   |
-    | Apple   (Clang)       |     |     |       |
-    | Windows (MSVC)        |     |     |       |
-    | Windows (MinGW GNU)   |     |  ✔️  |       |
-    | Windows (MinGW Clang) |     |     |       |
+    |         | Toolchain                        | x86 | x64 | arm64 |
+    | :-      |                                  | :-: | :-: |  :-:  |
+    | Linux   | GNU                              |     |  ✔️  |       |
+    | Linux   | Clang                            |     |  ✔️  |       |
+    | Apple   | GNU                              |     |  ✔️  |   ✔️   |
+    | Apple   | Clang                            |     |  ✔️  |   ✔️   |
+    | Windows | MSVC                             |     |     |       |
+    | Windows | Clang MinGW universal c runtime  |     |  ✔️  |       |
+    | Windows | GNU MinGW universal c runtime    |     |  ✔️  |       |
+    | Windows | GNU MinGW msvc runtime           |     |  ✔️  |       |
 
   If you have any experience with using StoneyDSP in the wild, we would love to hear any feedback you might have - success or fail -  that can help us ensure our support matrix looks a bit more ✔️ by continuously iterating on and deploying* improvements to our library, thanks to your valuable feedback!
-
-  **pipeline capacity notwithstanding! ;)*
