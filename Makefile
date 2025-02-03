@@ -7,7 +7,9 @@ default_target: all
 # # Allow only one "make -f Makefile2" at a time, but pass parallelism.
 # .NOTPARALLEL:
 
-# The shell in which to execute make rules.
+## Save temps without passing `-save-temps`
+.SECONDARY:
+
 SHELL := /bin/sh
 ECHO := echo
 
