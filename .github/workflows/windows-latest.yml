@@ -113,15 +113,33 @@ jobs:
           mingw-w64-i686-ninja
           mingw-w64-i686-make
 
+      # This toolchain group doesn't seem to exist, so do it manually...
     - name: Install CLANG32 toolchain
       if: matrix.msystem == 'CLANG32'
       shell: msys2 {0}
       run: >-
           pacman -S --noconfirm
-          mingw-w64-clang-i686-toolchain
-          mingw-w64-clang-i686-cmake
-          mingw-w64-clang-i686-ninja
-          mingw-w64-clang-i686-make
+          mingw-w64-i686-clang
+          mingw-w64-i686-clang-analyzer
+          mingw-w64-i686-clang-libs
+          mingw-w64-i686-clang-tools-extra
+          mingw-w64-i686-compiler-rt
+          mingw-w64-i686-lld
+          mingw-w64-i686-llvm
+          mingw-w64-i686-llvm-libs
+          mingw-w64-i686-crt-git
+          mingw-w64-i686-headers-git
+          mingw-w64-i686-libc++
+          mingw-w64-i686-libunwind
+          mingw-w64-i686-libmangle-git
+          mingw-w64-i686-libwinpthread-git
+          mingw-w64-i686-winpthreads-git
+          mingw-w64-i686-pkgconf
+          mingw-w64-i686-tools-git
+          mingw-w64-i686-winstorecompat-git
+          mingw-w64-i686-cmake
+          mingw-w64-i686-ninja
+          mingw-w64-i686-make
 
     - name: Enable GitHub Actions Cache backend
       uses: actions/github-script@v7
