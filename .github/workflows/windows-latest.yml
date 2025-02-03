@@ -113,6 +113,16 @@ jobs:
           mingw-w64-i686--ninja
           mingw-w64-i686-make
 
+    - name: Install CLANG32 toolchain
+      if: matrix.msystem == 'CLANG32'
+      shell: msys2 {0}
+      run: >-
+          pacman -S --noconfirm
+          mingw-w64-clang-i686-toolchain
+          mingw-w64-clang-i686-cmake
+          mingw-w64-clang-i686-ninja
+          mingw-w64-clang-i686-make
+
     - name: Enable GitHub Actions Cache backend
       uses: actions/github-script@v7
       with:
