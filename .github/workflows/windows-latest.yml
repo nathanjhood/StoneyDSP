@@ -23,8 +23,8 @@ jobs:
 
     strategy:
       matrix:
-        msystem: [MINGW64, UCRT64, CLANG64, MINGW32, CLANG32]
-        # TODO: CLANGARM64, MSVC (hack around MSYSTEM somehow?)
+        msystem: [MINGW64, UCRT64, CLANG64, MINGW32]
+        # TODO: CLANG32, CLANGARM64, MSVC (hack around MSYSTEM somehow?)
 
     defaults:
       run:
@@ -113,7 +113,7 @@ jobs:
           mingw-w64-i686-ninja
           mingw-w64-i686-make
 
-      # This toolchain group doesn't seem to exist, so do it manually...
+      # This toolchain group doesn't seem to exist, so do it manually... (fail)
     - name: Install CLANG32 toolchain
       if: matrix.msystem == 'CLANG32'
       shell: msys2 {0}
