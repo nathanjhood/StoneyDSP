@@ -443,6 +443,13 @@ function(stoneydsp_add_test)
         )
     endif()
 
+    if(APPLE)
+        add_custom_command(TARGET ${STONEYDSP_TARGET_NAME}
+            POST_BUILD
+            COMMAND install_name_tool -add_rpath "@loader_path/../lib" $<TARGET_FILE:${STONEYDSP_TEST_TARGET_NAME}>
+        )
+    endif()
+
     # Pass target properties to parent scope
     set(STONEYDSP_TEST_TARGET_NAME "${STONEYDSP_TEST_TARGET_NAME}" PARENT_SCOPE)
     set(STONEYDSP_TEST_VERSION_MAJOR "${STONEYDSP_TEST_VERSION_MAJOR}" PARENT_SCOPE)
