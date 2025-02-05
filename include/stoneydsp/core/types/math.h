@@ -9,16 +9,19 @@
  *
  */
 
+#pragma once
+
 #ifndef STONEYDSP_CORE_TYPES_MATH_H_INCLUDED
-#define STONEYDSP_CORE_TYPES_MATH_H_INCLUDED
+  #define STONEYDSP_CORE_TYPES_MATH_H_INCLUDED
 
 //====================================================================//INCLUDES
 
-#include <cmath> // For `float_t` and `double_t`;
+  #include <cmath> // For `float_t` and `double_t`;
 
 //==============================================================================
 
-namespace stoneydsp {
+namespace stoneydsp
+{
 /** @addtogroup stoneydsp
  *  @{
  */
@@ -35,43 +38,43 @@ using double_t = ::double_t;
  */
 using float_t = ::float_t;
 
-  /// @} group stoneydsp
+/// @} group stoneydsp
 } // namespace stoneydsp
 
 //==============================================================================
 
-extern "C" {
+extern "C"
+{
 
-/**
- * @brief Double-precision numerical value.
- *
- */
-typedef stoneydsp::double_t stoneydsp_double_t;
+  /**
+   * @brief Double-precision numerical value.
+   *
+   */
+  typedef stoneydsp::double_t stoneydsp_double_t;
 
-/**
- * @brief Single-precision numerical value.
- *
- */
-typedef stoneydsp::float_t stoneydsp_float_t;
-
+  /**
+   * @brief Single-precision numerical value.
+   *
+   */
+  typedef stoneydsp::float_t stoneydsp_float_t;
 }
 
 //==============================================================================
 
-extern "C" {
+extern "C"
+{
 
-/**
- * @brief Double-precision numerical value.
- *
- */
-typedef stoneydsp_double_t stoneydsp_double;
+  /**
+   * @brief Double-precision numerical value.
+   *
+   */
+  typedef stoneydsp_double_t stoneydsp_double;
 
-/**
- * @brief Single-precision numerical value.
- *
- */
-typedef stoneydsp_float_t stoneydsp_float;
-
+  /**
+   * @brief Single-precision numerical value.
+   *
+   */
+  typedef stoneydsp_float_t stoneydsp_float;
 }
 
 //==============================================================================
