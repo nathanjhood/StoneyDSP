@@ -23,7 +23,11 @@ AR := ar
 LD ?= ld
 GDB ?= gdb
 OBJCOPY ?= objcopy
+
 CMAKE := cmake
+CTEST := ctest
+CPACK := cpack
+
 GIT := git
 ZIP := ZIP
 UNZIP := unzip
@@ -429,9 +433,7 @@ build: configure
 
 test: build
 	@echo Testing with CTest...
-	@$(CTEST) \
-	--test-dir $(PWD)/build \
-	--preset $(PRESET)
+	$(CTEST) --test-dir $(PWD)/build --preset $(PRESET)
 	@echo Tested with CTest.
 .PHONY: test
 

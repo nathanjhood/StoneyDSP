@@ -242,7 +242,7 @@ function(stoneydsp_add_test)
     stoneydsp_add_catch2_session()
 
     # Generate target properties
-    set(STONEYDSP_TEST_TARGET_NAME "test")
+    set(STONEYDSP_TEST_TARGET_NAME "tests")
     set(STONEYDSP_TEST_VERSION_MAJOR "0")
     set(STONEYDSP_TEST_VERSION_MINOR "0")
     set(STONEYDSP_TEST_VERSION_BUILD "0")
@@ -326,7 +326,7 @@ function(stoneydsp_add_test)
     )
 
     foreach(STONEYDSP_TEST_HEADER_FILE IN LISTS STONEYDSP_TEST_HEADER_FILES)
-        message(STATUS "Target: ${STONEYDSP_TEST_TARGET_NAME} - adding header: ${STONEYDSP_TEST_HEADER_FILE}")
+        message(DEBUG "Target: ${STONEYDSP_TEST_TARGET_NAME} - adding header: ${STONEYDSP_TEST_HEADER_FILE}")
         configure_file("${STONEYDSP_TEST_HEADER_FILE}" "${STONEYDSP_TEST_HEADER_FILE}")
         target_sources(${STONEYDSP_TEST_TARGET_NAME}
             PUBLIC
@@ -339,70 +339,70 @@ function(stoneydsp_add_test)
             $<BUILD_INTERFACE:${STONEYDSP_DIR}/${STONEYDSP_TEST_HEADER_FILE}>
             $<INSTALL_INTERFACE:${STONEYDSP_TEST_HEADER_FILE}>
         )
-        message(STATUS "Target: ${STONEYDSP_TEST_TARGET_NAME} - added header: ${STONEYDSP_TEST_HEADER_FILE}")
+        message(VERBOSE "Target: ${STONEYDSP_TEST_TARGET_NAME} - added header: ${STONEYDSP_TEST_HEADER_FILE}")
     endforeach(STONEYDSP_TEST_HEADER_FILE IN LISTS STONEYDSP_TEST_HEADER_FILES)
 
     foreach(STONEYDSP_TEST_SOURCE_FILE IN LISTS STONEYDSP_TEST_SOURCE_FILES)
-        message(STATUS "Target: ${STONEYDSP_TEST_TARGET_NAME} - adding source: ${STONEYDSP_TEST_SOURCE_FILE}")
+        message(DEBUG "Target: ${STONEYDSP_TEST_TARGET_NAME} - adding source: ${STONEYDSP_TEST_SOURCE_FILE}")
         target_sources(${STONEYDSP_TEST_TARGET_NAME}
             PRIVATE
             "${STONEYDSP_TEST_SOURCE_FILE}"
         )
-        message(STATUS "Target: ${STONEYDSP_TEST_TARGET_NAME} - added source: ${STONEYDSP_TEST_SOURCE_FILE}")
+        message(VERBOSE "Target: ${STONEYDSP_TEST_TARGET_NAME} - added source: ${STONEYDSP_TEST_SOURCE_FILE}")
     endforeach(STONEYDSP_TEST_SOURCE_FILE IN LISTS STONEYDSP_TEST_SOURCE_FILES)
 
     foreach(STONEYDSP_TEST_LINK_LIBRARY IN LISTS STONEYDSP_TEST_LINK_LIBRARIES_PRIVATE)
-        message(STATUS "Target: ${STONEYDSP_TEST_TARGET_NAME} - linking library (private): ${STONEYDSP_TEST_LINK_LIBRARY}")
+        message(DEBUG "Target: ${STONEYDSP_TEST_TARGET_NAME} - linking library (private): ${STONEYDSP_TEST_LINK_LIBRARY}")
         target_link_libraries(${STONEYDSP_TEST_TARGET_NAME}
             PRIVATE
             ${STONEYDSP_TEST_LINK_LIBRARY}
         )
-        message(STATUS "Target: ${STONEYDSP_TEST_TARGET_NAME} - linked library (private): ${STONEYDSP_TEST_LINK_LIBRARY}")
+        message(VERBOSE "Target: ${STONEYDSP_TEST_TARGET_NAME} - linked library (private): ${STONEYDSP_TEST_LINK_LIBRARY}")
     endforeach(STONEYDSP_TEST_LINK_LIBRARY IN LISTS STONEYDSP_TEST_LINK_LIBRARIES_PRIVATE)
 
     foreach(STONEYDSP_TEST_LINK_LIBRARY IN LISTS STONEYDSP_TEST_LINK_LIBRARIES_PUBLIC)
-        message(STATUS "Target: ${STONEYDSP_TEST_TARGET_NAME} - linking library (public): ${STONEYDSP_TEST_LINK_LIBRARY}")
+        message(DEBUG "Target: ${STONEYDSP_TEST_TARGET_NAME} - linking library (public): ${STONEYDSP_TEST_LINK_LIBRARY}")
         target_link_libraries(${STONEYDSP_TEST_TARGET_NAME}
             PUBLIC
             ${STONEYDSP_TEST_LINK_LIBRARY}
         )
-        message(STATUS "Target: ${STONEYDSP_TEST_TARGET_NAME} - linked library (public): ${STONEYDSP_TEST_LINK_LIBRARY}")
+        message(VERBOSE "Target: ${STONEYDSP_TEST_TARGET_NAME} - linked library (public): ${STONEYDSP_TEST_LINK_LIBRARY}")
     endforeach(STONEYDSP_TEST_LINK_LIBRARY IN LISTS STONEYDSP_TEST_LINK_LIBRARIES_PUBLIC)
 
     foreach(STONEYDSP_TEST_LINK_LIBRARY IN LISTS STONEYDSP_TEST_LINK_LIBRARIES_INTERFACE)
-        message(STATUS "Target: ${STONEYDSP_TEST_TARGET_NAME} - linking library (interface): ${STONEYDSP_TEST_LINK_LIBRARY}")
+        message(DEBUG "Target: ${STONEYDSP_TEST_TARGET_NAME} - linking library (interface): ${STONEYDSP_TEST_LINK_LIBRARY}")
         target_link_libraries(${STONEYDSP_TEST_TARGET_NAME}
             INTERFACE
             ${STONEYDSP_TEST_LINK_LIBRARY}
         )
-        message(STATUS "Target: ${STONEYDSP_TEST_TARGET_NAME} - linked library (interface): ${STONEYDSP_TEST_LINK_LIBRARY}")
+        message(VERBOSE "Target: ${STONEYDSP_TEST_TARGET_NAME} - linked library (interface): ${STONEYDSP_TEST_LINK_LIBRARY}")
     endforeach(STONEYDSP_TEST_LINK_LIBRARY IN LISTS STONEYDSP_TEST_LINK_LIBRARIES_INTERFACE)
 
     foreach(STONEYDSP_TEST_COMPILE_DEFINITION IN LISTS STONEYDSP_TEST_COMPILE_DEFINITIONS_PRIVATE)
-        message(STATUS "Target: ${STONEYDSP_TEST_TARGET_NAME} - adding compile definiton (private): ${STONEYDSP_TEST_COMPILE_DEFINITION}")
+        message(DEBUG "Target: ${STONEYDSP_TEST_TARGET_NAME} - adding compile definiton (private): ${STONEYDSP_TEST_COMPILE_DEFINITION}")
         target_compile_definitions(${STONEYDSP_TEST_TARGET_NAME}
             PRIVATE
             ${STONEYDSP_TEST_COMPILE_DEFINITION}
         )
-        message(STATUS "Target: ${STONEYDSP_TEST_TARGET_NAME} - added compile definiton (private): ${STONEYDSP_TEST_COMPILE_DEFINITION}")
+        message(VERBOSE "Target: ${STONEYDSP_TEST_TARGET_NAME} - added compile definiton (private): ${STONEYDSP_TEST_COMPILE_DEFINITION}")
     endforeach(STONEYDSP_TEST_COMPILE_DEFINITION IN LISTS STONEYDSP_TEST_COMPILE_DEFINITIONS_PRIVATE)
 
     foreach(STONEYDSP_TEST_COMPILE_DEFINITION IN LISTS STONEYDSP_TEST_COMPILE_DEFINITIONS_PUBLIC)
-        message(STATUS "Target: ${STONEYDSP_TEST_TARGET_NAME} - adding compile definiton (public): ${STONEYDSP_TEST_COMPILE_DEFINITION}")
+        message(DEBUG "Target: ${STONEYDSP_TEST_TARGET_NAME} - adding compile definiton (public): ${STONEYDSP_TEST_COMPILE_DEFINITION}")
         target_compile_definitions(${STONEYDSP_TEST_TARGET_NAME}
             PUBLIC
             ${STONEYDSP_TEST_COMPILE_DEFINITION}
         )
-        message(STATUS "Target: ${STONEYDSP_TEST_TARGET_NAME} - added compile definiton (public): ${STONEYDSP_TEST_COMPILE_DEFINITION}")
+        message(VERBOSE "Target: ${STONEYDSP_TEST_TARGET_NAME} - added compile definiton (public): ${STONEYDSP_TEST_COMPILE_DEFINITION}")
     endforeach(STONEYDSP_TEST_COMPILE_DEFINITION IN LISTS STONEYDSP_TEST_COMPILE_DEFINITIONS_PUBLIC)
 
     foreach(STONEYDSP_TEST_COMPILE_DEFINITION IN LISTS STONEYDSP_TEST_COMPILE_DEFINITIONS_INTERFACE)
-        message(STATUS "Target: ${STONEYDSP_TEST_TARGET_NAME} - adding compile definiton (interface): ${STONEYDSP_TEST_COMPILE_DEFINITION}")
+        message(DEBUG "Target: ${STONEYDSP_TEST_TARGET_NAME} - adding compile definiton (interface): ${STONEYDSP_TEST_COMPILE_DEFINITION}")
         target_compile_definitions(${STONEYDSP_TEST_TARGET_NAME}
             INTERFACE
             ${STONEYDSP_TEST_COMPILE_DEFINITION}
         )
-        message(STATUS "Target: ${STONEYDSP_TEST_TARGET_NAME} - added compile definiton (interface): ${STONEYDSP_TEST_COMPILE_DEFINITION}")
+        message(VERBOSE "Target: ${STONEYDSP_TEST_TARGET_NAME} - added compile definiton (interface): ${STONEYDSP_TEST_COMPILE_DEFINITION}")
     endforeach(STONEYDSP_TEST_COMPILE_DEFINITION IN LISTS STONEYDSP_TEST_COMPILE_DEFINITIONS_INTERFACE)
 
     if(STONEYDSP_TEST_TARGET_INSTALL)

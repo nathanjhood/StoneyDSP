@@ -49,12 +49,13 @@ endif()
 
 #[==============================[stoneydsp::test]==============================]
 if(STONEYDSP_BUILD_TEST)
+    find_package(Catch2 REQUIRED 3.7.1)
     include(stoneydsp-test)
     stoneydsp_add_test()
 endif()
 
 #[===================================[CTest]===================================]
-if(STONEYVCV_BUILD_TEST)
+if(STONEYDSP_BUILD_TEST)
     enable_testing()
     include(CTest)
     include(Catch)
