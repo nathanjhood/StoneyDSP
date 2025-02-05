@@ -340,6 +340,8 @@ function(stoneydsp_add_stoneydsp)
             NAMESPACE ${STONEYDSP_BRAND}::${STONEYDSP_SLUG}::
         )
     endif()
+
+    set(STONEYDSP_TARGET_NAME "${STONEYDSP_TARGET_NAME}" PARENT_SCOPE)
 endfunction(stoneydsp_add_stoneydsp)
 
 #[==================================[Cleanup]==================================]
