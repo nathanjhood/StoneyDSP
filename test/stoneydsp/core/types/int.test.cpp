@@ -25,6 +25,10 @@
 
 //==============================================================================
 
+  #include "stoneydsp/core/system/compiler.h" // for `STONEYDSP_PUBLIC_FUNCTION`
+
+//==============================================================================
+
 // Test tags provided by this file:
 //
 // [int8]
@@ -47,6 +51,58 @@
 // [is_standard_layout]
 //
 // [serialization]
+
+//==============================================================================
+
+namespace stoneydsp
+{
+/**
+ * @brief The `test` namespace.
+ *
+ * This namespace contains function definitions to be used for unit testing.
+ *
+ */
+namespace test
+{
+
+/**
+ * @brief
+ *
+ * @tparam T
+ * @param expectedSizeof
+ *
+ */
+template <typename T>
+void STONEYDSP_PUBLIC_FUNCTION
+testSizeof (const T &expectedSizeof)
+{
+  REQUIRE (sizeof (T) == expectedSizeof);
+}
+
+/**
+ * @brief
+ *
+ * @tparam T
+ * @param originalValue
+ *
+ */
+template <typename T>
+void STONEYDSP_PUBLIC_FUNCTION
+testSerialization (const T &originalValue)
+{
+  ::std::stringstream ss;
+  T deserializedValue;
+
+  ss.write (reinterpret_cast<const char *> (&originalValue),
+            sizeof (originalValue));
+  ss.read (reinterpret_cast<char *> (&deserializedValue),
+           sizeof (deserializedValue));
+
+  REQUIRE (originalValue == deserializedValue);
+}
+
+} // namespace stoneydsp
+} // namespace test
 
 //======================================================================//sizeof
 
@@ -292,61 +348,26 @@ TEST_CASE ("Endianness handling for stoneydsp::int64", "[endianness][int64]")
 TEST_CASE ("Check serialization and deserialization for stoneydsp::int8",
            "[serialization][int8]")
 {
-  ::std::stringstream ss;
-  ::stoneydsp::int8 originalValue = -123;
-  ::stoneydsp::int8 deserializedValue;
-
-  ss.write (reinterpret_cast<const char *> (&originalValue),
-            sizeof (originalValue));
-  ss.read (reinterpret_cast<char *> (&deserializedValue),
-           sizeof (deserializedValue));
-
-  REQUIRE (originalValue == deserializedValue);
+  ::stoneydsp::test::testSerialization< ::stoneydsp::int8> (-123);
 }
 
 TEST_CASE ("Check serialization and deserialization for stoneydsp::int16",
            "[serialization][int16]")
 {
-  ::std::stringstream ss;
-  ::stoneydsp::int16 originalValue = -12345;
-  ::stoneydsp::int16 deserializedValue;
-
-  ss.write (reinterpret_cast<const char *> (&originalValue),
-            sizeof (originalValue));
-  ss.read (reinterpret_cast<char *> (&deserializedValue),
-           sizeof (deserializedValue));
-
-  REQUIRE (originalValue == deserializedValue);
+  ::stoneydsp::test::testSerialization< ::stoneydsp::int16> (-12345);
 }
 
 TEST_CASE ("Check serialization and deserialization for stoneydsp::int32",
            "[serialization][int32]")
 {
-  ::std::stringstream ss;
-  ::stoneydsp::int32 originalValue = -123456789;
-  ::stoneydsp::int32 deserializedValue;
-
-  ss.write (reinterpret_cast<const char *> (&originalValue),
-            sizeof (originalValue));
-  ss.read (reinterpret_cast<char *> (&deserializedValue),
-           sizeof (deserializedValue));
-
-  REQUIRE (originalValue == deserializedValue);
+  ::stoneydsp::test::testSerialization< ::stoneydsp::int32> (-123456789);
 }
 
 TEST_CASE ("Check serialization and deserialization for stoneydsp::int64",
            "[serialization][int64]")
 {
-  ::std::stringstream ss;
-  ::stoneydsp::int64 originalValue = -1234567890123456789LL;
-  ::stoneydsp::int64 deserializedValue;
-
-  ss.write (reinterpret_cast<const char *> (&originalValue),
-            sizeof (originalValue));
-  ss.read (reinterpret_cast<char *> (&deserializedValue),
-           sizeof (deserializedValue));
-
-  REQUIRE (originalValue == deserializedValue);
+  ::stoneydsp::test::testSerialization< ::stoneydsp::int64> (
+      -1234567890123456789LL);
 }
 
 //======================================================================//sizeof
@@ -355,22 +376,22 @@ TEST_CASE ("Check serialization and deserialization for stoneydsp::int64",
 
 TEST_CASE ("sizeof stoneydsp::uint8 is 1 byte", "[sizeof][uint8]")
 {
-  REQUIRE (sizeof (::stoneydsp::uint8) == (unsigned long)1UL);
+  ::stoneydsp::test::testSizeof< ::stoneydsp::uint8> ((unsigned long)1UL);
 }
 
 TEST_CASE ("sizeof stoneydsp::uint16 is 2 bytes", "[sizeof][uint16]")
 {
-  REQUIRE (sizeof (::stoneydsp::uint16) == (unsigned long)2UL);
+  ::stoneydsp::test::testSizeof< ::stoneydsp::uint16> ((unsigned long)2UL);
 }
 
 TEST_CASE ("sizeof stoneydsp::uint32 is 4 bytes", "[sizeof][uint32]")
 {
-  REQUIRE (sizeof (::stoneydsp::uint32) == (unsigned long)4UL);
+  ::stoneydsp::test::testSizeof< ::stoneydsp::uint32> ((unsigned long)4UL);
 }
 
 TEST_CASE ("sizeof stoneydsp::uint64 is 8 bytes", "[sizeof][uint64]")
 {
-  REQUIRE (sizeof (::stoneydsp::uint64) == (unsigned long)8UL);
+  ::stoneydsp::test::testSizeof< ::stoneydsp::uint64> ((unsigned long)8UL);
 }
 
 //=====================================================================//alignof
@@ -596,61 +617,26 @@ TEST_CASE ("Endianness handling for stoneydsp::uint64", "[endianness][uint64]")
 TEST_CASE ("Check serialization and deserialization for stoneydsp::uint8",
            "[serialization][uint8]")
 {
-  ::std::stringstream ss;
-  ::stoneydsp::uint8 originalValue = 123;
-  ::stoneydsp::uint8 deserializedValue;
-
-  ss.write (reinterpret_cast<const char *> (&originalValue),
-            sizeof (originalValue));
-  ss.read (reinterpret_cast<char *> (&deserializedValue),
-           sizeof (deserializedValue));
-
-  REQUIRE (originalValue == deserializedValue);
+  ::stoneydsp::test::testSerialization< ::stoneydsp::uint8> (123);
 }
 
 TEST_CASE ("Check serialization and deserialization for stoneydsp::uint16",
            "[serialization][uint16]")
 {
-  ::std::stringstream ss;
-  ::stoneydsp::uint16 originalValue = 12345;
-  ::stoneydsp::uint16 deserializedValue;
-
-  ss.write (reinterpret_cast<const char *> (&originalValue),
-            sizeof (originalValue));
-  ss.read (reinterpret_cast<char *> (&deserializedValue),
-           sizeof (deserializedValue));
-
-  REQUIRE (originalValue == deserializedValue);
+  ::stoneydsp::test::testSerialization< ::stoneydsp::uint16> (12345);
 }
 
 TEST_CASE ("Check serialization and deserialization for stoneydsp::uint32",
            "[serialization][uint32]")
 {
-  ::std::stringstream ss;
-  ::stoneydsp::uint32 originalValue = 123456789;
-  ::stoneydsp::uint32 deserializedValue;
-
-  ss.write (reinterpret_cast<const char *> (&originalValue),
-            sizeof (originalValue));
-  ss.read (reinterpret_cast<char *> (&deserializedValue),
-           sizeof (deserializedValue));
-
-  REQUIRE (originalValue == deserializedValue);
+  ::stoneydsp::test::testSerialization< ::stoneydsp::uint32> (123456789);
 }
 
 TEST_CASE ("Check serialization and deserialization for stoneydsp::uint64",
            "[serialization][uint64]")
 {
-  ::std::stringstream ss;
-  ::stoneydsp::uint64 originalValue = 1234567890123456789ULL;
-  ::stoneydsp::uint64 deserializedValue;
-
-  ss.write (reinterpret_cast<const char *> (&originalValue),
-            sizeof (originalValue));
-  ss.read (reinterpret_cast<char *> (&deserializedValue),
-           sizeof (deserializedValue));
-
-  REQUIRE (originalValue == deserializedValue);
+  ::stoneydsp::test::testSerialization< ::stoneydsp::uint64> (
+      1234567890123456789ULL);
 }
 
 //============================================================================//
