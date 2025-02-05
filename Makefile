@@ -240,7 +240,11 @@ LIB_DEPS := $(LIB_OBJS:.o=.d)
 BUILD_SHARED ?= 1
 ifeq ($(BUILD_SHARED),1)
 	DEFINES += -DSTONEYDSP_BUILD_SHARED=$(BUILD_SHARED)
-	LIB_EXT := so
+	ifdef ARCH_WIN
+		LIB_EXT := dll
+	else
+		LIB_EXT := so
+	endif
 	BUILD_SHARED_FLAG := -shared
 else
 	LIB_EXT := a
