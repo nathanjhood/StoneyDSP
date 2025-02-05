@@ -1,4 +1,4 @@
-# Presets
+# presets
 
 - ## Mode
 
@@ -80,11 +80,11 @@
     | :-      |                                  | :-: | :-: |  :-:  |
     | Linux   | GNU                              |     |  ✔️  |       |
     | Linux   | Clang                            |     |  ✔️  |       |
-    | Apple   | GNU                              |     |  ✔️  |   ✔️   |
-    | Apple   | Clang                            |     |  ✔️  |   ✔️   |
+    | Apple   | GNU                              |  ✔️  |  ✔️  |   ✔️   |
+    | Apple   | Clang                            |  ✔️  |  ✔️  |   ✔️   |
     | Windows | MSVC                             |     |     |       |
     | Windows | Clang MinGW universal c runtime  |     |  ✔️  |       |
-    | Windows | GNU MinGW universal c runtime    |     |  ✔️  |       |
-    | Windows | GNU MinGW msvc runtime           |     |  ✔️  |       |
+    | Windows | GNU MinGW universal c runtime    |  ✔️  |  ✔️  |       |
+    | Windows | GNU MinGW msvc runtime           |  ✔️  |  ✔️  |       |
 
   If you have any experience with using StoneyDSP in the wild, we would love to hear any feedback you might have - success or fail -  that can help us ensure our support matrix looks a bit more ✔️ by continuously iterating on and deploying* improvements to our library, thanks to your valuable feedback!

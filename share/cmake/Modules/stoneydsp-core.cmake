@@ -21,9 +21,9 @@ if(NOT DEFINED STONEYDSP_BINARY_DIR)
 endif(NOT DEFINED STONEYDSP_BINARY_DIR)
 
 #[============================[stoneydsp_add_core]============================]
-include(CMakeDependentOption)
 cmake_dependent_option(STONEYDSP_CORE_TARGET_INSTALL "Notes" ON "STONEYDSP_BUILD_CORE" ON)
 cmake_dependent_option(STONEYDSP_CORE_TARGET_EXPORT "Notes" ON "STONEYDSP_BUILD_CORE" ON)
+include(CMakeDependentOption)
 
 #[==[
 Adds target: `stoneydsp::core`
@@ -60,11 +60,11 @@ function(stoneydsp_add_core)
 
     # core.h/cpp
     set(STONEYDSP_CORE_H_FILE "${STONEYDSP_INCLUDE_DIR}/${STONEYDSP_SLUG}/${STONEYDSP_CORE_TARGET_NAME}/${STONEYDSP_CORE_TARGET_NAME}.h")
-    set(STONEYDSP_CORE_CPP_FILE "${STONEYDSP_INCLUDE_DIR}/${STONEYDSP_SLUG}/${STONEYDSP_CORE_TARGET_NAME}/${STONEYDSP_CORE_TARGET_NAME}.cpp")
+    set(STONEYDSP_CORE_CPP_FILE "${STONEYDSP_SRC_DIR}/${STONEYDSP_SLUG}/${STONEYDSP_CORE_TARGET_NAME}/${STONEYDSP_CORE_TARGET_NAME}.cpp")
 
-    # Not sure about these being in core?
-    set(STONEYDSP_H_FILE "${STONEYDSP_INCLUDE_DIR}/${STONEYDSP_SLUG}/${STONEYDSP_SLUG}.h")
-    set(STONEYDSP_CPP_FILE "${STONEYDSP_SRC_DIR}/${STONEYDSP_SLUG}/${STONEYDSP_SLUG}.cpp")
+    # # Not sure about these being in core?
+    # set(STONEYDSP_H_FILE "${STONEYDSP_INCLUDE_DIR}/${STONEYDSP_SLUG}/${STONEYDSP_SLUG}.h")
+    # set(STONEYDSP_CPP_FILE "${STONEYDSP_SRC_DIR}/${STONEYDSP_SLUG}/${STONEYDSP_SLUG}.cpp")
 
     # List header files (public)
     set(STONEYDSP_CORE_HEADER_FILES)
@@ -77,13 +77,12 @@ function(stoneydsp_add_core)
         "${STONEYDSP_CORE_TYPES_INT_H_FILE}"
         "${STONEYDSP_CORE_TYPES_MATH_H_FILE}"
         "${STONEYDSP_CORE_H_FILE}"
-        "${STONEYDSP_H_FILE}"
     )
 
     # List source files (private)
     set(STONEYDSP_CORE_SOURCE_FILES)
     list(APPEND STONEYDSP_CORE_SOURCE_FILES
-        "${STONEYDSP_CPP_FILE}"
+        ${STONEYDSP_CORE_CPP_FILE}
     )
 
     # List link libraries (private)
@@ -116,6 +115,60 @@ function(stoneydsp_add_core)
     set(STONEYDSP_CORE_COMPILE_DEFINITIONS_INTERFACE)
     list(APPEND STONEYDSP_CORE_COMPILE_DEFINITIONS_INTERFACE)
 
+    # List compile options (interface)
+    set(STONEYDSP_CORE_COMPILE_OPTIONS_INTERFACE)
+    list(APPEND STONEYDSP_CORE_COMPILE_OPTIONS_INTERFACE)
+
+    # List compile options (private)
+    set(STONEYDSP_CORE_COMPILE_OPTIONS_PRIVATE)
+    list(APPEND STONEYDSP_CORE_COMPILE_OPTIONS_PRIVATE)
+
+    # List compile options (public)
+    set(STONEYDSP_CORE_COMPILE_OPTIONS_PUBLIC)
+    list(APPEND STONEYDSP_CORE_COMPILE_OPTIONS_PUBLIC)
+
+    # List compile features (interface)
+    set(STONEYDSP_CORE_COMPILE_FEATURES_INTERFACE)
+    list(APPEND STONEYDSP_CORE_COMPILE_FEATURES_INTERFACE)
+
+    # List compile features (private)
+    set(STONEYDSP_CORE_COMPILE_FEATURES_PRIVATE)
+    list(APPEND STONEYDSP_CORE_COMPILE_FEATURES_PRIVATE)
+
+    # List compile features (public)
+    set(STONEYDSP_CORE_COMPILE_FEATURES_PUBLIC)
+    list(APPEND STONEYDSP_CORE_COMPILE_FEATURES_PUBLIC
+        cxx_std_11
+        cxx_rvalue_references
+        cxx_range_for
+        cxx_nullptr
+        cxx_override
+        cxx_noexcept
+        cxx_long_long_type
+        cxx_lambdas
+        cxx_deleted_functions
+        cxx_decltype
+        cxx_constexpr
+        cxx_auto_type
+        cxx_alignof
+        cxx_alignas
+        cxx_attributes
+        cxx_alias_templates
+        cxx_enum_forward_declarations
+        cxx_explicit_conversions
+        cxx_extern_templates
+        cxx_static_assert
+
+        # # 98
+        cxx_template_template_parameters
+
+        # # <CC>
+        # # 11
+        c_std_11
+        c_static_assert
+        c_variadic_macros
+    )
+
     add_library(${STONEYDSP_CORE_TARGET_NAME} OBJECT)
     add_library(${STONEYDSP_SLUG}::${STONEYDSP_CORE_TARGET_NAME} ALIAS ${STONEYDSP_CORE_TARGET_NAME})
     add_library(${STONEYDSP_BRAND}::${STONEYDSP_SLUG}::${STONEYDSP_CORE_TARGET_NAME} ALIAS ${STONEYDSP_CORE_TARGET_NAME})
@@ -123,8 +176,8 @@ function(stoneydsp_add_core)
     set_target_properties(${STONEYDSP_CORE_TARGET_NAME}
         PROPERTIES
 
-        VERSION "${STONEYDSP_TEST_CORE_VERSION}"
-        SOVERSION "${STONEYDSP_TEST_CORE_VERSION_MAJOR}"
+        VERSION "${STONEYDSP_CORE_VERSION}"
+        SOVERSION "${STONEYDSP_CORE_VERSION_MAJOR}"
 
         RUNTIME_OUTPUT_DIRECTORY "${STONEYDSP_BINARY_DIR}/bin"
         PDB_OUTPUT_DIRECTORY "${STONEYDSP_BINARY_DIR}/lib"
@@ -133,7 +186,7 @@ function(stoneydsp_add_core)
     )
 
     foreach(STONEYDSP_CORE_HEADER_FILE IN LISTS STONEYDSP_CORE_HEADER_FILES)
-        message(STATUS "Target: ${STONEYDSP_CORE_TARGET_NAME} - adding header: ${STONEYDSP_CORE_HEADER_FILE}")
+        message(DEBUG "Target: ${STONEYDSP_CORE_TARGET_NAME} - adding header: ${STONEYDSP_CORE_HEADER_FILE}")
         configure_file("${STONEYDSP_CORE_HEADER_FILE}" "${STONEYDSP_CORE_HEADER_FILE}")
         target_sources(${STONEYDSP_CORE_TARGET_NAME}
             PUBLIC
@@ -146,71 +199,125 @@ function(stoneydsp_add_core)
             $<BUILD_INTERFACE:${STONEYDSP_DIR}/${STONEYDSP_CORE_HEADER_FILE}>
             $<INSTALL_INTERFACE:${STONEYDSP_CORE_HEADER_FILE}>
         )
-        message(STATUS "Target: ${STONEYDSP_CORE_TARGET_NAME} - added header: ${STONEYDSP_CORE_HEADER_FILE}")
+        message(VERBOSE "Target: ${STONEYDSP_CORE_TARGET_NAME} - added header: ${STONEYDSP_CORE_HEADER_FILE}")
     endforeach(STONEYDSP_CORE_HEADER_FILE IN LISTS STONEYDSP_CORE_HEADER_FILES)
 
     foreach(STONEYDSP_CORE_SOURCE_FILE IN LISTS STONEYDSP_CORE_SOURCE_FILES)
-        message(STATUS "Target: ${STONEYDSP_CORE_TARGET_NAME} - adding source: ${STONEYDSP_CORE_SOURCE_FILE}")
+        message(DEBUG "Target: ${STONEYDSP_CORE_TARGET_NAME} - adding source: ${STONEYDSP_CORE_SOURCE_FILE}")
         target_sources(${STONEYDSP_CORE_TARGET_NAME}
             PRIVATE
             "${STONEYDSP_CORE_SOURCE_FILE}"
         )
-        message(STATUS "Target: ${STONEYDSP_CORE_TARGET_NAME} - added source: ${STONEYDSP_CORE_SOURCE_FILE}")
+        message(VERBOSE "Target: ${STONEYDSP_CORE_TARGET_NAME} - added source: ${STONEYDSP_CORE_SOURCE_FILE}")
     endforeach(STONEYDSP_CORE_SOURCE_FILE IN LISTS STONEYDSP_CORE_SOURCE_FILES)
 
     foreach(STONEYDSP_CORE_LINK_LIBRARY IN LISTS STONEYDSP_CORE_LINK_LIBRARIES_PRIVATE)
-        message(STATUS "Target: ${STONEYDSP_CORE_TARGET_NAME} - linking library (private): ${STONEYDSP_CORE_LINK_LIBRARY}")
+        message(DEBUG "Target: ${STONEYDSP_CORE_TARGET_NAME} - linking library (private): ${STONEYDSP_CORE_LINK_LIBRARY}")
         target_link_libraries(${STONEYDSP_CORE_TARGET_NAME}
             PRIVATE
             ${STONEYDSP_CORE_LINK_LIBRARY}
         )
-        message(STATUS "Target: ${STONEYDSP_CORE_TARGET_NAME} - linked library (private): ${STONEYDSP_CORE_LINK_LIBRARY}")
+        message(VERBOSE "Target: ${STONEYDSP_CORE_TARGET_NAME} - linked library (private): ${STONEYDSP_CORE_LINK_LIBRARY}")
     endforeach(STONEYDSP_CORE_LINK_LIBRARY IN LISTS STONEYDSP_CORE_LINK_LIBRARIES_PRIVATE)
 
     foreach(STONEYDSP_CORE_LINK_LIBRARY IN LISTS STONEYDSP_CORE_LINK_LIBRARIES_PUBLIC)
-        message(STATUS "Target: ${STONEYDSP_CORE_TARGET_NAME} - linking library (public): ${STONEYDSP_CORE_LINK_LIBRARY}")
+        message(DEBUG "Target: ${STONEYDSP_CORE_TARGET_NAME} - linking library (public): ${STONEYDSP_CORE_LINK_LIBRARY}")
         target_link_libraries(${STONEYDSP_CORE_TARGET_NAME}
             PUBLIC
             ${STONEYDSP_CORE_LINK_LIBRARY}
         )
-        message(STATUS "Target: ${STONEYDSP_CORE_TARGET_NAME} - linked library (public): ${STONEYDSP_CORE_LINK_LIBRARY}")
+        message(VERBOSE "Target: ${STONEYDSP_CORE_TARGET_NAME} - linked library (public): ${STONEYDSP_CORE_LINK_LIBRARY}")
     endforeach(STONEYDSP_CORE_LINK_LIBRARY IN LISTS STONEYDSP_CORE_LINK_LIBRARIES_PUBLIC)
 
     foreach(STONEYDSP_CORE_LINK_LIBRARY IN LISTS STONEYDSP_CORE_LINK_LIBRARIES_INTERFACE)
-        message(STATUS "Target: ${STONEYDSP_CORE_TARGET_NAME} - linking library (interface): ${STONEYDSP_CORE_LINK_LIBRARY}")
+        message(DEBUG "Target: ${STONEYDSP_CORE_TARGET_NAME} - linking library (interface): ${STONEYDSP_CORE_LINK_LIBRARY}")
         target_link_libraries(${STONEYDSP_CORE_TARGET_NAME}
             INTERFACE
             ${STONEYDSP_CORE_LINK_LIBRARY}
         )
-        message(STATUS "Target: ${STONEYDSP_CORE_TARGET_NAME} - linked library (interface): ${STONEYDSP_CORE_LINK_LIBRARY}")
+        message(VERBOSE "Target: ${STONEYDSP_CORE_TARGET_NAME} - linked library (interface): ${STONEYDSP_CORE_LINK_LIBRARY}")
     endforeach(STONEYDSP_CORE_LINK_LIBRARY IN LISTS STONEYDSP_CORE_LINK_LIBRARIES_INTERFACE)
 
     foreach(STONEYDSP_CORE_COMPILE_DEFINITION IN LISTS STONEYDSP_CORE_COMPILE_DEFINITIONS_PRIVATE)
-        message(STATUS "Target: ${STONEYDSP_CORE_TARGET_NAME} - adding compile definiton (private): ${STONEYDSP_CORE_COMPILE_DEFINITION}")
+        message(DEBUG "Target: ${STONEYDSP_CORE_TARGET_NAME} - adding compile definiton (private): ${STONEYDSP_CORE_COMPILE_DEFINITION}")
         target_compile_definitions(${STONEYDSP_CORE_TARGET_NAME}
             PRIVATE
             ${STONEYDSP_CORE_COMPILE_DEFINITION}
         )
-        message(STATUS "Target: ${STONEYDSP_CORE_TARGET_NAME} - added compile definiton (private): ${STONEYDSP_CORE_COMPILE_DEFINITION}")
+        message(VERBOSE "Target: ${STONEYDSP_CORE_TARGET_NAME} - added compile definiton (private): ${STONEYDSP_CORE_COMPILE_DEFINITION}")
     endforeach(STONEYDSP_CORE_COMPILE_DEFINITION IN LISTS STONEYDSP_CORE_COMPILE_DEFINITIONS_PRIVATE)
 
     foreach(STONEYDSP_CORE_COMPILE_DEFINITION IN LISTS STONEYDSP_CORE_COMPILE_DEFINITIONS_PUBLIC)
-        message(STATUS "Target: ${STONEYDSP_CORE_TARGET_NAME} - adding compile definiton (public): ${STONEYDSP_CORE_COMPILE_DEFINITION}")
+        message(DEBUG "Target: ${STONEYDSP_CORE_TARGET_NAME} - adding compile definiton (public): ${STONEYDSP_CORE_COMPILE_DEFINITION}")
         target_compile_definitions(${STONEYDSP_CORE_TARGET_NAME}
             PUBLIC
             ${STONEYDSP_CORE_COMPILE_DEFINITION}
         )
-        message(STATUS "Target: ${STONEYDSP_CORE_TARGET_NAME} - added compile definiton (public): ${STONEYDSP_CORE_COMPILE_DEFINITION}")
+        message(VERBOSE "Target: ${STONEYDSP_CORE_TARGET_NAME} - added compile definiton (public): ${STONEYDSP_CORE_COMPILE_DEFINITION}")
     endforeach(STONEYDSP_CORE_COMPILE_DEFINITION IN LISTS STONEYDSP_CORE_COMPILE_DEFINITIONS_PUBLIC)
 
     foreach(STONEYDSP_CORE_COMPILE_DEFINITION IN LISTS STONEYDSP_CORE_COMPILE_DEFINITIONS_INTERFACE)
-        message(STATUS "Target: ${STONEYDSP_CORE_TARGET_NAME} - adding compile definiton (interface): ${STONEYDSP_CORE_COMPILE_DEFINITION}")
+        message(DEBUG "Target: ${STONEYDSP_CORE_TARGET_NAME} - adding compile definiton (interface): ${STONEYDSP_CORE_COMPILE_DEFINITION}")
         target_compile_definitions(${STONEYDSP_CORE_TARGET_NAME}
             INTERFACE
             ${STONEYDSP_CORE_COMPILE_DEFINITION}
         )
-        message(STATUS "Target: ${STONEYDSP_CORE_TARGET_NAME} - added compile definiton (interface): ${STONEYDSP_CORE_COMPILE_DEFINITION}")
+        message(VERBOSE "Target: ${STONEYDSP_CORE_TARGET_NAME} - added compile definiton (interface): ${STONEYDSP_CORE_COMPILE_DEFINITION}")
     endforeach(STONEYDSP_CORE_COMPILE_DEFINITION IN LISTS STONEYDSP_CORE_COMPILE_DEFINITIONS_INTERFACE)
+
+    foreach(STONEYDSP_CORE_COMPILE_OPTION IN LISTS STONEYDSP_CORE_COMPILE_OPTIONS_PRIVATE)
+        message(DEBUG "Target: ${STONEYDSP_CORE_TARGET_NAME} - adding compile option (private): ${STONEYDSP_CORE_COMPILE_OPTION}")
+        target_compile_options(${STONEYDSP_CORE_TARGET_NAME}
+            PRIVATE
+            ${STONEYDSP_CORE_COMPILE_OPTION}
+        )
+        message(VERBOSE "Target: ${STONEYDSP_CORE_TARGET_NAME} - added compile option (private): ${STONEYDSP_CORE_COMPILE_OPTION}")
+    endforeach(STONEYDSP_CORE_COMPILE_OPTION IN LISTS STONEYDSP_CORE_COMPILE_OPTIONS_PRIVATE)
+
+    foreach(STONEYDSP_CORE_COMPILE_OPTION IN LISTS STONEYDSP_CORE_COMPILE_OPTIONS_PUBLIC)
+        message(DEBUG "Target: ${STONEYDSP_CORE_TARGET_NAME} - adding compile option (public): ${STONEYDSP_CORE_COMPILE_OPTION}")
+        target_compile_options(${STONEYDSP_CORE_TARGET_NAME}
+            PUBLIC
+            ${STONEYDSP_CORE_COMPILE_OPTION}
+        )
+        message(VERBOSE "Target: ${STONEYDSP_CORE_TARGET_NAME} - added compile option (public): ${STONEYDSP_CORE_COMPILE_OPTION}")
+    endforeach(STONEYDSP_CORE_COMPILE_OPTION IN LISTS STONEYDSP_CORE_COMPILE_OPTIONS_PUBLIC)
+
+    foreach(STONEYDSP_CORE_COMPILE_OPTION IN LISTS STONEYDSP_CORE_COMPILE_OPTIONS_INTERFACE)
+        message(DEBUG "Target: ${STONEYDSP_CORE_TARGET_NAME} - adding compile option (interface): ${STONEYDSP_CORE_COMPILE_OPTION}")
+        target_compile_options(${STONEYDSP_CORE_TARGET_NAME}
+            INTERFACE
+            ${STONEYDSP_CORE_COMPILE_OPTION}
+        )
+        message(VERBOSE "Target: ${STONEYDSP_CORE_TARGET_NAME} - added compile option (interface): ${STONEYDSP_CORE_COMPILE_OPTION}")
+    endforeach(STONEYDSP_CORE_COMPILE_OPTION IN LISTS STONEYDSP_CORE_COMPILE_OPTIONS_INTERFACE)
+
+    foreach(STONEYDSP_CORE_COMPILE_FEATURE IN LISTS STONEYDSP_CORE_COMPILE_FEATURES_PRIVATE)
+        message(DEBUG "Target: ${STONEYDSP_CORE_TARGET_NAME} - adding compile feature (private): ${STONEYDSP_CORE_COMPILE_FEATURE}")
+        target_compile_features(${STONEYDSP_CORE_TARGET_NAME}
+            PRIVATE
+            ${STONEYDSP_CORE_COMPILE_FEATURE}
+        )
+        message(VERBOSE "Target: ${STONEYDSP_CORE_TARGET_NAME} - added compile feature (private): ${STONEYDSP_CORE_COMPILE_FEATURE}")
+    endforeach(STONEYDSP_CORE_COMPILE_FEATURE IN LISTS STONEYDSP_CORE_COMPILE_FEATURES_PRIVATE)
+
+    foreach(STONEYDSP_CORE_COMPILE_FEATURE IN LISTS STONEYDSP_CORE_COMPILE_FEATURES_PUBLIC)
+        message(DEBUG "Target: ${STONEYDSP_CORE_TARGET_NAME} - adding compile feature (public): ${STONEYDSP_CORE_COMPILE_FEATURE}")
+        target_compile_features(${STONEYDSP_CORE_TARGET_NAME}
+            PUBLIC
+            ${STONEYDSP_CORE_COMPILE_FEATURE}
+        )
+        message(VERBOSE "Target: ${STONEYDSP_CORE_TARGET_NAME} - added compile feature (public): ${STONEYDSP_CORE_COMPILE_FEATURE}")
+    endforeach(STONEYDSP_CORE_COMPILE_FEATURE IN LISTS STONEYDSP_CORE_COMPILE_FEATURES_PUBLIC)
+
+    foreach(STONEYDSP_CORE_COMPILE_FEATURE IN LISTS STONEYDSP_CORE_COMPILE_FEATURES_INTERFACE)
+        message(DEBUG "Target: ${STONEYDSP_CORE_TARGET_NAME} - adding compile feature (interface): ${STONEYDSP_CORE_COMPILE_FEATURE}")
+        target_compile_features(${STONEYDSP_CORE_TARGET_NAME}
+            INTERFACE
+            ${STONEYDSP_CORE_COMPILE_FEATURE}
+        )
+        message(VERBOSE "Target: ${STONEYDSP_CORE_TARGET_NAME} - added compile feature (interface): ${STONEYDSP_CORE_COMPILE_FEATURE}")
+    endforeach(STONEYDSP_CORE_COMPILE_FEATURE IN LISTS STONEYDSP_CORE_COMPILE_FEATURES_INTERFACE)
 
     if(STONEYDSP_CORE_TARGET_INSTALL)
         # Generate export set

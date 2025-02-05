@@ -9,18 +9,20 @@
  *
  */
 
+#pragma once
+
 #ifndef STONEYDSP_TEST_CATCH2_SESSION_HPP_INCLUDED
-#define STONEYDSP_TEST_CATCH2_SESSION_HPP_INCLUDED
+  #define STONEYDSP_TEST_CATCH2_SESSION_HPP_INCLUDED
 
-#if defined(STONEYDSP_BUILD_TEST)
+  #if defined(STONEYDSP_BUILD_TEST)
 
-#include <catch2/catch_session.hpp>
+    #include <catch2/catch_session.hpp>
 
-#include "stoneydsp/stoneydsp.h"
+    #include "stoneydsp/stoneydsp.h"
 
-#include <sstream>
-#include <string>
-#include <vector>
+    #include <sstream>
+    #include <string>
+    #include <vector>
 
 STONEYDSP_NAMESPACE_BEGIN (stoneydsp)
 STONEYDSP_NAMESPACE_BEGIN (test)
@@ -36,6 +38,6 @@ typedef stoneydsp_test_args_t stoneydsp_test_args;
 STONEYDSP_API extern stoneydsp_test_args stoneydspTestArgs;
 STONEYDSP_EXTERN_C_END
 
-#endif // defined (STONEYDSP_BUILD_TEST)
+  #endif // defined (STONEYDSP_BUILD_TEST)
 
 #endif // STONEYDSP_TEST_CATCH2_SESSION_HPP_INCLUDED

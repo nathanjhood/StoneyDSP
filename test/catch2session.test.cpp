@@ -1,19 +1,40 @@
+/**
+ * @file catch2session.cpp
+ * @author StoneyDSP (nathanjhood@googlemail.com)
+ * @copyright Copyright (c) 2025
+ *
+ */
+
+//==============================================================================
+
 #include "catch2session.hpp"
+
+//==============================================================================
 
 #if defined(STONEYDSP_BUILD_TEST)
 
-#include <catch2/catch_session.hpp>
+//==============================================================================
 
-#include "stoneydsp/stoneydsp.h"
+  #include <catch2/catch_session.hpp>
 
-#include <iostream>
-#include <sstream>
-#include <string>
-#include <vector>
+//==============================================================================
+
+  #include "stoneydsp/stoneydsp.h"
+
+//==============================================================================
+
+  #include <iostream>
+  #include <sstream>
+  #include <string>
+  #include <vector>
+
+//==============================================================================
 
 STONEYDSP_EXTERN_C_BEGIN
 STONEYDSP_API stoneydsp_test_args stoneydspTestArgs = "";
 STONEYDSP_EXTERN_C_END
+
+//==============================================================================
 
 int STONEYDSP_PUBLIC_FUNCTION
 STONEYDSP_NAMESPACE_QUAL (stoneydsp::test) run ()
@@ -54,4 +75,8 @@ STONEYDSP_NAMESPACE_QUAL (stoneydsp::test) run ()
   return numFailed;
 }
 
+//==============================================================================
+
 #endif // defined (STONEYDSP_BUILD_TEST)
+
+//=========================================================================//EOF

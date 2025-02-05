@@ -252,7 +252,12 @@
 		"map": "cpp",
 		"set": "cpp",
 		"optional": "cpp",
-		"variant": "cpp"
+		"variant": "cpp",
+		"bitset": "cpp",
+		"codecvt": "cpp",
+		"list": "cpp",
+		"iomanip": "cpp",
+		"typeindex": "cpp"
 	},
 	"json.schemas": [
 		{

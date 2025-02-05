@@ -1,17 +1,20 @@
 ############################################<<<-Part 1: Initialization and Setup
 
-# Default target executed when no arguments are given to make.
+## Default target executed when no arguments are given to make.
 default_target: all
 .PHONY : default_target
 
-# # Allow only one "make -f Makefile2" at a time, but pass parallelism.
+# ## Allow only one "make -f Makefile2" at a time, but pass parallelism.
 # .NOTPARALLEL:
 
-# The shell in which to execute make rules.
+## Save temps without passing `-save-temps`
+.SECONDARY:
+
+## The shell in which to execute make rules.
 SHELL := /bin/sh
 ECHO := echo
 
-# Compilers and tools
+## Compilers and tools
 CC := cc
 CXX := c++
 CPP := $(CXX) -E
@@ -20,7 +23,11 @@ AR := ar
 LD ?= ld
 GDB ?= gdb
 OBJCOPY ?= objcopy
+
 CMAKE := cmake
+CTEST := ctest
+CPACK := cpack
+
 GIT := git
 ZIP := ZIP
 UNZIP := unzip
@@ -30,12 +37,27 @@ SHA1SUM := sha1sum
 HASH_ALGORITHM ?= $(XXD)
 PKG_CONFIG ?= pkg-config
 
-# Get the directory of the Makefile
+CPP_LINT ?= clang-format
+CPP_TIDY ?= clang-tidy
+
+## Get the directory of the Makefile
 MAKEFILE_DIR := $(patsubst %/,%,$(dir $(realpath $(firstword $(MAKEFILE_LIST)))))
 
 SOURCES :=
 OBJECTS :=
 INCLUDES :=
+
+## Verbosity control.
+##
+## example:
+##     $(Q)mkdir build
+##
+VERBOSE ?=
+ifeq ($(VERBOSE),1)
+    Q :=
+else
+    Q := @
+endif
 
 ifdef CROSS_COMPILE
 	MACHINE := $(CROSS_COMPILE)
@@ -107,10 +129,10 @@ ifdef ARCH_MAC
 	PRESET_OS := osx
 endif
 
-# 1. Accepts a 'BUILD_TYPE=' argument when configuring (supports 'debug' or 'release')
-# 2. Lookup the 'DEBUG' env var if no 'BUILD_TYPE=' was specified.
-# 3. If 'DEBUG' was set, build in 'debug' mode; otherwise, defaults to 'release'.
-# 4. Lookup the 'VERBOSE' env var; if set, append '-verbose' to the preset.
+## 1. Accepts a 'BUILD_TYPE=' argument when configuring (supports 'debug' or 'release')
+## 2. Lookup the 'DEBUG' env var if no 'BUILD_TYPE=' was specified.
+## 3. If 'DEBUG' was set, build in 'debug' mode; otherwise, defaults to 'release'.
+## 4. Lookup the 'VERBOSE' env var; if set, append '-verbose' to the preset.
 ifdef BUILD_TYPE
 	PRESET_CONFIG := $(BUILD_TYPE)
 else ifdef DEBUG
@@ -123,17 +145,17 @@ ifdef VERBOSE
 	PRESET_VERBOSE := -verbose
 endif
 
-# The deduced CMake Preset name.
+## The deduced CMake Preset name.
 PRESET ?= $(PRESET_ARCH)-$(PRESET_OS)-$(PRESET_CONFIG)$(PRESET_VERBOSE)
 
-# This target reports the automatically-selected CMake Preset to stdout.
+## This target reports the automatically-selected CMake Preset to stdout.
 preset:
 	@echo $(PRESET)
 .PHONY: preset
 
-###################################<<<-Part 2: Standards, Flags, and Directories
+###########################################<<<-Standards, Flags, and Directories
 
-# Standards
+## Standards
 C_STANDARD ?= 14
 CXX_STANDARD ?= 14
 
@@ -148,21 +170,21 @@ endif
 CFLAGS += -std=$(C_DIALECT)$(C_STANDARD)
 CXXFLAGS += -std=$(CXX_DIALECT)$(CXX_STANDARD)
 
-# Optional debugger symbols
+## Optional debugger symbols
 ifdef DEBUG
 	CPPFLAGS += -g
 endif
 
-# -O0: No optimization. This is the default level. It aims for the fastest compilation time and the best debugging experience.
-# -O1: Basic optimization. Enables optimizations that do not involve a space-speed tradeoff.
-# -O2: Further optimization. More optimizations are enabled that improve performance without significantly increasing the compilation time.
-# -O3: Aggressive optimization. It enables more aggressive optimizations that may increase the compilation time but aim to maximize the performance of the generated code.
-# -Os: Optimize for size. Enables all -O2 optimizations that do not typically increase code size and enables further optimizations to reduce code size.
-# -Ofast: Disregards strict standards compliance for the sake of optimization. Enables all -O3 optimizations along with other aggressive optimizations.
+## -O0: No optimization. This is the default level. It aims for the fastest compilation time and the best debugging experience.
+## -O1: Basic optimization. Enables optimizations that do not involve a space-speed tradeoff.
+## -O2: Further optimization. More optimizations are enabled that improve performance without significantly increasing the compilation time.
+## -O3: Aggressive optimization. It enables more aggressive optimizations that may increase the compilation time but aim to maximize the performance of the generated code.
+## -Os: Optimize for size. Enables all -O2 optimizations that do not typically increase code size and enables further optimizations to reduce code size.
+## -Ofast: Disregards strict standards compliance for the sake of optimization. Enables all -O3 optimizations along with other aggressive optimizations.
 OPTIMIZATION ?= -O0
 CPPFLAGS += $(OPTIMIZATION)
 
-# Warnings and errors
+## Warnings and errors
 CPPFLAGS += -Wall
 CPPFLAGS += -Wextra
 
@@ -180,6 +202,8 @@ else ifdef VERBOSE
 	CPPFLAGS += -pedantic
 endif
 
+# In theory, we could leave -fPIC in place, since non-POSIX users are almost
+# definitely MSVC users, who likely aren't using this Makefile anyway...
 FLAGS += -fPIC
 # FLAGS += -save-temps
 
@@ -187,28 +211,28 @@ FLAGS += -fPIC
 # CPPFLAGS += -fmacro-prefix-map=$(BUILD_DIR)/src=src
 # CPPFLAGS += -fmacro-prefix-map=$(BUILD_DIR)/test=test
 
-#############################################<<<-Part 3: Source and Object Files
+#####################################################<<<-Source and Object Files
 
-# Directories
+## Directories
 BUILD_DIR := build
 DOC_DIR := doc
 SRC_DIR := src
 TEST_DIR := test
 INCLUDE_DIR := $(BUILD_DIR)/include
 
-# Source files
+## Source files
 CORE_SRCS := $(wildcard $(SRC_DIR)/stoneydsp/core/core.cpp)
 DSP_SRCS := $(wildcard $(SRC_DIR)/stoneydsp/dsp/dsp.cpp)
 SIMD_SRCS := $(wildcard $(SRC_DIR)/stoneydsp/simd/simd.cpp)
 LIB_SRCS := $(wildcard $(SRC_DIR)/stoneydsp/stoneydsp.cpp)
 
-# Object files
+## Object files
 CORE_OBJS := $(CORE_SRCS:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/src/%.cpp.o)
 DSP_OBJS := $(DSP_SRCS:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/src/%.cpp.o)
 SIMD_OBJS := $(SIMD_SRCS:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/src/%.cpp.o)
 LIB_OBJS := $(LIB_SRCS:$(SRC_DIR)/%.cpp=$(BUILD_DIR)/src/%.cpp.o)
 
-# Dep files
+## Dep files
 CORE_DEPS := $(CORE_OBJS:.o=.d)
 DSP_DEPS := $(DSP_OBJS:.o=.d)
 SIMD_DEPS := $(SIMD_OBJS:.o=.d)
@@ -216,18 +240,22 @@ LIB_DEPS := $(LIB_OBJS:.o=.d)
 
 ###########################################<<<-Part 4: Feature Flags and Targets
 
-# Library type
+## Library type
 BUILD_SHARED ?= 1
 ifeq ($(BUILD_SHARED),1)
 	DEFINES += -DSTONEYDSP_BUILD_SHARED=$(BUILD_SHARED)
-	LIB_EXT := so
+	ifdef ARCH_WIN
+		LIB_EXT := dll
+	else
+		LIB_EXT := so
+	endif
 	BUILD_SHARED_FLAG := -shared
 else
 	LIB_EXT := a
 	BUILD_SHARED_FLAG :=
 endif
 
-# TODO: The macro NDEBUG controls whether assert() statements are active or not.
+## TODO: The macro NDEBUG controls whether assert() statements are active or not.
 ifdef DEBUG
 	# DEFINES += -DDEBUG # consider Windows MSVC...
 	DEFINES += -D_DEBUG
@@ -235,13 +263,13 @@ else
 	DEFINES += -DNDEBUG
 endif
 
-# Feature flags
+## Feature flags
 EXPERIMENTAL ?= 0
 BUILD_CORE ?= 1
 BUILD_DSP ?= 0
 BUILD_SIMD ?= 0
 
-# Always include the library source
+## Always include the library source
 SOURCES += $(LIB_SRCS)
 OBJECTS += $(LIB_OBJS)
 INCLUDES += -I$(INCLUDE_DIR)
@@ -252,29 +280,45 @@ endif
 ifeq ($(BUILD_CORE),1)
 	SOURCES += $(CORE_SRCS)
 	OBJECTS += $(CORE_OBJS)
-	DEPS := $(CORE_DEPS)
+	DEPS += $(CORE_DEPS)
 	DEFINES += -DSTONEYDSP_BUILD_CORE=$(BUILD_CORE)
 endif
 ifeq ($(BUILD_DSP),1)
 	SOURCES += $(DSP_SRCS)
 	OBJECTS += $(DSP_OBJS)
-	DEPS := $(DSP_DEPS)
+	DEPS += $(DSP_DEPS)
 	DEFINES += -DSTONEYDSP_BUILD_DSP=$(BUILD_DSP)
 endif
 ifeq ($(BUILD_SIMD),1)
 	SOURCES += $(SIMD_SRCS)
 	OBJECTS += $(SIMD_OBJS)
-	DEPS := $(SIMD_DEPS)
+	DEPS += $(SIMD_DEPS)
 	DEFINES += -DSTONEYDSP_BUILD_SIMD=$(BUILD_SIMD)
 endif
 
-# Optional test objects
+## Optional test objects
 ifeq ($(BUILD_TEST),1)
 	TEST_TARGET := $(BUILD_DIR)/test/main
-	TEST_SRCS := $(wildcard test/catch2session.cpp)
-	TEST_OBJS := $(TEST_SRCS:$(TEST_DIR)/%.cpp=$(BUILD_DIR)/test/%.cpp.o)
+	TEST_SRCS := $(wildcard test/*.test.cpp)
+	TEST_OBJS := $(TEST_SRCS:$(TEST_DIR)/%.test.cpp=$(BUILD_DIR)/test/%.test.cpp.o)
 	TEST_DEPS := $(TEST_OBJS:.o=.d)
 	DEFINES += -DSTONEYDSP_BUILD_TEST=$(BUILD_TEST)
+endif
+
+# Test files
+ifeq ($(BUILD_TEST),1)
+	ifeq ($(BUILD_CORE),1)
+		# core tests
+		TEST_SRCS += $(wildcard $(TEST_DIR)/stoneydsp/core/*.test.cpp)
+		TEST_SRCS += $(wildcard $(TEST_DIR)/stoneydsp/core/types/*.test.cpp)
+		TEST_OBJS += $(CORE_SRCS:$(TEST_DIR)/%.test.cpp=$(BUILD_DIR)/test/%.test.cpp.o)
+	endif
+	ifeq ($(BUILD_SIMD),1)
+		# simd tests
+	endif
+	ifeq ($(BUILD_DSP),1)
+		# dsp tests
+	endif
 endif
 
 ##################################<<<-Part 5: Dependencies and submodule targets
@@ -328,26 +372,22 @@ version-all: version-major version-minor version-patch version-tweak
 .PHONY: version-all
 
 ./.git/modules:
-	$(GIT) submodule update --init --recursive
+	@$(GIT) submodule update --init --recursive
 
 ./.git/modules/dep: ./.git/modules
 
-# Fetch submodules
+## Fetch submodules
 ./.git/modules/dep/vcpkg: ./.git/modules/dep
 
-# Bootstrap vcpkg
+## Bootstrap vcpkg
 ./dep/vcpkg/bootstrap-vcpkg.sh: ./.git/modules/dep/vcpkg
-	$(GIT) submodule update --init --recursive
+	@$(GIT) submodule update --init --recursive
 
-# Use vcpkg
+## Use vcpkg
 ./dep/vcpkg/vcpkg: ./dep/vcpkg/bootstrap-vcpkg.sh
-
-# ./dep/vcpkg: ./.git/modules/dep/vcpkg
 
 VCPKG_ROOT ?= ./dep/vcpkg
 VCPKG := $(VCPKG_ROOT)/vcpkg
-
-# PKG_CONFIG_PATH += build/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/lib/pkgconfig
 
 ifdef DEBUG
 	LIB_CATCH := Catch2d
@@ -369,49 +409,61 @@ endif
 ###################################<<<-Part 6: CMake and workflow targets
 
 reconfigure: ./dep/vcpkg/vcpkg
-	VCPKG_ROOT=$(VCPKG_ROOT) $(CMAKE) \
+	@echo Reconfiguring with CMake...
+	@VCPKG_ROOT=$(VCPKG_ROOT) $(CMAKE) \
 	--preset $(PRESET) \
 	--fresh
+	@echo Reconfigured with CMake.
 .PHONY: reconfigure
 
 configure: ./dep/vcpkg/vcpkg
-	VCPKG_ROOT=$(VCPKG_ROOT) $(CMAKE) \
+	@echo Configuring with CMake...
+	@VCPKG_ROOT=$(VCPKG_ROOT) $(CMAKE) \
 	--preset $(PRESET)
+	@echo Configured with CMake.
 .PHONY: configure
 
 build: configure
-	$(CMAKE) \
+	@echo Building with CMake...
+	@$(CMAKE) \
 	--build $(PWD)/build \
 	--preset $(PRESET)
+	@echo Built with CMake.
 .PHONY: build
 
 test: build
-	$(CTEST) \
-	--test-dir $(PWD)/build \
-	--preset $(PRESET)
+	@echo Testing with CTest...
+	$(CTEST) --test-dir $(PWD)/build --preset $(PRESET)
+	@echo Tested with CTest.
 .PHONY: test
 
 package: test
-	$(CMAKE) \
+	@echo Packaging build tree with CPack...
+	@$(CMAKE) \
 	--build $(PWD)/build \
 	--target $@
+	@echo Packaged build tree with CPack.
 .PHONY: package
 
 package_source: test
-	$(CMAKE) \
+	@echo Packaging source tree with CPack...
+	@$(CMAKE) \
 	--build $(PWD)/build \
 	--target $@
+	@echo Packaged source tree with CPack.
 .PHONY: package_source
 
 workflow: ./dep/vcpkg/vcpkg
-	VCPKG_ROOT=$(VCPKG_ROOT) $(CMAKE) \
+	@echo Running workflow with CMake...
+	@VCPKG_ROOT=$(VCPKG_ROOT) $(CMAKE) \
 	--workflow \
 	--preset $(PRESET) \
 	--fresh
+	@echo Ran workflow with CMake.
 .PHONY: workflow
 
 source: configure
-	$(CMAKE) \
+	@$(CMAKE) \
 	--install $(PWD)/build \
 	--prefix $(PWD)/dist \
 	--component $@
@@ -427,26 +479,42 @@ source: configure
 
 # .PHONY: dep
 
+CMAKE_CACHE := $(BUILD_DIR)/CMakeCache.txt
+
+$(CMAKE_CACHE): configure
+
+COMPILE_COMMANDS := $(BUILD_DIR)/compile_commands.json
+
+$(COMPILE_COMMANDS): $(CMAKE_CACHE)
+
 ############################################<<<-Libraries and executable targets
 
 TARGET := $(BUILD_DIR)/lib/libstoneydsp.$(LIB_EXT)
 
-# Distribution build
+## Distribution build
 $(TARGET): $(OBJECTS)
+	@echo
+	@echo Building target: $@
 	@mkdir -p $(dir $@)
-	$(CXX) $(BUILD_SHARED_FLAG) $(CPPFLAGS) $(CXXFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -o $@ $<
+	$(CXX) $(BUILD_SHARED_FLAG) $(CPPFLAGS) $(CXXFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) $^ -o $@
+	@echo Built target successfully: $@
+	@echo
 
-# Test executable
+## Test executable
 ifdef BUILD_TEST
-$(LIB_CATCH_PATH)/lib$(LIB_CATCH).a: configure
+$(LIB_CATCH_PATH)/lib$(LIB_CATCH).a: $(CMAKE_CACHE)
 
+## Alias target to install Catch2 unit-testing library
 catch2: $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a
-
 .PHONY: catch2
 
-$(TEST_TARGET): $(TEST_OBJS) $(TARGET) $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a
+$(TEST_TARGET): test/main.test.cpp $(TARGET) $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a
+	@echo
+	@echo Building target: $@
 	@mkdir -p $(dir $@)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) $< $(OBJECTS) test/main.cpp $(LDFLAGS) -o $@
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) $(TEST_SRCS) -L$(BUILD_DIR)/lib -lstoneydsp $(LDFLAGS) -o $@
+	@echo Built target successfully: $@
+	@echo
 
 run: $(TEST_TARGET)
 	$(TEST_TARGET) $(TEST_ARGS)
@@ -456,8 +524,8 @@ endif
 
 ##################################################<<<-Part 8: Patterns and rules
 
-$(BUILD_DIR)/include: configure
-	@echo "Configured CMake"
+$(BUILD_DIR)/include: $(CMAKE_CACHE)
+	@echo "Configured header files."
 
 ## <CC>
 
@@ -476,46 +544,83 @@ $(BUILD_DIR)/src/%.c.o: $(BUILD_DIR)/src/%.c.s
 # ## '*.cpp.d' - Dependency tracking
 # $(BUILD_DIR)/src/%.c.d: $(SRC_DIR)/%.c
 # 	@mkdir -p $(dir $@)
-# 	$(CC) $(CFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -x c -MM -MF $@ -MT $(@:.d=.o) $<
+# 	@$(CC) $(CFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -x c -MM -MF $@ -MT $(@:.d=.o) $<
 # -include $(DEPS)
+
 ## <CXX>
 
 ## '*.cpp.i' - Pre-Processor
 $(BUILD_DIR)/src/%.cpp.i: $(SRC_DIR)/%.cpp $(BUILD_DIR)/include
+	@echo
+	@echo Building target: $@
 	@mkdir -p $(dir $@)
 	$(CPP) $(CXXFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -x c++ $< -o $@
+	@echo Built target successfully: $@
+	@echo
 ## '*.cpp.s' - Assembler
 $(BUILD_DIR)/src/%.cpp.s: $(BUILD_DIR)/src/%.cpp.i
+	@echo
+	@echo Building target: $@
 	@mkdir -p $(dir $@)
 	$(ASM) $(CXXFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -x c++-cpp-output $< -o $@
+	@echo Built target successfully: $@
+	@echo
 ## '*.cpp.o' - Compiler
 $(BUILD_DIR)/src/%.cpp.o: $(BUILD_DIR)/src/%.cpp.s
+	@echo
+	@echo Building target: $@
 	@mkdir -p $(dir $@)
-	$(CXX) -c $(CXXFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -x assembler-with-cpp $< -o $@
+	$(CXX) -c $(CXXFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -x assembler $< -o $@
+	@echo Built target successfully: $@
+	@echo
 # ## '*.cpp.d' - Dependency tracking
 # $(BUILD_DIR)/src/%.cpp.d: $(SRC_DIR)/%.cpp
+# 	@echo Building target: $@
 # 	@mkdir -p $(dir $@)
 # 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -x c++ -MM -MF $@ -MT $(@:.d=.o) $<
 # -include $(DEPS)
 
-$(BUILD_DIR)/src/%.m.o: $(SRC_DIR)/%.m $(BUILD_DIR)/include
+## <OBJC>
+
+## '*.m.i' - Pre-Processor
+$(BUILD_DIR)/src/%.m.i: $(SRC_DIR)/%.m $(BUILD_DIR)/include
 	@mkdir -p $(dir $@)
-	$(CC) -c $(CFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) $< -o $@
-
-
-$(BUILD_DIR)/src/%.mm.o: $(SRC_DIR)/%.mm $(BUILD_DIR)/include
+	$(CPP) $(OBJCFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -x objective-c $< -o $@
+## '*.m.i' - Assembler
+$(BUILD_DIR)/src/%.m.s: $(BUILD_DIR)/src/%.m.i
 	@mkdir -p $(dir $@)
-	$(CXX) -c $(CXXFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) $< -o $@
+	$(ASM) $(OBJCFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -x objective-c-cpp-output $< -o $@
+## '*.m.s' - Compiler
+$(BUILD_DIR)/src/%.m.o: $(BUILD_DIR)/src/%.m.s
+	@mkdir -p $(dir $@)
+	$(OBJC) -c $(OBJCFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -x assembler $< -o $@
 
-ifdef BUILD_TEST
+## <OBJCXX>
+## '*.mm.i' - Pre-Processor
+$(BUILD_DIR)/src/%.mm.i: $(SRC_DIR)/%.mm $(BUILD_DIR)/include
+	@mkdir -p $(dir $@)
+	$(CPP) $(OBJCFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -x objective-c++ $< -o $@
+## '*.mm.i' - Assembler
+$(BUILD_DIR)/src/%.mm.s: $(BUILD_DIR)/src/%.mm.i
+	@mkdir -p $(dir $@)
+	$(ASM) $(OBJCFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -x objective-c++-cpp-output $< -o $@
+## '*.mm.s' - Compiler
+$(BUILD_DIR)/src/%.mm.o: $(BUILD_DIR)/src/%.mm.s
+	@mkdir -p $(dir $@)
+	$(OBJC) -c $(OBJCFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -x assembler $< -o $@
+
+ifeq ($(BUILD_TEST),1)
 INCLUDES += -I$(BUILD_DIR)/test
-
-# Pattern rules for test files
-$(BUILD_DIR)/test/%.cpp.o: $(TEST_DIR)/%.cpp $(BUILD_DIR)/include
+## Pattern rules for test files
+$(BUILD_DIR)/test/%.test.cpp.o: $(TEST_DIR)/%.test.cpp $(BUILD_DIR)/include
+	@echo
+	@echo Building target: $@
 	@mkdir -p $(dir $@)
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -c $< -o $@
+	@echo Built target successfully: $@
+	@echo
 
-# # Test entry point depfiles
+# ## Test entry point depfiles
 # $(BUILD_DIR)/test/%.cpp.d: $(TEST_DIR)/%.cpp
 # 	@mkdir -p $(dir $@)
 # 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -x c++ -MM -MF $@ -MT $(@:.d=.o) $<
@@ -548,11 +653,11 @@ install: $(TARGET)
 
 $(BUILD_DIR)/%.html: %.md
 	@mkdir -p $(dir $@)
-	markdown $< > $@
+	@markdown $< > $@
 
-# Include the doc target
-$(BUILD_DIR)/doc/html: configure
-	doxygen ./doc/Doxyfile
+## Include the doc target
+$(BUILD_DIR)/doc/html: $(CMAKE_CACHE)
+	@doxygen ./doc/Doxyfile
 
 doc: $(BUILD_DIR)/doc/html
 	@mkdir -p $(dir $@)
@@ -560,35 +665,69 @@ doc: $(BUILD_DIR)/doc/html
 
 #############################################<<<-Part 10: Clean, Help, and utils
 
-# default target
+## default target
 all: $(TARGET) $(TEST_TARGET)
+.PHONY: all
 
-# Fetch submodules
+## Fetch submodules
 submodules:
-	$(GIT) submodule update --init --recursive
+	@$(GIT) submodule update --init --recursive
 .PHONY: submodules
 
 DEBUG_FLAGS := -g -O0
 RELEASE_FLAGS := -O2
 
+## Debug build
 debug: CFLAGS += $(DEBUG_FLAGS)
 debug: $(TARGET)
-
 .PHONY: debug
 
+## Release build
 release: CFLAGS += $(RELEASE_FLAGS)
 release: $(TARGET)
-
 .PHONY: release
 
-# Clean up build files
+## Lint source files files
+format:
+	@$(CPP_LINT) --style=file:.clang-format
+.PHONY: format
+
+## Analyze source files files
+tidy: $(COMPILE_COMMANDS)
+	@$(CPP_TIDY) --config-file=.clang-tidy -p $(BUILD_DIR)
+.PHONY: tidy
+
+## Clean up build files
 clean:
-	@rm -rvf $(BUILD_DIR)/include $(BUILD_DIR)/src $(BUILD_DIR)/test $(TARGET) $(TEST_TARGET)
+	@rm -rvf $(BUILD_DIR)/doc
+	@rm -rvf $(BUILD_DIR)/bin
+	@rm -rvf $(BUILD_DIR)/lib
+	@rm -rvf $(BUILD_DIR)/test
+	@rm -rvf $(BUILD_DIR)/src
+	@rm -rvf $(BUILD_DIR)/include
+	@rm -rvf $(BUILD_DIR)/.ninja_deps
+	@rm -rvf $(BUILD_DIR)/.ninja_log
+	@rm -rvf $(BUILD_DIR)/build.ninja
+	@rm -rvf $(BUILD_DIR)/cmake_install.cmake
+	@rm -rvf $(BUILD_DIR)/install_manifest.txt
+	@rm -rvf $(BUILD_DIR)/CPackConfig.cmake
+	@rm -rvf $(BUILD_DIR)/CPackSourceConfig.cmake
+	@rm -rvf $(BUILD_DIR)/CMakeFiles
+	@rm -rvf $(BUILD_DIR)/MakeFiles
+	@rm -rvf $(BUILD_DIR)/Testing
+	@rm -rvf $(TARGET)
+	@rm -rvf $(TEST_TARGET)
+	@rm -rvf $(CMAKE_CACHE)
+	@rm -rvf $(COMPILE_COMMANDS)
+	@rm -rvf $(BUILD_DIR)/compile_commands_cmake.json
+	@rm -rvf $(BUILD_DIR)/compile_commands_make.json
+.PHONY: clean
 
 wipe: clean
 	@rm -rvf $(BUILD_DIR)
+.PHONY: wipe
 
-# Help Target
+## Help Target
 help:
 	@echo "The directory of the Makefile is: $(MAKEFILE_DIR)"
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -610,4 +749,9 @@ help:
 	@echo "... help"
 .PHONY: help
 
+.PRECIOUS: $(CMAKE_CACHE) $(COMPILE_COMMANDS)
+
 .DEFAULT_TARGET: all
+
+check:
+	@echo $($(CHECK_ARGS))
