@@ -23,21 +23,44 @@ jobs:
 
     strategy:
       matrix:
-        msystem: [MINGW64, UCRT64, CLANG64]
-        # TODO: CLANGARM64, MINGW32, CLANG32
+        msystem: [MINGW64, UCRT64, CLANG64, MINGW32]
+        # TODO: CLANG32, CLANGARM64, MSVC_x86, MSVC_x64
 
     defaults:
       run:
         shell: msys2 {0}
 
     steps:
+
+    - name: Enable GitHub Actions Cache backend
+      uses: actions/github-script@v7
+      with:
+        script: |
+          core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
+          core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
+
     - name: Checkout source code
       uses: actions/checkout@v4
       with:
         submodules: true
         fetch-depth: 0
 
+    - name: Set up MSVC environment (x64)
+      if: matrix.msystem == 'MSVC_x64'
+      shell: pwsh
+      run: |
+        Invoke-Expression -Command "& 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars64.bat'"
+        cl
+
+    - name: Set up MSVC environment (x86)
+      if: matrix.msystem == 'MSVC_x86'
+      shell: pwsh
+      run: |
+        Invoke-Expression -Command "& 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\VC\Auxiliary\Build\vcvars32.bat'"
+        cl
+
     - name: Set up MSYS2
+      if: matrix.msystem != 'MSVC_x86' && matrix.msystem != 'MSVC_x64'
       uses: msys2/setup-msys2@v2
       with:
         msystem: MSYS
@@ -109,37 +132,77 @@ jobs:
       run: >-
           pacman -S --noconfirm
           mingw-w64-i686-toolchain
-          mingw-w64-i686--cmake
-          mingw-w64-i686--ninja
+          mingw-w64-i686-cmake
+          mingw-w64-i686-ninja
           mingw-w64-i686-make
 
-    - name: Enable GitHub Actions Cache backend
-      uses: actions/github-script@v7
-      with:
-        script: |
-          core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
-          core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
+      # This toolchain group doesn't seem to exist, so do it manually... (fail)
+    - name: Install CLANG32 toolchain
+      if: matrix.msystem == 'CLANG32'
+      shell: msys2 {0}
+      run: >-
+          pacman -S --noconfirm
+          mingw-w64-i686-clang
+          mingw-w64-i686-clang-analyzer
+          mingw-w64-i686-clang-libs
+          mingw-w64-i686-clang-tools-extra
+          mingw-w64-i686-compiler-rt
+          mingw-w64-i686-lld
+          mingw-w64-i686-llvm
+          mingw-w64-i686-llvm-libs
+          mingw-w64-i686-crt-git
+          mingw-w64-i686-headers-git
+          mingw-w64-i686-libc++
+          mingw-w64-i686-libunwind
+          mingw-w64-i686-libmangle-git
+          mingw-w64-i686-libwinpthread-git
+          mingw-w64-i686-winpthreads-git
+          mingw-w64-i686-pkgconf
+          mingw-w64-i686-tools-git
+          mingw-w64-i686-winstorecompat-git
+          mingw-w64-i686-cmake
+          mingw-w64-i686-ninja
+          mingw-w64-i686-make
 
-    - name: Build with make
+      # MSYS steps
+
+    - name: Development build
+      if: matrix.msystem != 'MSVC_x86' && matrix.msystem != 'MSVC_x64'
       shell: msys2 {0}
       env:
         MSYSTEM: ${{ matrix.msystem }}
       run: make workflow BUILD_TEST=1
 
     - name: Deployment build
+      if: matrix.msystem != 'MSVC_x86' && matrix.msystem != 'MSVC_x64'
       shell: msys2 {0}
       env:
         MSYSTEM: ${{ matrix.msystem }}
       run: make BUILD_TEST=1
 
     - name: Run build
+      if: matrix.msystem != 'MSVC_x86' && matrix.msystem != 'MSVC_x64'
       shell: msys2 {0}
       env:
         MSYSTEM: ${{ matrix.msystem }}
       run: make run BUILD_TEST=1
 
     - name: List artefact directories
-      shell: msys2 {0}
+      if: matrix.msystem != 'MSVC_x86' && matrix.msystem != 'MSVC_x64'
       env:
         MSYSTEM: ${{ matrix.msystem }}
       run: tree ./install
+
+    #   # MSVC steps (perhaps build CMake? It isn't installed by default on Win runners...)
+
+    # - name: Build with MSVC
+    #   if: matrix.msystem == 'MSVC_x86' || matrix.msystem == 'MSVC_x64'
+    #   shell: pwsh
+    #   run: |
+    #     cl /EHsc /Fe:program.exe main.cpp
+
+    # - name: List artefact directories with MSVC
+    #   if: matrix.msystem == 'MSVC_x86' || matrix.msystem == 'MSVC_x64'
+    #   shell: pwsh
+    #   run: |
+    #     Get-ChildItem -Recurse
