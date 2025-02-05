@@ -65,6 +65,11 @@ else()
     set(_STONEYDSP_BUILD_STATIC_OR_DYNAMIC "STATIC")
 endif(STONEYDSP_BUILD_SHARED OR BUILD_SHARED_LIBS)
 
+if(APPLE)
+    set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+    set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+endif()
+
 #[==[
 Adds target: `stoneydsp::stoneydsp`
 ]==]
