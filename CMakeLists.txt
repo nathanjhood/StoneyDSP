@@ -47,6 +47,10 @@ if(STONEYDSP_BUILD_CORE)
     stoneydsp_add_core()
 endif()
 
+#[===========================[stoneydsp::stoneydsp]===========================]
+# 'always-on' target: libstoneydsp
+stoneydsp_add_stoneydsp()
+
 #[==============================[stoneydsp::test]==============================]
 if(STONEYDSP_BUILD_TEST)
     find_package(Catch2 REQUIRED 3.7.1)

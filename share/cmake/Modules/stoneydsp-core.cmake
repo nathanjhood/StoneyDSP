@@ -21,9 +21,9 @@ if(NOT DEFINED STONEYDSP_BINARY_DIR)
 endif(NOT DEFINED STONEYDSP_BINARY_DIR)
 
 #[============================[stoneydsp_add_core]============================]
-include(CMakeDependentOption)
 cmake_dependent_option(STONEYDSP_CORE_TARGET_INSTALL "Notes" ON "STONEYDSP_BUILD_CORE" ON)
 cmake_dependent_option(STONEYDSP_CORE_TARGET_EXPORT "Notes" ON "STONEYDSP_BUILD_CORE" ON)
+include(CMakeDependentOption)
 
 #[==[
 Adds target: `stoneydsp::core`
@@ -60,11 +60,11 @@ function(stoneydsp_add_core)
 
     # core.h/cpp
     set(STONEYDSP_CORE_H_FILE "${STONEYDSP_INCLUDE_DIR}/${STONEYDSP_SLUG}/${STONEYDSP_CORE_TARGET_NAME}/${STONEYDSP_CORE_TARGET_NAME}.h")
-    set(STONEYDSP_CORE_CPP_FILE "${STONEYDSP_INCLUDE_DIR}/${STONEYDSP_SLUG}/${STONEYDSP_CORE_TARGET_NAME}/${STONEYDSP_CORE_TARGET_NAME}.cpp")
+    set(STONEYDSP_CORE_CPP_FILE "${STONEYDSP_SRC_DIR}/${STONEYDSP_SLUG}/${STONEYDSP_CORE_TARGET_NAME}/${STONEYDSP_CORE_TARGET_NAME}.cpp")
 
-    # Not sure about these being in core?
-    set(STONEYDSP_H_FILE "${STONEYDSP_INCLUDE_DIR}/${STONEYDSP_SLUG}/${STONEYDSP_SLUG}.h")
-    set(STONEYDSP_CPP_FILE "${STONEYDSP_SRC_DIR}/${STONEYDSP_SLUG}/${STONEYDSP_SLUG}.cpp")
+    # # Not sure about these being in core?
+    # set(STONEYDSP_H_FILE "${STONEYDSP_INCLUDE_DIR}/${STONEYDSP_SLUG}/${STONEYDSP_SLUG}.h")
+    # set(STONEYDSP_CPP_FILE "${STONEYDSP_SRC_DIR}/${STONEYDSP_SLUG}/${STONEYDSP_SLUG}.cpp")
 
     # List header files (public)
     set(STONEYDSP_CORE_HEADER_FILES)
@@ -77,13 +77,12 @@ function(stoneydsp_add_core)
         "${STONEYDSP_CORE_TYPES_INT_H_FILE}"
         "${STONEYDSP_CORE_TYPES_MATH_H_FILE}"
         "${STONEYDSP_CORE_H_FILE}"
-        "${STONEYDSP_H_FILE}"
     )
 
     # List source files (private)
     set(STONEYDSP_CORE_SOURCE_FILES)
     list(APPEND STONEYDSP_CORE_SOURCE_FILES
-        "${STONEYDSP_CPP_FILE}"
+        ${STONEYDSP_CORE_CPP_FILE}
     )
 
     # List link libraries (private)
@@ -177,8 +176,8 @@ function(stoneydsp_add_core)
     set_target_properties(${STONEYDSP_CORE_TARGET_NAME}
         PROPERTIES
 
-        VERSION "${STONEYDSP_TEST_CORE_VERSION}"
-        SOVERSION "${STONEYDSP_TEST_CORE_VERSION_MAJOR}"
+        VERSION "${STONEYDSP_CORE_VERSION}"
+        SOVERSION "${STONEYDSP_CORE_VERSION_MAJOR}"
 
         RUNTIME_OUTPUT_DIRECTORY "${STONEYDSP_BINARY_DIR}/bin"
         PDB_OUTPUT_DIRECTORY "${STONEYDSP_BINARY_DIR}/lib"
