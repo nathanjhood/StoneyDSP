@@ -488,6 +488,7 @@ TARGET := $(BUILD_DIR)/lib/libstoneydsp.$(LIB_EXT)
 ## Distribution build
 $(TARGET): $(OBJECTS)
 	@echo
+	@echo Building target: $@
 	@mkdir -p $(dir $@)
 	$(CXX) $(BUILD_SHARED_FLAG) $(CPPFLAGS) $(CXXFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) $^ -o $@
 	@echo Built target successfully: $@
@@ -501,10 +502,11 @@ $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a: $(CMAKE_CACHE)
 catch2: $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a
 .PHONY: catch2
 
-$(TEST_TARGET): $(TARGET) $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a
+$(TEST_TARGET): test/main.test.cpp $(TARGET) $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a
 	@echo
+	@echo Building target: $@
 	@mkdir -p $(dir $@)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) $(TEST_SRCS) test/main.cpp -L$(BUILD_DIR)/lib -lstoneydsp $(LDFLAGS) -o $@
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) $(TEST_SRCS) -L$(BUILD_DIR)/lib -lstoneydsp $(LDFLAGS) -o $@
 	@echo Built target successfully: $@
 	@echo
 
