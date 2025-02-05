@@ -56,7 +56,7 @@ endfunction()
 #[==========================[stoneydsp_add_stoneydsp]==========================]
 option(STONEYDSP_TARGET_INSTALL "Notes" ON)
 option(STONEYDSP_TARGET_EXPORT "Notes" ON)
-option(STONEYDSP_BUILD_SHARED "Build shared library if truthy, else build static library. Default: ON" ON)
+option(STONEYDSP_BUILD_SHARED "Build shared library if truthy, else build static library. Default: OFF" OFF)
 set(_STONEYDSP_BUILD_STATIC_OR_DYNAMIC)
 
 if(STONEYDSP_BUILD_SHARED OR BUILD_SHARED_LIBS)
