@@ -8,9 +8,9 @@
 //==============================================================================
 
 #ifdef STONEYDSP_H_INCLUDED
-	#error wrong inclusion of stoneydsp.h
+  #error wrong inclusion of stoneydsp.h
 #endif
 
 #include "stoneydsp/stoneydsp.h"
 
-//==============================================================================
+//=========================================================================//EOF
