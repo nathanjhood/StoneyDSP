@@ -322,7 +322,7 @@ function(stoneydsp_add_test)
         PDB_OUTPUT_DIRECTORY "${STONEYDSP_BINARY_DIR}/bin"
         LIBRARY_OUTPUT_DIRECTORY "${STONEYDSP_BINARY_DIR}/lib"
         ARCHIVE_OUTPUT_DIRECTORY "${STONEYDSP_BINARY_DIR}/lib"
-        BUILD_RPATH "${CMAKE_INSTALL_PREFIX}/lib"
+        BUILD_RPATH "${STONEYDSP_BINARY_DIR}/lib;${CMAKE_INSTALL_PREFIX}/lib"
         INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib"
         INSTALL_RPATH_USE_LINK_PATH TRUE
     )
@@ -442,12 +442,12 @@ function(stoneydsp_add_test)
         )
     endif()
 
-    if(APPLE)
-        add_custom_command(TARGET ${STONEYDSP_TARGET_NAME}
-            POST_BUILD
-            COMMAND install_name_tool -add_rpath "@loader_path/../lib" $<TARGET_FILE:${STONEYDSP_TEST_TARGET_NAME}>
-        )
-    endif()
+    # if(APPLE)
+    # add_custom_command(TARGET ${STONEYDSP_TARGET_NAME}
+    # POST_BUILD
+    # COMMAND install_name_tool -add_rpath "@loader_path/../lib" $<TARGET_FILE:${STONEYDSP_TEST_TARGET_NAME}>
+    # )
+    # endif()
 
     # Pass target properties to parent scope
     set(STONEYDSP_TEST_TARGET_NAME "${STONEYDSP_TEST_TARGET_NAME}" PARENT_SCOPE)
