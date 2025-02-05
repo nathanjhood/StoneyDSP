@@ -63,7 +63,8 @@ function(stoneydsp_add_catch2_session)
     # List link libraries (public)
     set(STONEYDSP_TEST_CATCH2_SESSION_LINK_LIBRARIES_PUBLIC)
     list(APPEND STONEYDSP_TEST_CATCH2_SESSION_LINK_LIBRARIES_PUBLIC
-        "Catch2::Catch2"
+        Catch2::Catch2
+        ${STONEYDSP_BRAND}::${STONEYDSP_SLUG}::${STONEYDSP_TARGET_NAME}
     )
 
     # List link libraries (interface)
