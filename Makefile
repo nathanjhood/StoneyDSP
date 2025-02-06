@@ -507,19 +507,37 @@ OBJCFLAGS += $(FLAGS)
 OBJCXXFLAGS += $(FLAGS)
 LDFLAGS += $(FLAGS)
 
+# <CPP>
 CPP_CC_COMPILER := $(CC)
 CPP_CXX_COMPILER := $(CXX)
+CPP_OBJC_COMPILER := $(OBJC)
+CPP_OBJCXX_COMPILER := $(OBJCXX)
+
+# <ASM>
 ASM_CC_COMPILER := $(CC)
 ASM_CXX_COMPILER := $(CXX)
+ASM_OBJC_COMPILER := $(OBJC)
+ASM_OBJCXX_COMPILER := $(OBJCXX)
+
+# <C;CXX;OBJC;OBJCXX>
 CC_COMPILER := $(CC)
 CXX_COMPILER := $(CXX)
-OBJC_COMPILER := $(CC)
-OBJCXX_COMPILER := $(CXX)
+OBJC_COMPILER := $(OBJC)
+OBJCXX_COMPILER := $(OBJCXX)
 
+# <CPP>
 CPP_CC_COMPILER_LAUNCHER := $(CPP_CC_COMPILER) -E $(CPPFLAGS)
 CPP_CXX_COMPILER_LAUNCHER := $(CPP_CXX_COMPILER) -E $(CPPFLAGS)
+CPP_OBJC_COMPILER_LAUNCHER := $(CPP_OBJC_COMPILER) -E $(CPPFLAGS)
+CPP_OBJCXX_COMPILER_LAUNCHER := $(CPP_OBJCXX_COMPILER) -E $(CPPFLAGS)
+
+# <ASM>
 ASM_CC_COMPILER_LAUNCHER := $(ASM_CC_COMPILER) -S $(ASMFLAGS)
 ASM_CXX_COMPILER_LAUNCHER := $(ASM_CXX_COMPILER) -S $(ASMFLAGS)
+ASM_OBJC_COMPILER_LAUNCHER := $(ASM_OBJC_COMPILER) -S $(ASMFLAGS)
+ASM_OBJCXX_COMPILER_LAUNCHER := $(ASM_OBJCXX_COMPILER) -S $(ASMFLAGS)
+
+# <C;CXX;OBJC;OBJCXX>
 CC_COMPILER_LAUNCHER := $(CC_COMPILER) -c $(CFLAGS)
 CXX_COMPILER_LAUNCHER := $(CXX_COMPILER) -c $(CXXFLAGS)
 OBJC_COMPILER_LAUNCHER := $(OBJC_COMPILER) -c $(OBJCFLAGS)
@@ -587,6 +605,7 @@ $(BUILD_DIR)/src/%.c.o: $(BUILD_DIR)/src/%.c.s
 	$(CC_COMPILER_LAUNCHER) -x assembler $< -o $@
 	@echo Built target successfully: $@
 	@echo
+
 # ## '*.c.d' - Dependency tracking
 # $(BUILD_DIR)/src/%.c.d: $(SRC_DIR)/%.c
 # 	@mkdir -p $(dir $@)
@@ -636,7 +655,7 @@ $(BUILD_DIR)/src/%.m.i: $(SRC_DIR)/%.m $(BUILD_DIR)/include
 	@echo
 	@echo Building target: $@
 	@mkdir -p $(dir $@)
-	$(CPP_OBJCXX_COMPILER_LAUNCHER) -x objective-c $< -o $@
+	$(CPP_OBJC_COMPILER_LAUNCHER) -x objective-c $< -o $@
 	@echo Built target successfully: $@
 	@echo
 
@@ -645,7 +664,7 @@ $(BUILD_DIR)/src/%.m.s: $(BUILD_DIR)/src/%.m.i
 	@echo
 	@echo Building target: $@
 	@mkdir -p $(dir $@)
-	$(ASM_OBJCXX_COMPILER_LAUNCHER) -x objective-c-cpp-output $< -o $@
+	$(ASM_OBJC_COMPILER_LAUNCHER) -x objective-c-cpp-output $< -o $@
 	@echo Built target successfully: $@
 	@echo
 
