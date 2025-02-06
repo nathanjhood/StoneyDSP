@@ -9,6 +9,10 @@
 			]
 		}
 	],
+	"cmake.configureArgs": [
+		"-DSTONEYDSP_BUILD_CORE:BOOL=ON",
+		"-DSTONEYDSP_BUILD_TEST:BOOL=ON"
+	],
 	"makefile.launchConfigurations": [
 		{
 			"cwd": "${workspaceFolder}/build/bin",
