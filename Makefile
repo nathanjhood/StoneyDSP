@@ -172,7 +172,7 @@ CXXFLAGS += -std=$(CXX_DIALECT)$(CXX_STANDARD)
 
 ## Optional debugger symbols
 ifdef DEBUG
-	CPPFLAGS += -g
+	ASMFLAGS += -g
 endif
 
 ## -O0: No optimization. This is the default level. It aims for the fastest compilation time and the best debugging experience.
@@ -182,24 +182,24 @@ endif
 ## -Os: Optimize for size. Enables all -O2 optimizations that do not typically increase code size and enables further optimizations to reduce code size.
 ## -Ofast: Disregards strict standards compliance for the sake of optimization. Enables all -O3 optimizations along with other aggressive optimizations.
 OPTIMIZATION ?= -O0
-CPPFLAGS += $(OPTIMIZATION)
+ASMFLAGS += $(OPTIMIZATION)
 
 ## Warnings and errors
-CPPFLAGS += -Wall
-CPPFLAGS += -Wextra
+FLAGS += -Wall
+FLAGS += -Wextra
 
 ifdef VERBOSE
 	FLAGS += -v
 endif
 
 ifdef DEBUG
-	CPPFLAGS += -Wno-unused-parameter
-	CPPFLAGS += -Werror
-	CPPFLAGS += -pedantic
+	FLAGS += -Wno-unused-parameter
+	FLAGS += -Werror
+	FLAGS += -pedantic
 else ifdef VERBOSE
-	CPPFLAGS += -Wno-unused-parameter
-	CPPFLAGS += -Werror
-	CPPFLAGS += -pedantic
+	FLAGS += -Wno-unused-parameter
+	FLAGS += -Werror
+	FLAGS += -pedantic
 endif
 
 # In theory, we could leave -fPIC in place, since non-POSIX users are almost
@@ -401,25 +401,34 @@ endif
 
 INCLUDES += -Ibuild/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/include
 
-ifdef BUILD_TEST
+ifeq ($(BUILD_TEST),1)
 	LDFLAGS += -L$(LIB_CATCH_PATH)
 	LDFLAGS += -l$(LIB_CATCH)
+	INCLUDES += -I$(BUILD_DIR)/test
 endif
 
 ###################################<<<-Part 6: CMake and workflow targets
+
+CMAKE_ARGS ?=
+CMAKE_ARGS += -DSTONEYDSP_BUILD_CORE=$(BUILD_CORE)
+CMAKE_ARGS += -DSTONEYDSP_BUILD_SIMD=$(BUILD_SIMD)
+CMAKE_ARGS += -DSTONEYDSP_BUILD_DSP=$(BUILD_DSP)
+CMAKE_ARGS += -DSTONEYDSP_BUILD_TEST=$(BUILD_TEST)
 
 reconfigure: ./dep/vcpkg/vcpkg
 	@echo Reconfiguring with CMake...
 	@VCPKG_ROOT=$(VCPKG_ROOT) $(CMAKE) \
 	--preset $(PRESET) \
-	--fresh
+	--fresh \
+	$(CMAKE_ARGS)
 	@echo Reconfigured with CMake.
 .PHONY: reconfigure
 
 configure: ./dep/vcpkg/vcpkg
 	@echo Configuring with CMake...
 	@VCPKG_ROOT=$(VCPKG_ROOT) $(CMAKE) \
-	--preset $(PRESET)
+	--preset $(PRESET) \
+	$(CMAKE_ARGS)
 	@echo Configured with CMake.
 .PHONY: configure
 
@@ -427,13 +436,17 @@ build: configure
 	@echo Building with CMake...
 	@$(CMAKE) \
 	--build $(PWD)/build \
-	--preset $(PRESET)
+	--preset $(PRESET) \
+	$(CMAKE_ARGS)
 	@echo Built with CMake.
 .PHONY: build
 
 test: build
 	@echo Testing with CTest...
-	$(CTEST) --test-dir $(PWD)/build --preset $(PRESET)
+	$(CTEST) \
+	--test-dir $(PWD)/build \
+	--preset $(PRESET) \
+	$(CMAKE_ARGS)
 	@echo Tested with CTest.
 .PHONY: test
 
@@ -441,7 +454,8 @@ package: test
 	@echo Packaging build tree with CPack...
 	@$(CMAKE) \
 	--build $(PWD)/build \
-	--target $@
+	--target $@ \
+	$(CMAKE_ARGS)
 	@echo Packaged build tree with CPack.
 .PHONY: package
 
@@ -449,7 +463,8 @@ package_source: test
 	@echo Packaging source tree with CPack...
 	@$(CMAKE) \
 	--build $(PWD)/build \
-	--target $@
+	--target $@ \
+	$(CMAKE_ARGS)
 	@echo Packaged source tree with CPack.
 .PHONY: package_source
 
@@ -458,7 +473,8 @@ workflow: ./dep/vcpkg/vcpkg
 	@VCPKG_ROOT=$(VCPKG_ROOT) $(CMAKE) \
 	--workflow \
 	--preset $(PRESET) \
-	--fresh
+	--fresh \
+	$(CMAKE_ARGS)
 	@echo Ran workflow with CMake.
 .PHONY: workflow
 
@@ -466,7 +482,8 @@ source: configure
 	@$(CMAKE) \
 	--install $(PWD)/build \
 	--prefix $(PWD)/dist \
-	--component $@
+	--component $@ \
+	$(CMAKE_ARGS)
 .PHONY: source
 
 # package: test
@@ -491,12 +508,37 @@ $(COMPILE_COMMANDS): $(CMAKE_CACHE)
 
 TARGET := $(BUILD_DIR)/lib/libstoneydsp.$(LIB_EXT)
 
+CPPFLAGS += $(FLAGS) $(DEFINES) $(INCLUDES)
+CFLAGS += $(FLAGS)
+CXXFLAGS += $(FLAGS)
+OBJCFLAGS += $(FLAGS)
+OBJCXXFLAGS += $(FLAGS)
+LDFLAGS += $(FLAGS)
+
+CPP_CC_COMPILER := $(CC)
+CPP_CXX_COMPILER := $(CXX)
+ASM_CC_COMPILER := $(CC)
+ASM_CXX_COMPILER := $(CXX)
+CC_COMPILER := $(CC)
+CXX_COMPILER := $(CXX)
+OBJC_COMPILER := $(CC)
+OBJCXX_COMPILER := $(CXX)
+
+CPP_CC_COMPILER_LAUNCHER := $(CPP_CC_COMPILER) -E $(CPPFLAGS)
+CPP_CXX_COMPILER_LAUNCHER := $(CPP_CXX_COMPILER) -E $(CPPFLAGS)
+ASM_CC_COMPILER_LAUNCHER := $(ASM_CC_COMPILER) -S $(ASMFLAGS)
+ASM_CXX_COMPILER_LAUNCHER := $(ASM_CXX_COMPILER) -S $(ASMFLAGS)
+CC_COMPILER_LAUNCHER := $(CC_COMPILER) -c $(CFLAGS)
+CXX_COMPILER_LAUNCHER := $(CXX_COMPILER) -c $(CXXFLAGS)
+OBJC_COMPILER_LAUNCHER := $(OBJC_COMPILER) -c $(OBJCFLAGS)
+OBJCXX_COMPILER_LAUNCHER := $(OBJCXX_COMPILER) -c $(OBJCXXFLAGS)
+
 ## Distribution build
 $(TARGET): $(OBJECTS)
 	@echo
 	@echo Building target: $@
 	@mkdir -p $(dir $@)
-	$(CXX) $(BUILD_SHARED_FLAG) $(CPPFLAGS) $(CXXFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) $^ -o $@
+	$(CXX) $(BUILD_SHARED_FLAG) $(LDFLAGS) $^ -o $@
 	@echo Built target successfully: $@
 	@echo
 
@@ -512,7 +554,7 @@ $(TEST_TARGET): test/main.test.cpp $(TARGET) $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a
 	@echo
 	@echo Building target: $@
 	@mkdir -p $(dir $@)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) $(TEST_SRCS) -L$(BUILD_DIR)/lib -lstoneydsp $(LDFLAGS) -o $@
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(TEST_SRCS) -L$(BUILD_DIR)/lib -lstoneydsp $(LDFLAGS) -o $@
 	@echo Built target successfully: $@
 	@echo
 
@@ -531,17 +573,29 @@ $(BUILD_DIR)/include: $(CMAKE_CACHE)
 
 ## '*.c' - Pre-Processor
 $(BUILD_DIR)/src/%.c.i: $(SRC_DIR)/%.c $(BUILD_DIR)/include
+	@echo
+	@echo Building target: $@
 	@mkdir -p $(dir $@)
-	$(CPP) $(CFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -x c $< -o $@
+	$(CPP_CC_COMPILER_LAUNCHER) -x c $< -o $@
+	@echo Built target successfully: $@
+	@echo
 ## '*.c.s' - Assembler
 $(BUILD_DIR)/src/%.c.s: $(BUILD_DIR)/src/%.c.i
+	@echo
+	@echo Building target: $@
 	@mkdir -p $(dir $@)
-	$(ASM) $(CFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -x c-cpp-output $< -o $@
+	$(ASM_CC_COMPILER_LAUNCHER) -x c-cpp-output $< -o $@
+	@echo Built target successfully: $@
+	@echo
 ## '*.c.o' - Compiler
 $(BUILD_DIR)/src/%.c.o: $(BUILD_DIR)/src/%.c.s
+	@echo
+	@echo Building target: $@
 	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -x assembler $< -o $@
-# ## '*.cpp.d' - Dependency tracking
+	$(CC_COMPILER_LAUNCHER) -x assembler $< -o $@
+	@echo Built target successfully: $@
+	@echo
+# ## '*.c.d' - Dependency tracking
 # $(BUILD_DIR)/src/%.c.d: $(SRC_DIR)/%.c
 # 	@mkdir -p $(dir $@)
 # 	@$(CC) $(CFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -x c -MM -MF $@ -MT $(@:.d=.o) $<
@@ -554,25 +608,28 @@ $(BUILD_DIR)/src/%.cpp.i: $(SRC_DIR)/%.cpp $(BUILD_DIR)/include
 	@echo
 	@echo Building target: $@
 	@mkdir -p $(dir $@)
-	$(CPP) $(CXXFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -x c++ $< -o $@
+	$(CPP_CXX_COMPILER_LAUNCHER) -x c++ $< -o $@
 	@echo Built target successfully: $@
 	@echo
+
 ## '*.cpp.s' - Assembler
 $(BUILD_DIR)/src/%.cpp.s: $(BUILD_DIR)/src/%.cpp.i
 	@echo
 	@echo Building target: $@
 	@mkdir -p $(dir $@)
-	$(ASM) $(CXXFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -x c++-cpp-output $< -o $@
+	$(ASM_CXX_COMPILER_LAUNCHER) -x c++-cpp-output $< -o $@
 	@echo Built target successfully: $@
 	@echo
+
 ## '*.cpp.o' - Compiler
 $(BUILD_DIR)/src/%.cpp.o: $(BUILD_DIR)/src/%.cpp.s
 	@echo
 	@echo Building target: $@
 	@mkdir -p $(dir $@)
-	$(CXX) -c $(CXXFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -x assembler $< -o $@
+	$(CXX_COMPILER_LAUNCHER) -x assembler $< -o $@
 	@echo Built target successfully: $@
 	@echo
+
 # ## '*.cpp.d' - Dependency tracking
 # $(BUILD_DIR)/src/%.cpp.d: $(SRC_DIR)/%.cpp
 # 	@echo Building target: $@
@@ -584,48 +641,59 @@ $(BUILD_DIR)/src/%.cpp.o: $(BUILD_DIR)/src/%.cpp.s
 
 ## '*.m.i' - Pre-Processor
 $(BUILD_DIR)/src/%.m.i: $(SRC_DIR)/%.m $(BUILD_DIR)/include
+	@echo
+	@echo Building target: $@
 	@mkdir -p $(dir $@)
-	$(CPP) $(OBJCFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -x objective-c $< -o $@
-## '*.m.i' - Assembler
+	$(CPP_OBJCXX_COMPILER_LAUNCHER) -x objective-c $< -o $@
+	@echo Built target successfully: $@
+	@echo
+
+## '*.m.s' - Assembler
 $(BUILD_DIR)/src/%.m.s: $(BUILD_DIR)/src/%.m.i
+	@echo
+	@echo Building target: $@
 	@mkdir -p $(dir $@)
-	$(ASM) $(OBJCFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -x objective-c-cpp-output $< -o $@
-## '*.m.s' - Compiler
+	$(ASM_OBJCXX_COMPILER_LAUNCHER) -x objective-c-cpp-output $< -o $@
+	@echo Built target successfully: $@
+	@echo
+
+## '*.m.o' - Compiler
 $(BUILD_DIR)/src/%.m.o: $(BUILD_DIR)/src/%.m.s
+	@echo
+	@echo Building target: $@
 	@mkdir -p $(dir $@)
-	$(OBJC) -c $(OBJCFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -x assembler $< -o $@
+	$(OBJC_COMPILER_LAUNCHER) -x assembler $< -o $@
+	@echo Built target successfully: $@
+	@echo
 
 ## <OBJCXX>
 ## '*.mm.i' - Pre-Processor
 $(BUILD_DIR)/src/%.mm.i: $(SRC_DIR)/%.mm $(BUILD_DIR)/include
-	@mkdir -p $(dir $@)
-	$(CPP) $(OBJCFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -x objective-c++ $< -o $@
-## '*.mm.i' - Assembler
-$(BUILD_DIR)/src/%.mm.s: $(BUILD_DIR)/src/%.mm.i
-	@mkdir -p $(dir $@)
-	$(ASM) $(OBJCFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -x objective-c++-cpp-output $< -o $@
-## '*.mm.s' - Compiler
-$(BUILD_DIR)/src/%.mm.o: $(BUILD_DIR)/src/%.mm.s
-	@mkdir -p $(dir $@)
-	$(OBJC) -c $(OBJCFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -x assembler $< -o $@
-
-ifeq ($(BUILD_TEST),1)
-INCLUDES += -I$(BUILD_DIR)/test
-## Pattern rules for test files
-$(BUILD_DIR)/test/%.test.cpp.o: $(TEST_DIR)/%.test.cpp $(BUILD_DIR)/include
 	@echo
 	@echo Building target: $@
 	@mkdir -p $(dir $@)
-	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -c $< -o $@
+	$(CPP_OBJCXX_COMPILER_LAUNCHER) -x objective-c++ $< -o $@
 	@echo Built target successfully: $@
 	@echo
 
-# ## Test entry point depfiles
-# $(BUILD_DIR)/test/%.cpp.d: $(TEST_DIR)/%.cpp
-# 	@mkdir -p $(dir $@)
-# 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -x c++ -MM -MF $@ -MT $(@:.d=.o) $<
-# -include $(TEST_DEPS)
-endif
+## '*.mm.s' - Assembler
+$(BUILD_DIR)/src/%.mm.s: $(BUILD_DIR)/src/%.mm.i
+	@echo
+	@echo Building target: $@
+	@mkdir -p $(dir $@)
+	$(ASM_OBJCXX_COMPILER_LAUNCHER) -x objective-c++-cpp-output $< -o $@
+	@echo Built target successfully: $@
+	@echo
+
+## '*.mm.o' - Compiler
+$(BUILD_DIR)/src/%.mm.o: $(BUILD_DIR)/src/%.mm.s
+	@echo
+	@echo Building target: $@
+	@mkdir -p $(dir $@)
+	$(OBJCXX_COMPILER_LAUNCHER) -x assembler $< -o $@
+	@echo Built target successfully: $@
+	@echo
+
 
 # build/%.bin.o: %
 # 	@mkdir -p $(@D)
