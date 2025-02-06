@@ -419,16 +419,14 @@ reconfigure: ./dep/vcpkg/vcpkg
 	@echo Reconfiguring with CMake...
 	@VCPKG_ROOT=$(VCPKG_ROOT) $(CMAKE) \
 	--preset $(PRESET) \
-	--fresh \
-	$(CMAKE_ARGS)
+	--fresh
 	@echo Reconfigured with CMake.
 .PHONY: reconfigure
 
 configure: ./dep/vcpkg/vcpkg
 	@echo Configuring with CMake...
 	@VCPKG_ROOT=$(VCPKG_ROOT) $(CMAKE) \
-	--preset $(PRESET) \
-	$(CMAKE_ARGS)
+	--preset $(PRESET)
 	@echo Configured with CMake.
 .PHONY: configure
 
@@ -436,8 +434,7 @@ build: configure
 	@echo Building with CMake...
 	@$(CMAKE) \
 	--build $(PWD)/build \
-	--preset $(PRESET) \
-	$(CMAKE_ARGS)
+	--preset $(PRESET)
 	@echo Built with CMake.
 .PHONY: build
 
@@ -445,8 +442,7 @@ test: build
 	@echo Testing with CTest...
 	$(CTEST) \
 	--test-dir $(PWD)/build \
-	--preset $(PRESET) \
-	$(CMAKE_ARGS)
+	--preset $(PRESET)
 	@echo Tested with CTest.
 .PHONY: test
 
@@ -454,8 +450,7 @@ package: test
 	@echo Packaging build tree with CPack...
 	@$(CMAKE) \
 	--build $(PWD)/build \
-	--target $@ \
-	$(CMAKE_ARGS)
+	--target $@
 	@echo Packaged build tree with CPack.
 .PHONY: package
 
@@ -463,8 +458,7 @@ package_source: test
 	@echo Packaging source tree with CPack...
 	@$(CMAKE) \
 	--build $(PWD)/build \
-	--target $@ \
-	$(CMAKE_ARGS)
+	--target $@
 	@echo Packaged source tree with CPack.
 .PHONY: package_source
 
@@ -473,8 +467,7 @@ workflow: ./dep/vcpkg/vcpkg
 	@VCPKG_ROOT=$(VCPKG_ROOT) $(CMAKE) \
 	--workflow \
 	--preset $(PRESET) \
-	--fresh \
-	$(CMAKE_ARGS)
+	--fresh
 	@echo Ran workflow with CMake.
 .PHONY: workflow
 
@@ -482,8 +475,7 @@ source: configure
 	@$(CMAKE) \
 	--install $(PWD)/build \
 	--prefix $(PWD)/dist \
-	--component $@ \
-	$(CMAKE_ARGS)
+	--component $@
 .PHONY: source
 
 # package: test
