@@ -42,16 +42,17 @@ endfunction()
 #[=============================================================================[
 Internal helper (borrowed from CMakeRC).
 ]=============================================================================]
-function(stoneydsp_add_directories)
+macro(stoneydsp_add_directories)
     file(RELATIVE_PATH STONEYDSP_INCLUDE_DIR "${STONEYDSP_DIR}" "${STONEYDSP_DIR}/include")
     file(RELATIVE_PATH STONEYDSP_SRC_DIR "${STONEYDSP_DIR}" "${STONEYDSP_DIR}/src")
     file(RELATIVE_PATH STONEYDSP_TEST_DIR "${STONEYDSP_DIR}" "${STONEYDSP_DIR}/test")
     file(RELATIVE_PATH STONEYDSP_DATA_DIR "${STONEYDSP_DIR}" "${STONEYDSP_DIR}/share")
-    set(STONEYDSP_INCLUDE_DIR "${STONEYDSP_INCLUDE_DIR}" PARENT_SCOPE)
-    set(STONEYDSP_SRC_DIR "${STONEYDSP_SRC_DIR}" PARENT_SCOPE)
-    set(STONEYDSP_TEST_DIR "${STONEYDSP_TEST_DIR}" PARENT_SCOPE)
-    set(STONEYDSP_DATA_DIR "${STONEYDSP_DATA_DIR}" PARENT_SCOPE)
-endfunction()
+endmacro()
+
+set(STONEYDSP_INCLUDE_DIR "${STONEYDSP_INCLUDE_DIR}")
+set(STONEYDSP_SRC_DIR "${STONEYDSP_SRC_DIR}")
+set(STONEYDSP_TEST_DIR "${STONEYDSP_TEST_DIR}")
+set(STONEYDSP_DATA_DIR "${STONEYDSP_DATA_DIR}")
 
 #[==========================[stoneydsp_add_stoneydsp]==========================]
 option(STONEYDSP_TARGET_INSTALL "Notes" ON)
@@ -109,6 +110,12 @@ function(stoneydsp_add_stoneydsp)
     if(STONEYDSP_BUILD_CORE)
         list(APPEND STONEYDSP_LINK_LIBRARIES_PUBLIC
             ${STONEYDSP_BRAND}::${STONEYDSP_SLUG}::${STONEYDSP_CORE_TARGET_NAME}
+        )
+    endif()
+
+    if(STONEYDSP_BUILD_SIMD)
+        list(APPEND STONEYDSP_LINK_LIBRARIES_PUBLIC
+            ${STONEYDSP_BRAND}::${STONEYDSP_SLUG}::${STONEYDSP_SIMD_TARGET_NAME}
         )
     endif()
 
