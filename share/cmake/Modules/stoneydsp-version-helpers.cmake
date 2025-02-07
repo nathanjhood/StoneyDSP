@@ -1,3 +1,12 @@
+option(STONEYDSP_GENERATE_VERSIONS "" ON)
+
+set(_STONEYDSP_MANAGED_VERSION)
+
+macro(stoneydsp_file_versions)
+    file(READ "${CMAKE_CURRENT_SOURCE_DIR}/VERSION" _STONEYDSP_MANAGED_VERSION)
+    string(STRIP "${_STONEYDSP_MANAGED_VERSION}" _STONEYDSP_MANAGED_VERSION)
+endmacro(stoneydsp_file_versions)
+
 macro(stoneydsp_git_versions)
     # https://softwareengineering.stackexchange.com/questions/141973/how-do-you-achieve-a-numeric-versioning-scheme-with-git
     # 'git rev-list HEAD | wc -l'
@@ -5,7 +14,7 @@ macro(stoneydsp_git_versions)
     execute_process(
         COMMAND "${GIT_EXECUTABLE}" "rev-list" "HEAD"
         COMMAND "wc" "-l"
-        WORKING_DIRECTORY "${STONEYDSP_SOURCE_DIR}"
+        WORKING_DIRECTORY "${STONEYDSP_SRC_DIR}"
         OUTPUT_VARIABLE _STONEYDSP_GIT_COMMIT_COUNT
         ERROR_VARIABLE _STONEYDSP_GIT_COMMIT_COUNT_ERROR
     )
@@ -54,6 +63,8 @@ macro(stoneydsp_git_versions)
 
     string(HEX "${_STONEYDSP_GIT_REF_HEAD}" STONEYDSP_GIT_REF_HEAD)
     string(HEX "${_STONEYDSP_GIT_REF_HEAD_SHORT}" STONEYDSP_GIT_REF_HEAD_SHORT)
+
+    set(_STONEYDSP_MANAGED_VERSION "0.0.${STONEYDSP_GIT_COMMIT_COUNT}.${STONEYDSP_GIT_REF_HEAD_SHORT}")
 endmacro(stoneydsp_git_versions)
 
 macro(stoneydsp_update_version_file)
