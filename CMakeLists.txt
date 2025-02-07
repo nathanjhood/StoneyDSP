@@ -14,17 +14,23 @@ message(STATUS "CMake Module Path: ${CMAKE_MODULE_PATH}")
 # Add directory structure
 include(GNUInstallDirs)
 include(stoneydsp)
-include(stoneydsp-version-helpers)
 stoneydsp_add_directories()
-stoneydsp_git_versions()
+include(stoneydsp-version-helpers)
+
+if(STONEYDSP_GENERATE_VERSIONS)
+    stoneydsp_git_versions()
+else()
+    stoneydsp_file_versions()
+endif()
 
 # Begin project
 project(STONEYDSP
-    VERSION "0.0.${STONEYDSP_GIT_COMMIT_COUNT}.${STONEYDSP_GIT_REF_HEAD_SHORT}"
+    VERSION "${_STONEYDSP_MANAGED_VERSION}"
     DESCRIPTION "The StoneyDSP Audio Library."
     HOMEPAGE_URL "https://github.com/StoneyDSP/StoneyDSP"
     LANGUAGES C CXX
 )
+set(PROJECT_NAME "StoneyDSP")
 
 set(STONEYDSP_VERSION_MAJOR "${PROJECT_VERSION_MAJOR}" CACHE STRING "" FORCE)
 set(STONEYDSP_VERSION_MINOR "${PROJECT_VERSION_MINOR}" CACHE STRING "" FORCE)
@@ -45,6 +51,12 @@ include(CMakeDependentOption)
 if(STONEYDSP_BUILD_CORE)
     include(stoneydsp-core)
     stoneydsp_add_core()
+endif()
+
+#[==============================[stoneydsp::simd]==============================]
+if(STONEYDSP_BUILD_SIMD)
+    include(stoneydsp-simd)
+    stoneydsp_add_simd()
 endif()
 
 #[===========================[stoneydsp::stoneydsp]===========================]

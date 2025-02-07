@@ -15,6 +15,10 @@
 					"value": "OFF",
 					"type": "BOOL"
 				},
+				"STONEYDSP_GENERATE_VERSIONS": {
+					"value": "ON",
+					"type": "BOOL"
+				},
 				"STONEYDSP_EXPERIMENTAL": {
 					"value": "OFF",
 					"type": "BOOL"
