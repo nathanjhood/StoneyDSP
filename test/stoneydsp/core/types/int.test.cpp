@@ -50,6 +50,8 @@
 // [is_trivially_copyable]
 // [is_standard_layout]
 //
+// [arithmetic]
+//
 // [serialization]
 
 //==============================================================================
@@ -343,6 +345,55 @@ TEST_CASE ("Endianness handling for stoneydsp::int64", "[endianness][int64]")
     }
 }
 
+//==================================================================//arithmetic
+
+TEST_CASE ("Arithmetic operations with stoneydsp::int8", "[arithmetic][int8]")
+{
+  ::stoneydsp::int8 a = 15;
+  ::stoneydsp::int8 b = 20;
+  REQUIRE (a + b == 35);  // Addition
+  REQUIRE (a - b == -5);  // Subtraction
+  REQUIRE (a * b == 300); // Multiplication
+  REQUIRE (b / a == 1);   // Division
+  REQUIRE (b % a == 5);   // Modulo
+}
+
+TEST_CASE ("Arithmetic operations with stoneydsp::int16",
+           "[arithmetic][int16]")
+{
+  ::stoneydsp::int16 a = 1500;
+  ::stoneydsp::int16 b = 2000;
+  REQUIRE (a + b == 3500);    // Addition
+  REQUIRE (a - b == -500);    // Subtraction
+  REQUIRE (a * b == 3000000); // Multiplication
+  REQUIRE (b / a == 1);       // Division
+  REQUIRE (b % a == 500);     // Modulo
+}
+
+TEST_CASE ("Arithmetic operations with stoneydsp::int32",
+           "[arithmetic][int32]")
+{
+  ::stoneydsp::int32 a = 15000;
+  ::stoneydsp::int32 b = 20000;
+  REQUIRE (a + b == 35000);     // Addition
+  REQUIRE (a - b == -5000);     // Subtraction
+  REQUIRE (a * b == 300000000); // Multiplication
+  REQUIRE (b / a == 1);         // Division
+  REQUIRE (b % a == 5000);      // Modulo
+}
+
+TEST_CASE ("Arithmetic operations with stoneydsp::int64",
+           "[arithmetic][int64]")
+{
+  ::stoneydsp::int64 a = 1500000000LL;
+  ::stoneydsp::int64 b = 2000000000LL;
+  REQUIRE (a + b == 3500000000LL);          // Addition
+  REQUIRE (a - b == -500000000LL);          // Subtraction
+  REQUIRE (a * b == 3000000000000000000LL); // Multiplication
+  REQUIRE (b / a == 1);                     // Division
+  REQUIRE (b % a == 500000000LL);           // Modulo
+}
+
 //===============================================================//serialization
 
 TEST_CASE ("Check serialization and deserialization for stoneydsp::int8",
@@ -610,6 +661,61 @@ TEST_CASE ("Endianness handling for stoneydsp::uint64", "[endianness][uint64]")
     {
       REQUIRE (false); // Unknown endianness
     }
+}
+
+//==================================================================//arithmetic
+
+TEST_CASE ("Arithmetic operations with stoneydsp::uint8",
+           "[arithmetic][uint8]")
+{
+  ::stoneydsp::uint8 a = 15;
+  ::stoneydsp::uint8 b = 20;
+  REQUIRE (a + b == 35); // Addition
+  REQUIRE (static_cast<int> (a - b)
+           == static_cast<int> (-5)); // Subtraction (wrap-around)
+  REQUIRE (a * b == 300);             // Multiplication
+  REQUIRE (b / a == 1);               // Division
+  REQUIRE (b % a == 5);               // Modulo
+}
+
+TEST_CASE ("Arithmetic operations with stoneydsp::uint16",
+           "[arithmetic][uint16]")
+{
+  ::stoneydsp::uint16 a = 1500;
+  ::stoneydsp::uint16 b = 2000;
+  REQUIRE (a + b == 3500); // Addition
+  REQUIRE (static_cast<int> (a - b)
+           == static_cast<int> (-500)); // Subtraction (wrap-around)
+  REQUIRE (a * b == 3000000);           // Multiplication
+  REQUIRE (b / a == 1);                 // Division
+  REQUIRE (b % a == 500);               // Modulo
+}
+
+TEST_CASE ("Arithmetic operations with stoneydsp::uint32",
+           "[arithmetic][uint32]")
+{
+  ::stoneydsp::uint32 a = 15000;
+  ::stoneydsp::uint32 b = 20000;
+  REQUIRE (a + b == 35000); // Addition
+  REQUIRE (static_cast<int> (a - b)
+           == static_cast<int> (-5000)); // Subtraction (wrap-around)
+  REQUIRE (a * b == 300000000);          // Multiplication
+  REQUIRE (b / a == 1);                  // Division
+  REQUIRE (b % a == 5000);               // Modulo
+}
+
+TEST_CASE ("Arithmetic operations with stoneydsp::uint64",
+           "[arithmetic][uint64]")
+{
+  ::stoneydsp::uint64 a = 1500000000ULL;
+  ::stoneydsp::uint64 b = 2000000000ULL;
+  REQUIRE (a + b == 3500000000ULL); // Addition
+  REQUIRE (
+      static_cast<long long> (a - b)
+      == static_cast<long long> (-500000000LL)); // Subtraction (wrap-around)
+  REQUIRE (a * b == 3000000000000000000ULL);     // Multiplication
+  REQUIRE (b / a == 1);                          // Division
+  REQUIRE (b % a == 500000000ULL);               // Modulo
 }
 
 //===============================================================//serialization
