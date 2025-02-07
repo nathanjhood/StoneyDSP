@@ -19,6 +19,10 @@
 
 //==============================================================================
 
+  #include "stoneydsp/core/types/math.h" // for `stoneydsp::float_t`
+
+//==============================================================================
+
   #include <limits>      // for `std::numeric_limits`
   #include <sstream>     // for serialization tests
   #include <type_traits> // for `is_signed` and `is_unsigned`
@@ -50,6 +54,10 @@
 // [is_trivially_copyable]
 // [is_standard_layout]
 //
+// [numeric_limits]
+// [endianness]
+// [conversion]
+// [special_values]
 // [arithmetic]
 //
 // [serialization]
@@ -343,6 +351,98 @@ TEST_CASE ("Endianness handling for stoneydsp::int64", "[endianness][int64]")
     {
       REQUIRE (false); // Unknown endianness
     }
+}
+
+//====================================================================//rounding
+
+TEST_CASE ("Rounding behavior of stoneydsp::int8_t", "[rounding][int8]")
+{
+  ::stoneydsp::float_t a = -1.5f;
+  ::stoneydsp::int8 b = static_cast< ::stoneydsp::int8> (::std::round (a));
+  REQUIRE (b == -2); // -1.5 rounded to nearest integer and cast to int8
+
+  a = 1.5f;
+  b = static_cast< ::stoneydsp::int8> (::std::round (a));
+  REQUIRE (b == 2); // 1.5 rounded to nearest integer and cast to int8
+}
+
+TEST_CASE ("Rounding behavior of stoneydsp::int16", "[rounding][int16]")
+{
+  ::stoneydsp::float_t a = -1.5f;
+  ::stoneydsp::int16 b = static_cast< ::stoneydsp::int16> (std::round (a));
+  REQUIRE (b == -2); // -1.5 rounded to nearest integer and cast to int16
+
+  a = 1.5f;
+  b = static_cast< ::stoneydsp::int16> (std::round (a));
+  REQUIRE (b == 2); // 1.5 rounded to nearest integer and cast to int16
+}
+
+TEST_CASE ("Rounding behavior of stoneydsp::int32", "[rounding][int32]")
+{
+  ::stoneydsp::double_t a = -1.5;
+  ::stoneydsp::int32 b = static_cast< ::stoneydsp::int32> (::std::round (a));
+  REQUIRE (b == -2); // -1.5 rounded to nearest integer and cast to int32
+
+  a = 1.5;
+  b = static_cast< ::stoneydsp::int32> (::std::round (a));
+  REQUIRE (b == 2); // 1.5 rounded to nearest integer and cast to int32
+}
+
+TEST_CASE ("Rounding behavior of stoneydsp::int64", "[rounding][int64]")
+{
+  ::stoneydsp::double_t a = -1.5;
+  ::stoneydsp::int64 b = static_cast< ::stoneydsp::int64> (::std::round (a));
+  REQUIRE (b == -2); // -1.5 rounded to nearest integer and cast to int64
+
+  a = 1.5;
+  b = static_cast< ::stoneydsp::int64> (::std::round (a));
+  REQUIRE (b == 2); // 1.5 rounded to nearest integer and cast to int64
+}
+
+//==============================================================//special_values
+
+TEST_CASE ("Special values of stoneydsp::int8",
+           "[numeric_limits][special_values][int8]")
+{
+  ::stoneydsp::int8 min_val
+      = ::std::numeric_limits< ::stoneydsp::int8>::min ();
+  ::stoneydsp::int8 max_val
+      = ::std::numeric_limits< ::stoneydsp::int8>::max ();
+  REQUIRE (min_val == -128); // Minimum value for int8
+  REQUIRE (max_val == 127);  // Maximum value for int8
+}
+
+TEST_CASE ("Special values of stoneydsp::int16",
+           "[numeric_limits][special_values][int16]")
+{
+  ::stoneydsp::int16 min_val
+      = ::std::numeric_limits< ::stoneydsp::int16>::min ();
+  ::stoneydsp::int16 max_val
+      = ::std::numeric_limits< ::stoneydsp::int16>::max ();
+  REQUIRE (min_val == -32768); // Minimum value for int16
+  REQUIRE (max_val == 32767);  // Maximum value for int16
+}
+
+TEST_CASE ("Special values of stoneydsp::int32",
+           "[numeric_limits][special_values][int32]")
+{
+  ::stoneydsp::int32 min_val
+      = ::std::numeric_limits< ::stoneydsp::int32>::min ();
+  ::stoneydsp::int32 max_val
+      = ::std::numeric_limits< ::stoneydsp::int32>::max ();
+  REQUIRE (min_val == -2147483648); // Minimum value for int32
+  REQUIRE (max_val == 2147483647);  // Maximum value for int32
+}
+
+TEST_CASE ("Special values of stoneydsp::int64",
+           "[numeric_limits][special_values][int64]")
+{
+  ::stoneydsp::int64 min_val
+      = ::std::numeric_limits< ::stoneydsp::int64>::min ();
+  ::stoneydsp::int64 max_val
+      = ::std::numeric_limits< ::stoneydsp::int64>::max ();
+  REQUIRE (min_val == -9223372036854775807LL - 1); // Minimum value for int64
+  REQUIRE (max_val == 9223372036854775807LL);      // Maximum value for int64
 }
 
 //==================================================================//arithmetic
@@ -661,6 +761,82 @@ TEST_CASE ("Endianness handling for stoneydsp::uint64", "[endianness][uint64]")
     {
       REQUIRE (false); // Unknown endianness
     }
+}
+
+//====================================================================//rounding
+
+TEST_CASE ("Rounding behavior of stoneydsp::uint8", "[rounding][uint8]")
+{
+  ::stoneydsp::float_t a = 1.5f;
+  ::stoneydsp::uint8 b = static_cast< ::stoneydsp::uint8> (::std::round (a));
+  REQUIRE (b == 2); // 1.5 rounded to nearest integer and cast to uint8
+}
+
+TEST_CASE ("Rounding behavior of stoneydsp::uint16", "[rounding][uint16]")
+{
+  ::stoneydsp::float_t a = 1.5f;
+  ::stoneydsp::uint16 b = static_cast< ::stoneydsp::uint16> (::std::round (a));
+  REQUIRE (b == 2); // 1.5 rounded to nearest integer and cast to uint16
+}
+
+TEST_CASE ("Rounding behavior of stoneydsp::uint32", "[rounding][uint32]")
+{
+  ::stoneydsp::double_t a = 1.5;
+  ::stoneydsp::uint32 b = static_cast< ::stoneydsp::uint32> (::std::round (a));
+  REQUIRE (b == 2); // 1.5 rounded to nearest integer and cast to uint32
+}
+
+TEST_CASE ("Rounding behavior of stoneydsp::uint32", "[rounding][uint64]")
+{
+  ::stoneydsp::double_t a = 1.5;
+  ::stoneydsp::uint64 b = static_cast< ::stoneydsp::uint64> (::std::round (a));
+  REQUIRE (b == 2); // 1.5 rounded to nearest integer and cast to uint64
+}
+
+//==============================================================//special_values
+
+TEST_CASE ("Special values of stoneydsp::uint8",
+           "[numeric_limits][special_values][uint8]")
+{
+  ::stoneydsp::uint8 min_val
+      = ::std::numeric_limits< ::stoneydsp::uint8>::min ();
+  ::stoneydsp::uint8 max_val
+      = ::std::numeric_limits< ::stoneydsp::uint8>::max ();
+  REQUIRE (min_val == 0);   // Minimum value for uint8
+  REQUIRE (max_val == 255); // Maximum value for uint8
+}
+
+TEST_CASE ("Special values of stoneydsp::uint16",
+           "[numeric_limits][special_values][uint16]")
+{
+  ::stoneydsp::uint16 min_val
+      = ::std::numeric_limits< ::stoneydsp::uint16>::min ();
+  ::stoneydsp::uint16 max_val
+      = ::std::numeric_limits< ::stoneydsp::uint16>::max ();
+  REQUIRE (min_val == 0);     // Minimum value for uint16
+  REQUIRE (max_val == 65535); // Maximum value for uint16
+}
+
+TEST_CASE ("Special values of stoneydsp::uint32",
+           "[numeric_limits][special_values][uint32]")
+{
+  ::stoneydsp::uint32 min_val
+      = ::std::numeric_limits< ::stoneydsp::uint32>::min ();
+  ::stoneydsp::uint32 max_val
+      = ::std::numeric_limits< ::stoneydsp::uint32>::max ();
+  REQUIRE (min_val == 0);          // Minimum value for uint32
+  REQUIRE (max_val == 4294967295); // Maximum value for uint32
+}
+
+TEST_CASE ("Special values of stoneydsp::uint64",
+           "[numeric_limits][special_values][uint64]")
+{
+  ::stoneydsp::uint64 min_val
+      = ::std::numeric_limits< ::stoneydsp::uint64>::min ();
+  ::stoneydsp::uint64 max_val
+      = ::std::numeric_limits< ::stoneydsp::uint64>::max ();
+  REQUIRE (min_val == 0);                       // Minimum value for uint64
+  REQUIRE (max_val == 18446744073709551615ULL); // Maximum value for uint64
 }
 
 //==================================================================//arithmetic
