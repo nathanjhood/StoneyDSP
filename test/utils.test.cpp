@@ -1,6 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "utils.hpp"
+#include "utils.test.hpp"
 
 #include <sstream>
 
