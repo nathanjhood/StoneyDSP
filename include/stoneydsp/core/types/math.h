@@ -30,13 +30,13 @@ namespace stoneydsp
  * @brief Double-precision numerical value.
  *
  */
-using double_t = ::double_t;
+using double_t = ::std::double_t;
 
 /**
  * @brief Single-precision numerical value.
  *
  */
-using float_t = ::float_t;
+using float_t = ::std::float_t;
 
 /// @} group stoneydsp
 } // namespace stoneydsp

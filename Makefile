@@ -1,4 +1,4 @@
-############################################<<<-Part 1: Initialization and Setup
+####################################################<<<-Initialization and Setup
 
 ## Default target executed when no arguments are given to make.
 default_target: all
@@ -167,8 +167,8 @@ else
 	CXX_DIALECT := c++
 endif
 
-CFLAGS += -std=$(C_DIALECT)$(C_STANDARD)
-CXXFLAGS += -std=$(CXX_DIALECT)$(CXX_STANDARD)
+C_STANDARD_FLAG += -std=$(C_DIALECT)$(C_STANDARD)
+CXX_STANDARD_FLAG += -std=$(CXX_DIALECT)$(CXX_STANDARD)
 
 ## Optional debugger symbols
 ifdef DEBUG
@@ -238,7 +238,7 @@ DSP_DEPS := $(DSP_OBJS:.o=.d)
 SIMD_DEPS := $(SIMD_OBJS:.o=.d)
 LIB_DEPS := $(LIB_OBJS:.o=.d)
 
-###########################################<<<-Part 4: Feature Flags and Targets
+###################################################<<<-Feature Flags and Targets
 
 ## Library type
 BUILD_SHARED ?= 1
@@ -299,29 +299,23 @@ endif
 ## Optional test objects
 ifeq ($(BUILD_TEST),1)
 	TEST_TARGET := $(BUILD_DIR)/test/main
-	TEST_SRCS := $(wildcard test/*.test.cpp)
-	TEST_OBJS := $(TEST_SRCS:$(TEST_DIR)/%.test.cpp=$(BUILD_DIR)/test/%.test.cpp.o)
-	TEST_DEPS := $(TEST_OBJS:.o=.d)
+	TEST_SRCS := $(wildcard test/catch2session.test.cpp)
+	TEST_SRCS += $(wildcard test/utils.test.cpp)
+	TEST_SRCS += $(wildcard test/main.test.cpp)
 	DEFINES += -DSTONEYDSP_BUILD_TEST=$(BUILD_TEST)
-endif
-
-# Test files
-ifeq ($(BUILD_TEST),1)
 	ifeq ($(BUILD_CORE),1)
-		# core tests
 		TEST_SRCS += $(wildcard $(TEST_DIR)/stoneydsp/core/*.test.cpp)
 		TEST_SRCS += $(wildcard $(TEST_DIR)/stoneydsp/core/types/*.test.cpp)
-		TEST_OBJS += $(CORE_SRCS:$(TEST_DIR)/%.test.cpp=$(BUILD_DIR)/test/%.test.cpp.o)
 	endif
 	ifeq ($(BUILD_SIMD),1)
-		# simd tests
 	endif
 	ifeq ($(BUILD_DSP),1)
-		# dsp tests
 	endif
+	TEST_OBJS := $(TEST_SRCS:$(TEST_DIR)/%.test.cpp=$(BUILD_DIR)/test/%.test.cpp.o)
+	TEST_DEPS := $(TEST_OBJS:.o=.d)
 endif
 
-##################################<<<-Part 5: Dependencies and submodule targets
+##########################################<<<-Dependencies and submodule targets
 
 GIT_REF ?= $(strip $(shell $(GIT) rev-parse --short HEAD))
 
@@ -407,26 +401,27 @@ ifeq ($(BUILD_TEST),1)
 	INCLUDES += -I$(BUILD_DIR)/test
 endif
 
-###################################<<<-Part 6: CMake and workflow targets
+##################################################<<<-CMake and workflow targets
 
 CMAKE_ARGS ?=
-CMAKE_ARGS += -DSTONEYDSP_BUILD_CORE=$(BUILD_CORE)
-CMAKE_ARGS += -DSTONEYDSP_BUILD_SIMD=$(BUILD_SIMD)
-CMAKE_ARGS += -DSTONEYDSP_BUILD_DSP=$(BUILD_DSP)
-CMAKE_ARGS += -DSTONEYDSP_BUILD_TEST=$(BUILD_TEST)
+CMAKE_ARGS += -DSTONEYDSP_BUILD_CORE:BOOL=$(BUILD_CORE)
+CMAKE_ARGS += -DSTONEYDSP_BUILD_SIMD:BOOL=$(BUILD_SIMD)
+CMAKE_ARGS += -DSTONEYDSP_BUILD_DSP:BOOL=$(BUILD_DSP)
+CMAKE_ARGS += -DSTONEYDSP_BUILD_TEST:BOOL=$(BUILD_TEST)
+CMAKE_ARGS += -DSTONEYDSP_BUILD_SHARED:BOOL=$(BUILD_SHARED)
 
 reconfigure: ./dep/vcpkg/vcpkg
 	@echo Reconfiguring with CMake...
 	@VCPKG_ROOT=$(VCPKG_ROOT) $(CMAKE) \
 	--preset $(PRESET) \
-	--fresh
+	--fresh $(CMAKE_ARGS)
 	@echo Reconfigured with CMake.
 .PHONY: reconfigure
 
 configure: ./dep/vcpkg/vcpkg
 	@echo Configuring with CMake...
 	@VCPKG_ROOT=$(VCPKG_ROOT) $(CMAKE) \
-	--preset $(PRESET)
+	--preset $(PRESET) $(CMAKE_ARGS)
 	@echo Configured with CMake.
 .PHONY: configure
 
@@ -498,9 +493,8 @@ $(COMPILE_COMMANDS): $(CMAKE_CACHE)
 
 ############################################<<<-Libraries and executable targets
 
-TARGET := $(BUILD_DIR)/lib/libstoneydsp.$(LIB_EXT)
-
 CPPFLAGS += $(FLAGS) $(DEFINES) $(INCLUDES)
+ASMFLAGS += $(FLAGS)
 CFLAGS += $(FLAGS)
 CXXFLAGS += $(FLAGS)
 OBJCFLAGS += $(FLAGS)
@@ -522,26 +516,30 @@ ASM_OBJCXX_COMPILER := $(OBJCXX)
 # <C;CXX;OBJC;OBJCXX>
 CC_COMPILER := $(CC)
 CXX_COMPILER := $(CXX)
-OBJC_COMPILER := $(OBJC)
-OBJCXX_COMPILER := $(OBJCXX)
+OBJC_COMPILER := $(OBJC) -ObjC
+OBJCXX_COMPILER := $(OBJCXX) -ObjC++
 
 # <CPP>
-CPP_CC_COMPILER_LAUNCHER := $(CPP_CC_COMPILER) -E $(CPPFLAGS)
-CPP_CXX_COMPILER_LAUNCHER := $(CPP_CXX_COMPILER) -E $(CPPFLAGS)
-CPP_OBJC_COMPILER_LAUNCHER := $(CPP_OBJC_COMPILER) -E $(CPPFLAGS)
-CPP_OBJCXX_COMPILER_LAUNCHER := $(CPP_OBJCXX_COMPILER) -E $(CPPFLAGS)
+CPP_CC_COMPILER_LAUNCHER := $(CPP_CC_COMPILER) -E $(CPPFLAGS) $(C_STANDARD_FLAG)
+CPP_CXX_COMPILER_LAUNCHER := $(CPP_CXX_COMPILER) -E $(CPPFLAGS) $(CXX_STANDARD_FLAG)
+CPP_OBJC_COMPILER_LAUNCHER := $(CPP_OBJC_COMPILER) -E $(CPPFLAGS) $(C_STANDARD_FLAG)
+CPP_OBJCXX_COMPILER_LAUNCHER := $(CPP_OBJCXX_COMPILER) -E $(CPPFLAGS) $(CXX_STANDARD_FLAG)
 
 # <ASM>
-ASM_CC_COMPILER_LAUNCHER := $(ASM_CC_COMPILER) -S $(ASMFLAGS)
-ASM_CXX_COMPILER_LAUNCHER := $(ASM_CXX_COMPILER) -S $(ASMFLAGS)
-ASM_OBJC_COMPILER_LAUNCHER := $(ASM_OBJC_COMPILER) -S $(ASMFLAGS)
-ASM_OBJCXX_COMPILER_LAUNCHER := $(ASM_OBJCXX_COMPILER) -S $(ASMFLAGS)
+ASM_CC_COMPILER_LAUNCHER := $(ASM_CC_COMPILER) -S $(ASMFLAGS) $(C_STANDARD_FLAG)
+ASM_CXX_COMPILER_LAUNCHER := $(ASM_CXX_COMPILER) -S $(ASMFLAGS) $(CXX_STANDARD_FLAG)
+ASM_OBJC_COMPILER_LAUNCHER := $(ASM_OBJC_COMPILER) -S $(ASMFLAGS)  $(C_STANDARD_FLAG)
+ASM_OBJCXX_COMPILER_LAUNCHER := $(ASM_OBJCXX_COMPILER) -S $(ASMFLAGS) $(CXX_STANDARD_FLAG)
 
 # <C;CXX;OBJC;OBJCXX>
-CC_COMPILER_LAUNCHER := $(CC_COMPILER) -c $(CFLAGS)
-CXX_COMPILER_LAUNCHER := $(CXX_COMPILER) -c $(CXXFLAGS)
-OBJC_COMPILER_LAUNCHER := $(OBJC_COMPILER) -c $(OBJCFLAGS)
-OBJCXX_COMPILER_LAUNCHER := $(OBJCXX_COMPILER) -c $(OBJCXXFLAGS)
+CC_COMPILER_LAUNCHER := $(CC_COMPILER) -c $(CFLAGS) $(C_STANDARD_FLAG)
+CXX_COMPILER_LAUNCHER := $(CXX_COMPILER) -c $(CXXFLAGS) $(CXX_STANDARD_FLAG)
+OBJC_COMPILER_LAUNCHER := $(OBJC_COMPILER) -c $(OBJCFLAGS) $(C_STANDARD_FLAG)
+OBJCXX_COMPILER_LAUNCHER := $(OBJCXX_COMPILER) -c $(OBJCXXFLAGS) $(CXX_STANDARD_FLAG)
+
+##########################################################<<<-Patterns and rules
+
+TARGET := $(BUILD_DIR)/lib/libstoneydsp.$(LIB_EXT)
 
 ## Distribution build
 $(TARGET): $(OBJECTS)
@@ -551,30 +549,6 @@ $(TARGET): $(OBJECTS)
 	$(CXX) $(BUILD_SHARED_FLAG) $(LDFLAGS) $^ -o $@
 	@echo Built target successfully: $@
 	@echo
-
-## Test executable
-ifdef BUILD_TEST
-$(LIB_CATCH_PATH)/lib$(LIB_CATCH).a: $(CMAKE_CACHE)
-
-## Alias target to install Catch2 unit-testing library
-catch2: $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a
-.PHONY: catch2
-
-$(TEST_TARGET): test/main.test.cpp $(TARGET) $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a
-	@echo
-	@echo Building target: $@
-	@mkdir -p $(dir $@)
-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $(TEST_SRCS) -L$(BUILD_DIR)/lib -lstoneydsp $(LDFLAGS) -o $@
-	@echo Built target successfully: $@
-	@echo
-
-run: $(TEST_TARGET)
-	$(TEST_TARGET) $(TEST_ARGS)
-
-.PHONY: run
-endif
-
-##################################################<<<-Part 8: Patterns and rules
 
 $(BUILD_DIR)/include: $(CMAKE_CACHE)
 	@echo "Configured header files."
@@ -719,7 +693,68 @@ $(BUILD_DIR)/src/%.mm.o: $(BUILD_DIR)/src/%.mm.s
 # 	xxd -i $< | $(CC) $(MAC_SDK_FLAGS) -c -o $@ -xc -
 # endif
 
-##########################################<<<-Part 9: Packaging and distribution
+#######################################################################<<<-Tests
+
+## Test executable
+ifdef BUILD_TEST
+$(LIB_CATCH_PATH)/lib$(LIB_CATCH).a: $(CMAKE_CACHE)
+
+## Alias target to install Catch2 unit-testing library
+catch2: $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a
+.PHONY: catch2
+
+$(TEST_TARGET): $(TEST_OBJS) $(TARGET) $(LIB_CATCH_PATH)/lib$(LIB_CATCH).a
+	@echo
+	@echo Building target: $@
+	@mkdir -p $(dir $@)
+	$(CXX) $(TEST_OBJS) -L$(BUILD_DIR)/lib -o $@ -lstoneydsp $(LDFLAGS)
+	@echo Built target successfully: $@
+	@echo
+
+run: $(TEST_TARGET)
+	$(TEST_TARGET) $(TEST_ARGS)
+
+.PHONY: run
+
+## <CXX>
+
+## '*.test.cpp.i' - Pre-Processor
+$(BUILD_DIR)/test/%.test.cpp.i: $(TEST_DIR)/%.test.cpp $(BUILD_DIR)/include
+	@echo
+	@echo Building target: $@
+	@mkdir -p $(dir $@)
+	$(CPP_CXX_COMPILER_LAUNCHER) -x c++ $< -o $@
+	@echo Built target successfully: $@
+	@echo
+
+## '*.test.cpp.s' - Assembler
+$(BUILD_DIR)/test/%.test.cpp.s: $(BUILD_DIR)/test/%.test.cpp.i
+	@echo
+	@echo Building target: $@
+	@mkdir -p $(dir $@)
+	$(ASM_CXX_COMPILER_LAUNCHER) -x c++-cpp-output $< -o $@
+	@echo Built target successfully: $@
+	@echo
+
+## '*.test.cpp.o' - Compiler
+$(BUILD_DIR)/test/%.test.cpp.o: $(BUILD_DIR)/test/%.test.cpp.s
+	@echo
+	@echo Building target: $@
+	@mkdir -p $(dir $@)
+	$(CXX_COMPILER_LAUNCHER) -x assembler $< -o $@
+	@echo Built target successfully: $@
+	@echo
+
+# ## '*.cpp.d' - Dependency tracking
+# $(BUILD_DIR)/src/%.cpp.d: $(SRC_DIR)/%.cpp
+# 	@echo Building target: $@
+# 	@mkdir -p $(dir $@)
+# 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -x c++ -MM -MF $@ -MT $(@:.d=.o) $<
+# -include $(DEPS)
+
+endif
+
+##################################################<<<-Packaging and distribution
 
 PREFIX ?= /usr/local
 
