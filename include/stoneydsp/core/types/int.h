@@ -31,56 +31,56 @@ namespace stoneydsp
  *
  * Guaranteed to be exactly 8 signed bits.
  */
-using int8_t = ::int8_t;
+using int8_t = ::std::int8_t;
 
 /**
  * @brief Fixed-width integer.
  *
  * Guaranteed to be exactly 8 unsigned bits.
  */
-using uint8_t = ::uint8_t;
+using uint8_t = ::std::uint8_t;
 
 /**
  * @brief Fixed-width integer.
  *
  * Guaranteed to be exactly 16 signed bits.
  */
-using int16_t = ::int16_t;
+using int16_t = ::std::int16_t;
 
 /**
  * @brief Fixed-width integer.
  *
  * Guaranteed to be exactly 16 unsigned bits.
  */
-using uint16_t = ::uint16_t;
+using uint16_t = ::std::uint16_t;
 
 /**
  * @brief Fixed-width integer.
  *
  * Guaranteed to be exactly 32 signed bits.
  */
-using int32_t = ::int32_t;
+using int32_t = ::std::int32_t;
 
 /**
  * @brief Fixed-width integer.
  *
  * Guaranteed to be exactly 32 unsigned bits.
  */
-using uint32_t = ::uint32_t;
+using uint32_t = ::std::uint32_t;
 
 /**
  * @brief Fixed-width integer.
  *
  * Guaranteed to be exactly 64 signed bits.
  */
-using int64_t = ::int64_t;
+using int64_t = ::std::int64_t;
 
 /**
  * @brief Fixed-width integer.
  *
  * Guaranteed to be exactly 64 unsigned bits.
  */
-using uint64_t = ::uint64_t;
+using uint64_t = ::std::uint64_t;
 
 /// @} group stoneydsp
 } // namespace stoneydsp

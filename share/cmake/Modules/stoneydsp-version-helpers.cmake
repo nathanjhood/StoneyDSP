@@ -14,7 +14,7 @@ macro(stoneydsp_git_versions)
     execute_process(
         COMMAND "${GIT_EXECUTABLE}" "rev-list" "HEAD"
         COMMAND "wc" "-l"
-        WORKING_DIRECTORY "${STONEYDSP_SRC_DIR}"
+        WORKING_DIRECTORY "${STONEYDSP_SOURCE_DIR}"
         OUTPUT_VARIABLE _STONEYDSP_GIT_COMMIT_COUNT
         ERROR_VARIABLE _STONEYDSP_GIT_COMMIT_COUNT_ERROR
     )
