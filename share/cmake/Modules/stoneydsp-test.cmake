@@ -251,7 +251,7 @@ function(stoneydsp_add_test)
 
     # Set files
     set(STONEYDSP_TEST_MAIN_CPP_FILE "${STONEYDSP_TEST_DIR}/main.test.cpp")
-    set(STONEYDSP_TEST_UTILS_HPP_FILE "${STONEYDSP_TEST_DIR}/utils.hpp")
+    set(STONEYDSP_TEST_UTILS_HPP_FILE "${STONEYDSP_TEST_DIR}/utils.test.hpp")
     set(STONEYDSP_TEST_UTILS_CPP_FILE "${STONEYDSP_TEST_DIR}/utils.test.cpp")
 
     # List header files (public)

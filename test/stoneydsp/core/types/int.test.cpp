@@ -15,21 +15,22 @@
 
 //==============================================================================
 
-  #include <catch2/catch_test_macros.hpp>
-
-//==============================================================================
-
-  #include <limits>      // for `std::numeric_limits`
-  #include <sstream>     // for serialization tests
-  #include <type_traits> // for `is_signed` and `is_unsigned`
-
-//==============================================================================
-
   #include "stoneydsp/core/system/compiler.h" // for `STONEYDSP_PUBLIC_FUNCTION`
+  #include "stoneydsp/core/types/math.h"      // for `stoneydsp::float_t`
+  #include <algorithm>                        // for `std::sort`
+  #include <catch2/benchmark/catch_benchmark.hpp> //
+  #include <catch2/catch_test_macros.hpp>         //
+  #include <limits>                               // for `std::numeric_limits`
+  #include <numeric>                              // for `std::accumulate`
+  #include <sstream>                              // for serialization tests
+  #include <type_traits> // for `is_signed` and `is_unsigned`
+  #include <vector>      // for compatibility tests
 
 //==============================================================================
 
 // Test tags provided by this file:
+//
+// type tags:
 //
 // [int8]
 // [int16]
@@ -41,8 +42,12 @@
 // [uint32]
 // [uint64]
 //
+// size and alignment:
+//
 // [sizeof]
 // [alignof]
+//
+// type traits:
 //
 // [type_traits]
 // [is_signed]
@@ -50,7 +55,20 @@
 // [is_trivially_copyable]
 // [is_standard_layout]
 //
+// behavioural:
+//
+// [numeric_limits]
+// [endianness]
+// [conversion]
+// [special_values]
+// [arithmetic]
+//
 // [serialization]
+// [boundary]
+// [overflow]
+// [underflow]
+// [compatibility]
+// [benchmark]
 
 //==============================================================================
 
@@ -343,6 +361,147 @@ TEST_CASE ("Endianness handling for stoneydsp::int64", "[endianness][int64]")
     }
 }
 
+//====================================================================//rounding
+
+TEST_CASE ("Rounding behavior of stoneydsp::int8_t", "[rounding][int8]")
+{
+  ::stoneydsp::float_t a = -1.5f;
+  ::stoneydsp::int8 b = static_cast< ::stoneydsp::int8> (::std::round (a));
+  REQUIRE (b == -2); // -1.5 rounded to nearest integer and cast to int8
+
+  a = 1.5f;
+  b = static_cast< ::stoneydsp::int8> (::std::round (a));
+  REQUIRE (b == 2); // 1.5 rounded to nearest integer and cast to int8
+}
+
+TEST_CASE ("Rounding behavior of stoneydsp::int16", "[rounding][int16]")
+{
+  ::stoneydsp::float_t a = -1.5f;
+  ::stoneydsp::int16 b = static_cast< ::stoneydsp::int16> (std::round (a));
+  REQUIRE (b == -2); // -1.5 rounded to nearest integer and cast to int16
+
+  a = 1.5f;
+  b = static_cast< ::stoneydsp::int16> (std::round (a));
+  REQUIRE (b == 2); // 1.5 rounded to nearest integer and cast to int16
+}
+
+TEST_CASE ("Rounding behavior of stoneydsp::int32", "[rounding][int32]")
+{
+  ::stoneydsp::double_t a = -1.5;
+  ::stoneydsp::int32 b = static_cast< ::stoneydsp::int32> (::std::round (a));
+  REQUIRE (b == -2); // -1.5 rounded to nearest integer and cast to int32
+
+  a = 1.5;
+  b = static_cast< ::stoneydsp::int32> (::std::round (a));
+  REQUIRE (b == 2); // 1.5 rounded to nearest integer and cast to int32
+}
+
+TEST_CASE ("Rounding behavior of stoneydsp::int64", "[rounding][int64]")
+{
+  ::stoneydsp::double_t a = -1.5;
+  ::stoneydsp::int64 b = static_cast< ::stoneydsp::int64> (::std::round (a));
+  REQUIRE (b == -2); // -1.5 rounded to nearest integer and cast to int64
+
+  a = 1.5;
+  b = static_cast< ::stoneydsp::int64> (::std::round (a));
+  REQUIRE (b == 2); // 1.5 rounded to nearest integer and cast to int64
+}
+
+//==============================================================//special_values
+
+TEST_CASE ("Special values of stoneydsp::int8",
+           "[numeric_limits][special_values][int8]")
+{
+  ::stoneydsp::int8 min_val
+      = ::std::numeric_limits< ::stoneydsp::int8>::min ();
+  ::stoneydsp::int8 max_val
+      = ::std::numeric_limits< ::stoneydsp::int8>::max ();
+  REQUIRE (min_val == -128); // Minimum value for int8
+  REQUIRE (max_val == 127);  // Maximum value for int8
+}
+
+TEST_CASE ("Special values of stoneydsp::int16",
+           "[numeric_limits][special_values][int16]")
+{
+  ::stoneydsp::int16 min_val
+      = ::std::numeric_limits< ::stoneydsp::int16>::min ();
+  ::stoneydsp::int16 max_val
+      = ::std::numeric_limits< ::stoneydsp::int16>::max ();
+  REQUIRE (min_val == -32768); // Minimum value for int16
+  REQUIRE (max_val == 32767);  // Maximum value for int16
+}
+
+TEST_CASE ("Special values of stoneydsp::int32",
+           "[numeric_limits][special_values][int32]")
+{
+  ::stoneydsp::int32 min_val
+      = ::std::numeric_limits< ::stoneydsp::int32>::min ();
+  ::stoneydsp::int32 max_val
+      = ::std::numeric_limits< ::stoneydsp::int32>::max ();
+  REQUIRE (min_val == -2147483648); // Minimum value for int32
+  REQUIRE (max_val == 2147483647);  // Maximum value for int32
+}
+
+TEST_CASE ("Special values of stoneydsp::int64",
+           "[numeric_limits][special_values][int64]")
+{
+  ::stoneydsp::int64 min_val
+      = ::std::numeric_limits< ::stoneydsp::int64>::min ();
+  ::stoneydsp::int64 max_val
+      = ::std::numeric_limits< ::stoneydsp::int64>::max ();
+  REQUIRE (min_val == -9223372036854775807LL - 1); // Minimum value for int64
+  REQUIRE (max_val == 9223372036854775807LL);      // Maximum value for int64
+}
+
+//==================================================================//arithmetic
+
+TEST_CASE ("Arithmetic operations with stoneydsp::int8", "[arithmetic][int8]")
+{
+  ::stoneydsp::int8 a = 15;
+  ::stoneydsp::int8 b = 20;
+  REQUIRE (a + b == 35);  // Addition
+  REQUIRE (a - b == -5);  // Subtraction
+  REQUIRE (a * b == 300); // Multiplication
+  REQUIRE (b / a == 1);   // Division
+  REQUIRE (b % a == 5);   // Modulo
+}
+
+TEST_CASE ("Arithmetic operations with stoneydsp::int16",
+           "[arithmetic][int16]")
+{
+  ::stoneydsp::int16 a = 1500;
+  ::stoneydsp::int16 b = 2000;
+  REQUIRE (a + b == 3500);    // Addition
+  REQUIRE (a - b == -500);    // Subtraction
+  REQUIRE (a * b == 3000000); // Multiplication
+  REQUIRE (b / a == 1);       // Division
+  REQUIRE (b % a == 500);     // Modulo
+}
+
+TEST_CASE ("Arithmetic operations with stoneydsp::int32",
+           "[arithmetic][int32]")
+{
+  ::stoneydsp::int32 a = 15000;
+  ::stoneydsp::int32 b = 20000;
+  REQUIRE (a + b == 35000);     // Addition
+  REQUIRE (a - b == -5000);     // Subtraction
+  REQUIRE (a * b == 300000000); // Multiplication
+  REQUIRE (b / a == 1);         // Division
+  REQUIRE (b % a == 5000);      // Modulo
+}
+
+TEST_CASE ("Arithmetic operations with stoneydsp::int64",
+           "[arithmetic][int64]")
+{
+  ::stoneydsp::int64 a = 1500000000LL;
+  ::stoneydsp::int64 b = 2000000000LL;
+  REQUIRE (a + b == 3500000000LL);          // Addition
+  REQUIRE (a - b == -500000000LL);          // Subtraction
+  REQUIRE (a * b == 3000000000000000000LL); // Multiplication
+  REQUIRE (b / a == 1);                     // Division
+  REQUIRE (b % a == 500000000LL);           // Modulo
+}
+
 //===============================================================//serialization
 
 TEST_CASE ("Check serialization and deserialization for stoneydsp::int8",
@@ -368,6 +527,174 @@ TEST_CASE ("Check serialization and deserialization for stoneydsp::int64",
 {
   ::stoneydsp::test::testSerialization< ::stoneydsp::int64> (
       -1234567890123456789LL);
+}
+
+//======================================================//boundary_and_underflow
+
+TEST_CASE ("Boundary and underflow behavior of stoneydsp::int8",
+           "[boundary][underflow][int8]")
+{
+  ::stoneydsp::int8 a = -128;
+  ::stoneydsp::int8 b = 1;
+  // cast to prevent integer promition to larger type
+  REQUIRE (static_cast< ::stoneydsp::int8> (a - b)
+           == 127); // Check underflow wrap-around behavior
+}
+
+TEST_CASE ("Boundary and underflow behavior of stoneydsp::int16",
+           "[boundary][underflow][int16]")
+{
+  ::stoneydsp::int16 a = -32768;
+  ::stoneydsp::int16 b = 1;
+  REQUIRE (static_cast< ::stoneydsp::int16> (a - b)
+           == 32767); // Check underflow wrap-around behavior
+}
+
+TEST_CASE ("Boundary and underflow behavior of stoneydsp::int32",
+           "[boundary][underflow][int32]")
+{
+  ::stoneydsp::int32 a = -2147483648;
+  ::stoneydsp::int32 b = 1;
+  REQUIRE (static_cast< ::stoneydsp::int32> (a - b)
+           == 2147483647); // Check underflow wrap-around behavior
+}
+
+TEST_CASE ("Boundary and underflow behavior of stoneydsp::int64",
+           "[boundary][underflow][int64]")
+{
+  ::stoneydsp::int64 a = std::numeric_limits< ::stoneydsp::int64>::min ();
+  ::stoneydsp::int64 b = 1;
+  REQUIRE (
+      static_cast< ::stoneydsp::int64> (a - b)
+      == std::numeric_limits<
+          ::stoneydsp::int64>::max ()); // Check underflow wrap-around behavior
+}
+
+//=======================================================//boundary_and_overflow
+
+TEST_CASE ("Boundary and overflow behavior of stoneydsp::int8",
+           "[boundary][overflow][int8]")
+{
+  ::stoneydsp::int8 a = 127;
+  ::stoneydsp::int8 b = 1;
+  REQUIRE (static_cast< ::stoneydsp::int8> (a + b)
+           == -128); // Check overflow behavior
+}
+
+TEST_CASE ("Boundary and overflow behavior of stoneydsp::int16",
+           "[boundary][overflow][int16]")
+{
+  ::stoneydsp::int16 a = 32767;
+  ::stoneydsp::int16 b = 1;
+  REQUIRE (static_cast< ::stoneydsp::int16> (a + b)
+           == -32768); // Check overflow behavior
+}
+
+TEST_CASE ("Boundary and overflow behavior of stoneydsp::int32",
+           "[boundary][overflow][int32]")
+{
+  ::stoneydsp::int32 a = 2147483647;
+  ::stoneydsp::int32 b = 1;
+  REQUIRE (static_cast< ::stoneydsp::int32> (a + b)
+           == -2147483648); // Check overflow behavior
+}
+
+TEST_CASE ("Boundary and overflow behavior of stoneydsp::int64",
+           "[boundary][overflow][int64]")
+{
+  ::stoneydsp::int64 a = 9223372036854775807LL;
+  ::stoneydsp::int64 b = 1;
+  REQUIRE (
+      static_cast< ::stoneydsp::int64> (a + b)
+      == std::numeric_limits< ::stoneydsp::int64>::min ()); // Check overflow
+                                                            // behavior
+}
+
+//===============================================================//compatibility
+
+TEST_CASE ("Compatibility of stoneydsp::int8_t with standard library",
+           "[compatibility][int8]")
+{
+  ::std::vector< ::stoneydsp::int8> vec = { 5, 3, 4, 1, 2 };
+
+  // Use std::sort to sort the vector
+  ::std::sort (vec.begin (), vec.end ());
+
+  // Verify the vector is sorted
+  REQUIRE (vec == std::vector< ::stoneydsp::int8>{ 1, 2, 3, 4, 5 });
+
+  // Use std::accumulate to sum the elements
+  ::stoneydsp::int8 sum
+      = ::std::accumulate (vec.begin (), vec.end (), ::stoneydsp::int8 (0));
+
+  // Verify the sum is correct
+  REQUIRE (sum == 15);
+}
+
+TEST_CASE ("Compatibility of stoneydsp::int16_t with standard library",
+           "[compatibility][int16]")
+{
+  ::std::vector< ::stoneydsp::int16> vec = { 500, 300, 400, 100, 200 };
+
+  // Use std::sort to sort the vector
+  ::std::sort (vec.begin (), vec.end ());
+
+  // Verify the vector is sorted
+  REQUIRE (vec
+           == ::std::vector< ::stoneydsp::int16>{ 100, 200, 300, 400, 500 });
+
+  // Use std::accumulate to sum the elements
+  ::stoneydsp::int16 sum
+      = ::std::accumulate (vec.begin (), vec.end (), ::stoneydsp::int16 (0));
+
+  // Verify the sum is correct
+  REQUIRE (sum == 1500);
+}
+
+TEST_CASE ("Compatibility of stoneydsp::int32 with standard library",
+           "[compatibility][int32]")
+{
+  ::std::vector< ::stoneydsp::int32> vec
+      = { 500000, 300000, 400000, 100000, 200000 };
+
+  // Use std::sort to sort the vector
+  ::std::sort (vec.begin (), vec.end ());
+
+  // Verify the vector is sorted
+  REQUIRE (vec
+           == ::std::vector< ::stoneydsp::int32>{ 100000, 200000, 300000,
+                                                  400000, 500000 });
+
+  // Use std::accumulate to sum the elements
+  ::stoneydsp::int32 sum
+      = ::std::accumulate (vec.begin (), vec.end (), ::stoneydsp::int32 (0));
+
+  // Verify the sum is correct
+  REQUIRE (sum == 1500000);
+}
+
+TEST_CASE ("Compatibility of stoneydsp::int64_t with standard library",
+           "[compatibility][int64]")
+{
+  ::std::vector< ::stoneydsp::int64> vec
+      = { 5000000000LL, 3000000000LL, 4000000000LL, 1000000000LL,
+          2000000000LL };
+
+  // Use std::sort to sort the vector
+  ::std::sort (vec.begin (), vec.end ());
+
+  // Verify the vector is sorted
+  REQUIRE (vec
+           == ::std::vector< ::stoneydsp::int64>{ 1000000000LL, 2000000000LL,
+                                                  3000000000LL, 4000000000LL,
+                                                  5000000000LL });
+
+  // Use std::accumulate to sum the elements
+  ::stoneydsp::int64 sum
+      = ::std::accumulate (vec.begin (), vec.end (), ::stoneydsp::int64 (0));
+
+  // Verify the sum is correct
+  REQUIRE (sum == 15000000000LL);
 }
 
 //======================================================================//sizeof
@@ -612,6 +939,137 @@ TEST_CASE ("Endianness handling for stoneydsp::uint64", "[endianness][uint64]")
     }
 }
 
+//====================================================================//rounding
+
+TEST_CASE ("Rounding behavior of stoneydsp::uint8", "[rounding][uint8]")
+{
+  ::stoneydsp::float_t a = 1.5f;
+  ::stoneydsp::uint8 b = static_cast< ::stoneydsp::uint8> (::std::round (a));
+  REQUIRE (b == 2); // 1.5 rounded to nearest integer and cast to uint8
+}
+
+TEST_CASE ("Rounding behavior of stoneydsp::uint16", "[rounding][uint16]")
+{
+  ::stoneydsp::float_t a = 1.5f;
+  ::stoneydsp::uint16 b = static_cast< ::stoneydsp::uint16> (::std::round (a));
+  REQUIRE (b == 2); // 1.5 rounded to nearest integer and cast to uint16
+}
+
+TEST_CASE ("Rounding behavior of stoneydsp::uint32", "[rounding][uint32]")
+{
+  ::stoneydsp::double_t a = 1.5;
+  ::stoneydsp::uint32 b = static_cast< ::stoneydsp::uint32> (::std::round (a));
+  REQUIRE (b == 2); // 1.5 rounded to nearest integer and cast to uint32
+}
+
+TEST_CASE ("Rounding behavior of stoneydsp::uint32", "[rounding][uint64]")
+{
+  ::stoneydsp::double_t a = 1.5;
+  ::stoneydsp::uint64 b = static_cast< ::stoneydsp::uint64> (::std::round (a));
+  REQUIRE (b == 2); // 1.5 rounded to nearest integer and cast to uint64
+}
+
+//==============================================================//special_values
+
+TEST_CASE ("Special values of stoneydsp::uint8",
+           "[numeric_limits][special_values][uint8]")
+{
+  ::stoneydsp::uint8 min_val
+      = ::std::numeric_limits< ::stoneydsp::uint8>::min ();
+  ::stoneydsp::uint8 max_val
+      = ::std::numeric_limits< ::stoneydsp::uint8>::max ();
+  REQUIRE (min_val == 0);   // Minimum value for uint8
+  REQUIRE (max_val == 255); // Maximum value for uint8
+}
+
+TEST_CASE ("Special values of stoneydsp::uint16",
+           "[numeric_limits][special_values][uint16]")
+{
+  ::stoneydsp::uint16 min_val
+      = ::std::numeric_limits< ::stoneydsp::uint16>::min ();
+  ::stoneydsp::uint16 max_val
+      = ::std::numeric_limits< ::stoneydsp::uint16>::max ();
+  REQUIRE (min_val == 0);     // Minimum value for uint16
+  REQUIRE (max_val == 65535); // Maximum value for uint16
+}
+
+TEST_CASE ("Special values of stoneydsp::uint32",
+           "[numeric_limits][special_values][uint32]")
+{
+  ::stoneydsp::uint32 min_val
+      = ::std::numeric_limits< ::stoneydsp::uint32>::min ();
+  ::stoneydsp::uint32 max_val
+      = ::std::numeric_limits< ::stoneydsp::uint32>::max ();
+  REQUIRE (min_val == 0);          // Minimum value for uint32
+  REQUIRE (max_val == 4294967295); // Maximum value for uint32
+}
+
+TEST_CASE ("Special values of stoneydsp::uint64",
+           "[numeric_limits][special_values][uint64]")
+{
+  ::stoneydsp::uint64 min_val
+      = ::std::numeric_limits< ::stoneydsp::uint64>::min ();
+  ::stoneydsp::uint64 max_val
+      = ::std::numeric_limits< ::stoneydsp::uint64>::max ();
+  REQUIRE (min_val == 0);                       // Minimum value for uint64
+  REQUIRE (max_val == 18446744073709551615ULL); // Maximum value for uint64
+}
+
+//==================================================================//arithmetic
+
+TEST_CASE ("Arithmetic operations with stoneydsp::uint8",
+           "[arithmetic][uint8]")
+{
+  ::stoneydsp::uint8 a = 15;
+  ::stoneydsp::uint8 b = 20;
+  REQUIRE (a + b == 35); // Addition
+  REQUIRE (static_cast<int> (a - b)
+           == static_cast<int> (-5)); // Subtraction (wrap-around)
+  REQUIRE (a * b == 300);             // Multiplication
+  REQUIRE (b / a == 1);               // Division
+  REQUIRE (b % a == 5);               // Modulo
+}
+
+TEST_CASE ("Arithmetic operations with stoneydsp::uint16",
+           "[arithmetic][uint16]")
+{
+  ::stoneydsp::uint16 a = 1500;
+  ::stoneydsp::uint16 b = 2000;
+  REQUIRE (a + b == 3500); // Addition
+  REQUIRE (static_cast<int> (a - b)
+           == static_cast<int> (-500)); // Subtraction (wrap-around)
+  REQUIRE (a * b == 3000000);           // Multiplication
+  REQUIRE (b / a == 1);                 // Division
+  REQUIRE (b % a == 500);               // Modulo
+}
+
+TEST_CASE ("Arithmetic operations with stoneydsp::uint32",
+           "[arithmetic][uint32]")
+{
+  ::stoneydsp::uint32 a = 15000;
+  ::stoneydsp::uint32 b = 20000;
+  REQUIRE (a + b == 35000); // Addition
+  REQUIRE (static_cast<int> (a - b)
+           == static_cast<int> (-5000)); // Subtraction (wrap-around)
+  REQUIRE (a * b == 300000000);          // Multiplication
+  REQUIRE (b / a == 1);                  // Division
+  REQUIRE (b % a == 5000);               // Modulo
+}
+
+TEST_CASE ("Arithmetic operations with stoneydsp::uint64",
+           "[arithmetic][uint64]")
+{
+  ::stoneydsp::uint64 a = 1500000000ULL;
+  ::stoneydsp::uint64 b = 2000000000ULL;
+  REQUIRE (a + b == 3500000000ULL); // Addition
+  REQUIRE (
+      static_cast<long long> (a - b)
+      == static_cast<long long> (-500000000LL)); // Subtraction (wrap-around)
+  REQUIRE (a * b == 3000000000000000000ULL);     // Multiplication
+  REQUIRE (b / a == 1);                          // Division
+  REQUIRE (b % a == 500000000ULL);               // Modulo
+}
+
 //===============================================================//serialization
 
 TEST_CASE ("Check serialization and deserialization for stoneydsp::uint8",
@@ -637,6 +1095,639 @@ TEST_CASE ("Check serialization and deserialization for stoneydsp::uint64",
 {
   ::stoneydsp::test::testSerialization< ::stoneydsp::uint64> (
       1234567890123456789ULL);
+}
+
+//=======================================================//boundary_and_overflow
+
+TEST_CASE ("Boundary and overflow behaviour of stoneydsp::uint8",
+           "[boundary][overflow][uint8]")
+{
+  ::stoneydsp::uint8 a = 255;
+  ::stoneydsp::uint8 b = 1;
+  REQUIRE (static_cast< ::stoneydsp::uint8> (a + b)
+           == 0); // Check overflow wrap-around behaviour
+}
+
+TEST_CASE ("Boundary and overflow behaviour of stoneydsp::uint16",
+           "[boundary][overflow][uint16]")
+{
+  ::stoneydsp::uint16 a = 65535;
+  ::stoneydsp::uint16 b = 1;
+  REQUIRE (static_cast< ::stoneydsp::uint16> (a + b)
+           == 0); // Check overflow wrap-around behaviour
+}
+
+TEST_CASE ("Boundary and overflow behaviour of stoneydsp::uint32",
+           "[boundary][overflow][uint32]")
+{
+  ::stoneydsp::uint32 a = 4294967295U;
+  ::stoneydsp::uint32 b = 1;
+  REQUIRE (static_cast< ::stoneydsp::uint32> (a + b)
+           == 0); // Check overflow wrap-around behaviour
+}
+
+TEST_CASE ("Boundary and overflow behavior of stoneydsp::uint64",
+           "[boundary][overflow][uint64]")
+{
+  ::stoneydsp::uint64 a = 18446744073709551615ULL;
+  ::stoneydsp::uint64 b = 1;
+  REQUIRE (static_cast< ::stoneydsp::uint64> (a + b)
+           == 0); // Check overflow wrap-around behavior
+}
+
+//======================================================//boundary_and_underflow
+
+TEST_CASE ("Boundary and underflow behavior of stoneydsp::uint8",
+           "[boundary][underflow][uint8]")
+{
+  ::stoneydsp::uint8 a = 0;
+  ::stoneydsp::uint8 b = 1;
+  REQUIRE (static_cast< ::stoneydsp::uint8> (a - b)
+           == 255); // Check underflow wrap-around behavior
+}
+
+TEST_CASE ("Boundary and underflow behavior of stoneydsp::uint16",
+           "[boundary][underflow][uint16]")
+{
+  ::stoneydsp::uint16 a = 0;
+  ::stoneydsp::uint16 b = 1;
+  REQUIRE (static_cast< ::stoneydsp::uint16> (a - b)
+           == 65535); // Check underflow wrap-around behavior
+}
+
+TEST_CASE ("Boundary and underflow behavior of stoneydsp::uint32",
+           "[boundary][underflow][uint32]")
+{
+  ::stoneydsp::uint32 a = 0;
+  ::stoneydsp::uint32 b = 1;
+  REQUIRE (static_cast< ::stoneydsp::uint32> (a - b)
+           == 4294967295U); // Check underflow wrap-around behavior
+}
+
+TEST_CASE ("Boundary and unerflow behavior of stoneydsp::uint64",
+           "[boundary][underflow][uint64]")
+{
+  ::stoneydsp::uint64 a = 0;
+  ::stoneydsp::uint64 b = 1;
+  REQUIRE (static_cast< ::stoneydsp::uint64> (a - b)
+           == 18446744073709551615ULL); // Check underflow wrap-around behavior
+}
+
+//===============================================================//compatibility
+
+TEST_CASE ("Compatibility of stoneydsp::uint8 with standard library",
+           "[compatibility][uint8_t]")
+{
+  ::std::vector< ::stoneydsp::uint8> vec = { 5, 3, 4, 1, 2 };
+
+  // Use std::sort to sort the vector
+  ::std::sort (vec.begin (), vec.end ());
+
+  // Verify the vector is sorted
+  REQUIRE (vec == ::std::vector< ::stoneydsp::uint8>{ 1, 2, 3, 4, 5 });
+
+  // Use std::accumulate to sum the elements
+  ::stoneydsp::uint8 sum
+      = ::std::accumulate (vec.begin (), vec.end (), ::stoneydsp::uint8 (0));
+
+  // Verify the sum is correct
+  REQUIRE (sum == 15);
+}
+
+TEST_CASE ("Compatibility of stoneydsp::uint16 with standard library",
+           "[compatibility][uint16]")
+{
+  ::std::vector< ::stoneydsp::uint16> vec = { 500, 300, 400, 100, 200 };
+
+  // Use std::sort to sort the vector
+  ::std::sort (vec.begin (), vec.end ());
+
+  // Verify the vector is sorted
+  REQUIRE (vec
+           == ::std::vector< ::stoneydsp::uint16>{ 100, 200, 300, 400, 500 });
+
+  // Use std::accumulate to sum the elements
+  ::stoneydsp::uint16 sum
+      = ::std::accumulate (vec.begin (), vec.end (), ::stoneydsp::uint16 (0));
+
+  // Verify the sum is correct
+  REQUIRE (sum == 1500);
+}
+
+TEST_CASE ("Compatibility of stoneydsp::uint32 with standard library",
+           "[compatibility][uint32]")
+{
+  ::std::vector< ::stoneydsp::uint32> vec
+      = { 500000, 300000, 400000, 100000, 200000 };
+
+  // Use std::sort to sort the vector
+  ::std::sort (vec.begin (), vec.end ());
+
+  // Verify the vector is sorted
+  REQUIRE (vec
+           == ::std::vector< ::stoneydsp::uint32>{ 100000, 200000, 300000,
+                                                   400000, 500000 });
+
+  // Use std::accumulate to sum the elements
+  ::stoneydsp::uint32 sum
+      = std::accumulate (vec.begin (), vec.end (), ::stoneydsp::uint32 (0));
+
+  // Verify the sum is correct
+  REQUIRE (sum == 1500000);
+}
+
+TEST_CASE ("Compatibility of stoneydsp::uint64 with standard library",
+           "[compatibility][uint64]")
+{
+  ::std::vector< ::stoneydsp::uint64> vec
+      = { 5000000000LL, 3000000000LL, 4000000000LL, 1000000000LL,
+          2000000000LL };
+
+  // Use std::sort to sort the vector
+  ::std::sort (vec.begin (), vec.end ());
+
+  // Verify the vector is sorted
+  REQUIRE (vec
+           == ::std::vector< ::stoneydsp::uint64>{ 1000000000LL, 2000000000LL,
+                                                   3000000000LL, 4000000000LL,
+                                                   5000000000LL });
+
+  // Use std::accumulate to sum the elements
+  ::stoneydsp::uint64 sum
+      = ::std::accumulate (vec.begin (), vec.end (), ::stoneydsp::uint64 (0));
+
+  // Verify the sum is correct
+  REQUIRE (sum == 15000000000LL);
+}
+
+//===================================================================//benchmark
+
+// Benchmark for addition
+TEST_CASE ("Benchmark for stoneydsp::int8 addition", "[benchmark][int8]")
+{
+  ::stoneydsp::int8 a = 12;
+  ::stoneydsp::int8 b = 34;
+
+  BENCHMARK ("Addition") { return a + b; };
+}
+
+// Benchmark for subtraction
+TEST_CASE ("Benchmark for stoneydsp::int8 subtraction", "[benchmark][int8]")
+{
+  ::stoneydsp::int8 a = 34;
+  ::stoneydsp::int8 b = 12;
+
+  BENCHMARK ("Subtraction") { return a - b; };
+}
+
+// Benchmark for multiplication
+TEST_CASE ("Benchmark for stoneydsp::int8 multiplication", "[benchmark][int8]")
+{
+  ::stoneydsp::int8 a = 12;
+  ::stoneydsp::int8 b = 2;
+
+  BENCHMARK ("Multiplication") { return a * b; };
+}
+
+// Benchmark for division
+TEST_CASE ("Benchmark for stoneydsp::int8 division", "[benchmark][int8]")
+{
+  ::stoneydsp::int8 a = 12;
+  ::stoneydsp::int8 b = 2;
+
+  BENCHMARK ("Division") { return a / b; };
+}
+
+// Benchmark for type conversion to int
+TEST_CASE ("Benchmark for stoneydsp::int8 to int conversion",
+           "[benchmark][int8]")
+{
+  ::stoneydsp::int8 a = 12;
+
+  BENCHMARK ("Conversion to int") { return static_cast<int> (a); };
+}
+
+// Benchmark for type conversion to float
+TEST_CASE ("Benchmark for stoneydsp::int8 to float conversion",
+           "[benchmark][int8]")
+{
+  ::stoneydsp::int8 a = 12;
+
+  BENCHMARK ("Conversion to float")
+  {
+    return static_cast< ::stoneydsp::float_t> (a);
+  };
+}
+
+// Benchmark for addition
+TEST_CASE ("Benchmark for stoneydsp::int16 addition", "[benchmark][int16]")
+{
+  ::stoneydsp::int16 a = 1234;
+  ::stoneydsp::int16 b = 5678;
+
+  BENCHMARK ("Addition") { return a + b; };
+}
+
+// Benchmark for subtraction
+TEST_CASE ("Benchmark for stoneydsp::int16 subtraction", "[benchmark][int16]")
+{
+  ::stoneydsp::int16 a = 5678;
+  ::stoneydsp::int16 b = 1234;
+
+  BENCHMARK ("Subtraction") { return a - b; };
+}
+
+// Benchmark for multiplication
+TEST_CASE ("Benchmark for stoneydsp::int16 multiplication",
+           "[benchmark][int16]")
+{
+  ::stoneydsp::int16 a = 1234;
+  ::stoneydsp::int16 b = 2;
+
+  BENCHMARK ("Multiplication") { return a * b; };
+}
+
+// Benchmark for division
+TEST_CASE ("Benchmark for stoneydsp::int16 division", "[benchmark][int16]")
+{
+  ::stoneydsp::int16 a = 1234;
+  ::stoneydsp::int16 b = 2;
+
+  BENCHMARK ("Division") { return a / b; };
+}
+
+// Benchmark for type conversion to int
+TEST_CASE ("Benchmark for stoneydsp::int16 to int conversion",
+           "[benchmark][int16]")
+{
+  ::stoneydsp::int16 a = 1234;
+
+  BENCHMARK ("Conversion to int") { return static_cast<int> (a); };
+}
+
+// Benchmark for type conversion to float
+TEST_CASE ("Benchmark for stoneydsp::int16 to float conversion",
+           "[benchmark][int16]")
+{
+  ::stoneydsp::int16 a = 1234;
+
+  BENCHMARK ("Conversion to float")
+  {
+    return static_cast< ::stoneydsp::float_t> (a);
+  };
+}
+
+// Benchmark for addition
+TEST_CASE ("Benchmark for stoneydsp::int32 addition", "[benchmark][int32]")
+{
+  ::stoneydsp::int32 a = 123456789;
+  ::stoneydsp::int32 b = 987654321;
+
+  BENCHMARK ("Addition") { return a + b; };
+}
+
+// Benchmark for subtraction
+TEST_CASE ("Benchmark for stoneydsp::int32 subtraction", "[benchmark][int32]")
+{
+  ::stoneydsp::int32 a = 987654321;
+  ::stoneydsp::int32 b = 123456789;
+
+  BENCHMARK ("Subtraction") { return a - b; };
+}
+
+// Benchmark for multiplication
+TEST_CASE ("Benchmark for stoneydsp::int32 multiplication",
+           "[benchmark][int32]")
+{
+  ::stoneydsp::int32 a = 123456789;
+  ::stoneydsp::int32 b = 2;
+
+  BENCHMARK ("Multiplication") { return a * b; };
+}
+
+// Benchmark for division
+TEST_CASE ("Benchmark for stoneydsp::int32 division", "[benchmark][int32]")
+{
+  ::stoneydsp::int32 a = 123456789;
+  ::stoneydsp::int32 b = 2;
+
+  BENCHMARK ("Division") { return a / b; };
+}
+
+// Benchmark for type conversion to int
+TEST_CASE ("Benchmark for stoneydsp::int32 to int conversion",
+           "[benchmark][int32]")
+{
+  ::stoneydsp::int32 a = 123456789;
+
+  BENCHMARK ("Conversion to int") { return static_cast<int> (a); };
+}
+
+// Benchmark for type conversion to float
+TEST_CASE ("Benchmark for stoneydsp::int32 to float conversion",
+           "[benchmark][int32]")
+{
+  ::stoneydsp::int32 a = 123456789;
+
+  BENCHMARK ("Conversion to float")
+  {
+    return static_cast< ::stoneydsp::float_t> (a);
+  };
+}
+
+// Benchmark for addition
+TEST_CASE ("Benchmark for stoneydsp::int64 addition", "[benchmark][int64]")
+{
+  ::stoneydsp::int64 a = 1234567890123456789LL;
+  ::stoneydsp::int64 b = 9223372036854775807LL;
+
+  BENCHMARK ("Addition") { return a + b; };
+}
+
+// Benchmark for subtraction
+TEST_CASE ("Benchmark for stoneydsp::int64 subtraction", "[benchmark][int64]")
+{
+  ::stoneydsp::int64 a = 9223372036854775807LL;
+  ::stoneydsp::int64 b = 1234567890123456789LL;
+
+  BENCHMARK ("Subtraction") { return a - b; };
+}
+
+// Benchmark for multiplication
+TEST_CASE ("Benchmark for stoneydsp::int64 multiplication",
+           "[benchmark][int64]")
+{
+  ::stoneydsp::int64 a = 1234567890123456789LL;
+  ::stoneydsp::int64 b = 2;
+
+  BENCHMARK ("Multiplication") { return a * b; };
+}
+
+// Benchmark for division
+TEST_CASE ("Benchmark for stoneydsp::int64 division", "[benchmark][int64]")
+{
+  ::stoneydsp::int64 a = 1234567890123456789LL;
+  ::stoneydsp::int64 b = 2;
+
+  BENCHMARK ("Division") { return a / b; };
+}
+
+// Benchmark for type conversion to int
+TEST_CASE ("Benchmark for stoneydsp::int64 to int conversion",
+           "[benchmark][int64]")
+{
+  ::stoneydsp::int64 a = 1234567890123456789LL;
+
+  BENCHMARK ("Conversion to int") { return static_cast<int> (a); };
+}
+
+// Benchmark for type conversion to float
+TEST_CASE ("Benchmark for stoneydsp::int64 to float conversion",
+           "[benchmark][int64]")
+{
+  ::stoneydsp::int64 a = 1234567890123456789LL;
+
+  BENCHMARK ("Conversion to float")
+  {
+    return static_cast< ::stoneydsp::float_t> (a);
+  };
+}
+
+//===================================================================//benchmark
+
+// Benchmark for addition
+TEST_CASE ("Benchmark for stoneydsp::uint8 addition", "[benchmark][uint8]")
+{
+  ::stoneydsp::uint8 a = 12;
+  ::stoneydsp::uint8 b = 34;
+
+  BENCHMARK ("Addition") { return a + b; };
+}
+
+// Benchmark for subtraction
+TEST_CASE ("Benchmark for stoneydsp::uint8 subtraction", "[benchmark][uint8]")
+{
+  ::stoneydsp::uint8 a = 34;
+  ::stoneydsp::uint8 b = 12;
+
+  BENCHMARK ("Subtraction") { return a - b; };
+}
+
+// Benchmark for multiplication
+TEST_CASE ("Benchmark for stoneydsp::uint8 multiplication",
+           "[benchmark][uint8]")
+{
+  ::stoneydsp::uint8 a = 12;
+  ::stoneydsp::uint8 b = 2;
+
+  BENCHMARK ("Multiplication") { return a * b; };
+}
+
+// Benchmark for division
+TEST_CASE ("Benchmark for stoneydsp::uint8 division", "[benchmark][uint8]")
+{
+  ::stoneydsp::uint8 a = 12;
+  ::stoneydsp::uint8 b = 2;
+
+  BENCHMARK ("Division") { return a / b; };
+}
+
+// Benchmark for type conversion to int
+TEST_CASE ("Benchmark for stoneydsp::uint8 to int conversion",
+           "[benchmark][uint8]")
+{
+  ::stoneydsp::uint8 a = 12;
+
+  BENCHMARK ("Conversion to int") { return static_cast<int> (a); };
+}
+
+// Benchmark for type conversion to float
+TEST_CASE ("Benchmark for stoneydsp::uint8 to float conversion",
+           "[benchmark][uint8]")
+{
+  ::stoneydsp::uint8 a = 12;
+
+  BENCHMARK ("Conversion to float")
+  {
+    return static_cast< ::stoneydsp::float_t> (a);
+  };
+}
+
+// Benchmark for addition
+TEST_CASE ("Benchmark for stoneydsp::uint16 addition", "[benchmark][uint16]")
+{
+  ::stoneydsp::uint16 a = 1234;
+  ::stoneydsp::uint16 b = 5678;
+
+  BENCHMARK ("Addition") { return a + b; };
+}
+
+// Benchmark for subtraction
+TEST_CASE ("Benchmark for stoneydsp::uint16 subtraction",
+           "[benchmark][uint16]")
+{
+  ::stoneydsp::uint16 a = 5678;
+  ::stoneydsp::uint16 b = 1234;
+
+  BENCHMARK ("Subtraction") { return a - b; };
+}
+
+// Benchmark for multiplication
+TEST_CASE ("Benchmark for stoneydsp::uint16 multiplication",
+           "[benchmark][uint16]")
+{
+  ::stoneydsp::uint16 a = 1234;
+  ::stoneydsp::uint16 b = 2;
+
+  BENCHMARK ("Multiplication") { return a * b; };
+}
+
+// Benchmark for division
+TEST_CASE ("Benchmark for stoneydsp::uint16 division", "[benchmark][uint16]")
+{
+  ::stoneydsp::uint16 a = 1234;
+  ::stoneydsp::uint16 b = 2;
+
+  BENCHMARK ("Division") { return a / b; };
+}
+
+// Benchmark for type conversion to int
+TEST_CASE ("Benchmark for stoneydsp::uint16 to int conversion",
+           "[benchmark][uint16]")
+{
+  ::stoneydsp::uint16 a = 1234;
+
+  BENCHMARK ("Conversion to int") { return static_cast<int> (a); };
+}
+
+// Benchmark for type conversion to float
+TEST_CASE ("Benchmark for stoneydsp::uint16 to float conversion",
+           "[benchmark][uint16]")
+{
+  ::stoneydsp::uint16 a = 1234;
+
+  BENCHMARK ("Conversion to float")
+  {
+    return static_cast< ::stoneydsp::float_t> (a);
+  };
+}
+
+// Benchmark for addition
+TEST_CASE ("Benchmark for stoneydsp::uint32 addition", "[benchmark][uint32]")
+{
+  ::stoneydsp::uint32 a = 123456789;
+  ::stoneydsp::uint32 b = 987654321;
+
+  BENCHMARK ("Addition") { return a + b; };
+}
+
+// Benchmark for subtraction
+TEST_CASE ("Benchmark for stoneydsp::uint32 subtraction",
+           "[benchmark][uint32]")
+{
+  ::stoneydsp::uint32 a = 987654321;
+  ::stoneydsp::uint32 b = 123456789;
+
+  BENCHMARK ("Subtraction") { return a - b; };
+}
+
+// Benchmark for multiplication
+TEST_CASE ("Benchmark for stoneydsp::uint32 multiplication",
+           "[benchmark][uint32]")
+{
+  ::stoneydsp::uint32 a = 123456789;
+  ::stoneydsp::uint32 b = 2;
+
+  BENCHMARK ("Multiplication") { return a * b; };
+}
+
+// Benchmark for division
+TEST_CASE ("Benchmark for stoneydsp::uint32 division", "[benchmark][uint32]")
+{
+  ::stoneydsp::uint32 a = 123456789;
+  ::stoneydsp::uint32 b = 2;
+
+  BENCHMARK ("Division") { return a / b; };
+}
+
+// Benchmark for type conversion to int
+TEST_CASE ("Benchmark for stoneydsp::uint32 to int conversion",
+           "[benchmark][uint32]")
+{
+  ::stoneydsp::uint32 a = 123456789;
+
+  BENCHMARK ("Conversion to int") { return static_cast<int> (a); };
+}
+
+// Benchmark for type conversion to float
+TEST_CASE ("Benchmark for stoneydsp::uint32 to float conversion",
+           "[benchmark][uint32]")
+{
+  ::stoneydsp::uint32 a = 123456789;
+
+  BENCHMARK ("Conversion to float")
+  {
+    return static_cast< ::stoneydsp::float_t> (a);
+  };
+}
+
+// Benchmark for addition
+TEST_CASE ("Benchmark for stoneydsp::uint64 addition", "[benchmark][uint64]")
+{
+  ::stoneydsp::uint64 a = 1234567890123456789ULL;
+  ::stoneydsp::uint64 b = 9876543210987654321ULL;
+
+  BENCHMARK ("Addition") { return a + b; };
+}
+
+// Benchmark for subtraction
+TEST_CASE ("Benchmark for stoneydsp::uint64 subtraction",
+           "[benchmark][uint64]")
+{
+  ::stoneydsp::uint64 a = 9876543210987654321ULL;
+  ::stoneydsp::uint64 b = 1234567890123456789ULL;
+
+  BENCHMARK ("Subtraction") { return a - b; };
+}
+
+// Benchmark for multiplication
+TEST_CASE ("Benchmark for stoneydsp::uint64 multiplication",
+           "[benchmark][uint64]")
+{
+  ::stoneydsp::uint64 a = 1234567890123456789ULL;
+  ::stoneydsp::uint64 b = 2;
+
+  BENCHMARK ("Multiplication") { return a * b; };
+}
+
+// Benchmark for division
+TEST_CASE ("Benchmark for stoneydsp::uint64 division", "[benchmark][uint64]")
+{
+  ::stoneydsp::uint64 a = 1234567890123456789ULL;
+  ::stoneydsp::uint64 b = 2;
+
+  BENCHMARK ("Division") { return a / b; };
+}
+
+// Benchmark for type conversion to int
+TEST_CASE ("Benchmark for stoneydsp::uint64 to int conversion",
+           "[benchmark][uint64]")
+{
+  ::stoneydsp::uint64 a = 1234567890123456789ULL;
+
+  BENCHMARK ("Conversion to int") { return static_cast<int> (a); };
+}
+
+// Benchmark for type conversion to float
+TEST_CASE ("Benchmark for stoneydsp::uint64 to float conversion",
+           "[benchmark][uint64]")
+{
+  ::stoneydsp::uint64 a = 1234567890123456789ULL;
+
+  BENCHMARK ("Conversion to float")
+  {
+    return static_cast< ::stoneydsp::float_t> (a);
+  };
 }
 
 //============================================================================//

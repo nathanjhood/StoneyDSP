@@ -29,8 +29,7 @@ namespace test
  *
  */
 template <typename T>
-void STONEYDSP_PUBLIC_FUNCTION
-testSizeof (const T &expectedSizeof);
+void STONEYDSP_PUBLIC_FUNCTION testSizeof (const T &expectedSizeof);
 
 /**
  * @brief
