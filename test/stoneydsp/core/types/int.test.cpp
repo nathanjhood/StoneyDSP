@@ -23,9 +23,12 @@
 
 //==============================================================================
 
+  #include <algorithm>   // for `std::sort`
   #include <limits>      // for `std::numeric_limits`
+  #include <numeric>     // for `std::accumulate`
   #include <sstream>     // for serialization tests
   #include <type_traits> // for `is_signed` and `is_unsigned`
+  #include <vector>      // for compatibility tests
 
 //==============================================================================
 
@@ -34,6 +37,8 @@
 //==============================================================================
 
 // Test tags provided by this file:
+//
+// type tags:
 //
 // [int8]
 // [int16]
@@ -45,14 +50,20 @@
 // [uint32]
 // [uint64]
 //
+// size and alignment:
+//
 // [sizeof]
 // [alignof]
+//
+// type traits:
 //
 // [type_traits]
 // [is_signed]
 // [is_unsigned]
 // [is_trivially_copyable]
 // [is_standard_layout]
+//
+// behavioural:
 //
 // [numeric_limits]
 // [endianness]
@@ -64,6 +75,7 @@
 // [boundary]
 // [overflow]
 // [underflow]
+// [compatibility]
 
 //==============================================================================
 
@@ -605,6 +617,93 @@ TEST_CASE ("Boundary and overflow behavior of stoneydsp::int64",
                                                             // behavior
 }
 
+//===============================================================//compatibility
+
+TEST_CASE ("Compatibility of stoneydsp::int8_t with standard library",
+           "[compatibility][int8]")
+{
+  ::std::vector< ::stoneydsp::int8> vec = { 5, 3, 4, 1, 2 };
+
+  // Use std::sort to sort the vector
+  ::std::sort (vec.begin (), vec.end ());
+
+  // Verify the vector is sorted
+  REQUIRE (vec == std::vector< ::stoneydsp::int8>{ 1, 2, 3, 4, 5 });
+
+  // Use std::accumulate to sum the elements
+  ::stoneydsp::int8 sum
+      = ::std::accumulate (vec.begin (), vec.end (), ::stoneydsp::int8 (0));
+
+  // Verify the sum is correct
+  REQUIRE (sum == 15);
+}
+
+TEST_CASE ("Compatibility of stoneydsp::int16_t with standard library",
+           "[compatibility][int16]")
+{
+  ::std::vector< ::stoneydsp::int16> vec = { 500, 300, 400, 100, 200 };
+
+  // Use std::sort to sort the vector
+  ::std::sort (vec.begin (), vec.end ());
+
+  // Verify the vector is sorted
+  REQUIRE (vec
+           == ::std::vector< ::stoneydsp::int16>{ 100, 200, 300, 400, 500 });
+
+  // Use std::accumulate to sum the elements
+  ::stoneydsp::int16 sum
+      = ::std::accumulate (vec.begin (), vec.end (), ::stoneydsp::int16 (0));
+
+  // Verify the sum is correct
+  REQUIRE (sum == 1500);
+}
+
+TEST_CASE ("Compatibility of stoneydsp::int32 with standard library",
+           "[compatibility][int32]")
+{
+  ::std::vector< ::stoneydsp::int32> vec
+      = { 500000, 300000, 400000, 100000, 200000 };
+
+  // Use std::sort to sort the vector
+  ::std::sort (vec.begin (), vec.end ());
+
+  // Verify the vector is sorted
+  REQUIRE (vec
+           == ::std::vector< ::stoneydsp::int32>{ 100000, 200000, 300000,
+                                                  400000, 500000 });
+
+  // Use std::accumulate to sum the elements
+  ::stoneydsp::int32 sum
+      = ::std::accumulate (vec.begin (), vec.end (), ::stoneydsp::int32 (0));
+
+  // Verify the sum is correct
+  REQUIRE (sum == 1500000);
+}
+
+TEST_CASE ("Compatibility of stoneydsp::int64_t with standard library",
+           "[compatibility][int64]")
+{
+  ::std::vector< ::stoneydsp::int64> vec
+      = { 5000000000LL, 3000000000LL, 4000000000LL, 1000000000LL,
+          2000000000LL };
+
+  // Use std::sort to sort the vector
+  ::std::sort (vec.begin (), vec.end ());
+
+  // Verify the vector is sorted
+  REQUIRE (vec
+           == ::std::vector< ::stoneydsp::int64>{ 1000000000LL, 2000000000LL,
+                                                  3000000000LL, 4000000000LL,
+                                                  5000000000LL });
+
+  // Use std::accumulate to sum the elements
+  ::stoneydsp::int64 sum
+      = ::std::accumulate (vec.begin (), vec.end (), ::stoneydsp::int64 (0));
+
+  // Verify the sum is correct
+  REQUIRE (sum == 15000000000LL);
+}
+
 //======================================================================//sizeof
 
 // Ensure types have the expected size across different architectures.
@@ -1079,6 +1178,93 @@ TEST_CASE ("Boundary and unerflow behavior of stoneydsp::uint64",
   ::stoneydsp::uint64 b = 1;
   REQUIRE (static_cast< ::stoneydsp::uint64> (a - b)
            == 18446744073709551615ULL); // Check underflow wrap-around behavior
+}
+
+//===============================================================//compatibility
+
+TEST_CASE ("Compatibility of stoneydsp::uint8 with standard library",
+           "[compatibility][uint8_t]")
+{
+  ::std::vector< ::stoneydsp::uint8> vec = { 5, 3, 4, 1, 2 };
+
+  // Use std::sort to sort the vector
+  ::std::sort (vec.begin (), vec.end ());
+
+  // Verify the vector is sorted
+  REQUIRE (vec == ::std::vector< ::stoneydsp::uint8>{ 1, 2, 3, 4, 5 });
+
+  // Use std::accumulate to sum the elements
+  ::stoneydsp::uint8 sum
+      = ::std::accumulate (vec.begin (), vec.end (), ::stoneydsp::uint8 (0));
+
+  // Verify the sum is correct
+  REQUIRE (sum == 15);
+}
+
+TEST_CASE ("Compatibility of stoneydsp::uint16 with standard library",
+           "[compatibility][uint16]")
+{
+  ::std::vector< ::stoneydsp::uint16> vec = { 500, 300, 400, 100, 200 };
+
+  // Use std::sort to sort the vector
+  ::std::sort (vec.begin (), vec.end ());
+
+  // Verify the vector is sorted
+  REQUIRE (vec
+           == ::std::vector< ::stoneydsp::uint16>{ 100, 200, 300, 400, 500 });
+
+  // Use std::accumulate to sum the elements
+  ::stoneydsp::uint16 sum
+      = ::std::accumulate (vec.begin (), vec.end (), ::stoneydsp::uint16 (0));
+
+  // Verify the sum is correct
+  REQUIRE (sum == 1500);
+}
+
+TEST_CASE ("Compatibility of stoneydsp::uint32 with standard library",
+           "[compatibility][uint32]")
+{
+  ::std::vector< ::stoneydsp::uint32> vec
+      = { 500000, 300000, 400000, 100000, 200000 };
+
+  // Use std::sort to sort the vector
+  ::std::sort (vec.begin (), vec.end ());
+
+  // Verify the vector is sorted
+  REQUIRE (vec
+           == ::std::vector< ::stoneydsp::uint32>{ 100000, 200000, 300000,
+                                                   400000, 500000 });
+
+  // Use std::accumulate to sum the elements
+  ::stoneydsp::uint32 sum
+      = std::accumulate (vec.begin (), vec.end (), ::stoneydsp::uint32 (0));
+
+  // Verify the sum is correct
+  REQUIRE (sum == 1500000);
+}
+
+TEST_CASE ("Compatibility of stoneydsp::uint64 with standard library",
+           "[compatibility][uint64]")
+{
+  ::std::vector< ::stoneydsp::uint64> vec
+      = { 5000000000LL, 3000000000LL, 4000000000LL, 1000000000LL,
+          2000000000LL };
+
+  // Use std::sort to sort the vector
+  ::std::sort (vec.begin (), vec.end ());
+
+  // Verify the vector is sorted
+  REQUIRE (vec
+           == ::std::vector< ::stoneydsp::uint64>{ 1000000000LL, 2000000000LL,
+                                                   3000000000LL, 4000000000LL,
+                                                   5000000000LL });
+
+  // Use std::accumulate to sum the elements
+  ::stoneydsp::uint64 sum
+      = ::std::accumulate (vec.begin (), vec.end (), ::stoneydsp::uint64 (0));
+
+  // Verify the sum is correct
+  REQUIRE (sum == 15000000000LL);
 }
 
 //============================================================================//
