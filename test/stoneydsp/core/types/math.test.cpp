@@ -17,10 +17,14 @@
 
   #include <catch2/catch_test_macros.hpp>
   #include <catch2/matchers/catch_matchers_floating_point.hpp>
+//==============================================================================
+
+  #include "stoneydsp/core/types/int.h"
 
 //==============================================================================
 
-  #include <cmath>  // for `Approx`
+  #include <cmath>
+  #include <cstring>
   #include <limits> // for `std::numeric_limits`
   #include <sstream>
   #include <type_traits> // for `is_signed`
@@ -45,7 +49,7 @@
 // [special_values]
 // [arithmetic]
 // [conversion]
-//
+// [endianness]
 // [serialization]
 
 //======================================================================//sizeof
@@ -183,9 +187,6 @@ TEST_CASE ("Rounding behavior of stoneydsp::float_t", "[rounding][float_t]")
   REQUIRE_THAT (b, ::Catch::Matchers::WithinRel (2.0f, 1e-6f));
 }
 
-  #include <catch2/catch_test_macros.hpp>
-  #include <limits>
-
 //==============================================================//special_values
 
 TEST_CASE ("Special values of stoneydsp::double_t",
@@ -286,24 +287,22 @@ TEST_CASE ("Serialization and deserialization for stoneydsp::double_t",
                 ::Catch::Matchers::WithinRel (deserializedValue, 1e-12));
 }
 
-  #include <catch2/catch_test_macros.hpp>
-  #include <cstdint>
-
 //==================================================================//endianness
 
-TEST_CASE ("Endianness handling for stoneydsp::double_t",
-           "[endianness][double_t]")
+TEST_CASE ("Endianness handling for stoneydsp::double_t with arbitrary value",
+           "[endianness][double_t][arbitrary_value]")
 {
   ::stoneydsp::double_t value = 123.456;
-  uint8_t *bytePtr = reinterpret_cast<uint8_t *> (&value);
+  ::stoneydsp::uint8 *bytePtr
+      = reinterpret_cast< ::stoneydsp::uint8 *> (&value);
 
   if (bytePtr[0]
-      == reinterpret_cast<uint8_t *> (
+      == reinterpret_cast< ::stoneydsp::uint8 *> (
           &value)[sizeof (::stoneydsp::double_t) - 1])
     {
       REQUIRE (true); // Little-endian
     }
-  else if (bytePtr[0] == reinterpret_cast<uint8_t *> (&value)[0])
+  else if (bytePtr[0] == reinterpret_cast< ::stoneydsp::uint8 *> (&value)[0])
     {
       REQUIRE (true); // Big-endian
     }
@@ -313,25 +312,82 @@ TEST_CASE ("Endianness handling for stoneydsp::double_t",
     }
 }
 
-TEST_CASE ("Endianness handling for stoneydsp::float_t",
-           "[endianness][float_t]")
+TEST_CASE ("Endianness handling for stoneydsp::double_t with specific value",
+           "[endianness][double_t][specific_value]")
+{
+  ::stoneydsp::double_t value = 1.0;
+  unsigned char bytes[sizeof (::stoneydsp::double_t)];
+  std::memcpy (bytes, &value, sizeof (value));
+
+  if (bytes[0] == 0x3f && bytes[1] == 0xf0 && bytes[2] == 0x00
+      && bytes[3] == 0x00 && bytes[4] == 0x00 && bytes[5] == 0x00
+      && bytes[6] == 0x00 && bytes[7] == 0x00)
+    {
+      // Little-endian representation of 1.0
+      REQUIRE (true);
+    }
+  else if (bytes[0] == 0x00 && bytes[1] == 0x00 && bytes[2] == 0x00
+           && bytes[3] == 0x00 && bytes[4] == 0x00 && bytes[5] == 0x00
+           && bytes[6] == 0xf0 && bytes[7] == 0x3f)
+    {
+      // Big-endian representation of 1.0
+      REQUIRE (true);
+    }
+  else
+    {
+      REQUIRE (false); // Unexpected endianness
+    }
+}
+
+//==================================================================//endianness
+
+TEST_CASE ("Endianness handling for stoneydsp::float_t with arbitrary value",
+           "[endianness][float_t][arbitrary_value]")
 {
   ::stoneydsp::float_t value = 123.456f;
-  uint8_t *bytePtr = reinterpret_cast<uint8_t *> (&value);
+  ::stoneydsp::uint8 *bytePtr
+      = reinterpret_cast< ::stoneydsp::uint8 *> (&value);
 
   if (bytePtr[0]
-      == reinterpret_cast<uint8_t *> (
+      == reinterpret_cast< ::stoneydsp::uint8 *> (
           &value)[sizeof (::stoneydsp::float_t) - 1])
     {
       REQUIRE (true); // Little-endian
     }
-  else if (bytePtr[0] == reinterpret_cast<uint8_t *> (&value)[0])
+  else if (bytePtr[0] == reinterpret_cast< ::stoneydsp::uint8 *> (&value)[0])
     {
       REQUIRE (true); // Big-endian
     }
   else
     {
       REQUIRE (false); // Unknown endianness
+    }
+}
+
+//==================================================================//endianness
+
+TEST_CASE ("Endianness handling for stoneydsp::float_t with specific value",
+           "[endianness][float_t][specific_value]")
+{
+  ::stoneydsp::float_t value = 1.0f;
+  unsigned char bytes[sizeof (::stoneydsp::float_t)];
+  std::memcpy (bytes, &value, sizeof (value));
+
+  if (bytes[0] == 0x3f && bytes[1] == 0x80 && bytes[2] == 0x00
+      && bytes[3] == 0x00)
+    {
+      // Little-endian representation of 1.0f
+      REQUIRE (true);
+    }
+  else if (bytes[0] == 0x00 && bytes[1] == 0x00 && bytes[2] == 0x80
+           && bytes[3] == 0x3f)
+    {
+      // Big-endian representation of 1.0f
+      REQUIRE (true);
+    }
+  else
+    {
+      REQUIRE (false); // Unexpected endianness
     }
 }
 
