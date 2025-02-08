@@ -61,6 +61,8 @@
 // [arithmetic]
 //
 // [serialization]
+// [boundary]
+// [overflow]
 
 //==============================================================================
 
@@ -521,6 +523,87 @@ TEST_CASE ("Check serialization and deserialization for stoneydsp::int64",
       -1234567890123456789LL);
 }
 
+//======================================================//boundary_and_underflow
+
+TEST_CASE ("Boundary and underflow behavior of stoneydsp::int8",
+           "[boundary][underflow][int8]")
+{
+  ::stoneydsp::int8 a = -128;
+  ::stoneydsp::int8 b = 1;
+  // cast to prevent integer promition to larger type
+  REQUIRE (static_cast< ::stoneydsp::int8> (a - b)
+           == 127); // Check underflow wrap-around behavior
+}
+
+TEST_CASE ("Boundary and underflow behavior of stoneydsp::int16",
+           "[boundary][underflow][int16]")
+{
+  ::stoneydsp::int16 a = -32768;
+  ::stoneydsp::int16 b = 1;
+  REQUIRE (static_cast< ::stoneydsp::int16> (a - b)
+           == 32767); // Check underflow wrap-around behavior
+}
+
+TEST_CASE ("Boundary and underflow behavior of stoneydsp::int32",
+           "[boundary][underflow][int32]")
+{
+  ::stoneydsp::int32 a = -2147483648;
+  ::stoneydsp::int32 b = 1;
+  REQUIRE (static_cast< ::stoneydsp::int32> (a - b)
+           == 2147483647); // Check underflow wrap-around behavior
+}
+
+TEST_CASE ("Boundary and underflow behavior of stoneydsp::int64",
+           "[boundary][underflow][int64]")
+{
+  ::stoneydsp::int64 a = std::numeric_limits< ::stoneydsp::int64>::min ();
+  ::stoneydsp::int64 b = 1;
+  REQUIRE (
+      static_cast< ::stoneydsp::int64> (a - b)
+      == std::numeric_limits<
+          ::stoneydsp::int64>::max ()); // Check underflow wrap-around behavior
+}
+
+//=======================================================//boundary_and_overflow
+
+TEST_CASE ("Boundary and overflow behavior of stoneydsp::int8",
+           "[boundary][overflow][int8]")
+{
+  ::stoneydsp::int8 a = 127;
+  ::stoneydsp::int8 b = 1;
+  REQUIRE (static_cast< ::stoneydsp::int8> (a + b)
+           == -128); // Check overflow behavior
+}
+
+TEST_CASE ("Boundary and overflow behavior of stoneydsp::int16",
+           "[boundary][overflow][int16]")
+{
+  ::stoneydsp::int16 a = 32767;
+  ::stoneydsp::int16 b = 1;
+  REQUIRE (static_cast< ::stoneydsp::int16> (a + b)
+           == -32768); // Check overflow behavior
+}
+
+TEST_CASE ("Boundary and overflow behavior of stoneydsp::int32",
+           "[boundary][overflow][int32]")
+{
+  ::stoneydsp::int32 a = 2147483647;
+  ::stoneydsp::int32 b = 1;
+  REQUIRE (static_cast< ::stoneydsp::int32> (a + b)
+           == -2147483648); // Check overflow behavior
+}
+
+TEST_CASE ("Boundary and overflow behavior of stoneydsp::int64",
+           "[boundary][overflow][int64]")
+{
+  ::stoneydsp::int64 a = 9223372036854775807LL;
+  ::stoneydsp::int64 b = 1;
+  REQUIRE (
+      static_cast< ::stoneydsp::int64> (a + b)
+      == std::numeric_limits< ::stoneydsp::int64>::min ()); // Check overflow
+                                                            // behavior
+}
+
 //======================================================================//sizeof
 
 // Ensure types have the expected size across different architectures.
@@ -919,6 +1002,82 @@ TEST_CASE ("Check serialization and deserialization for stoneydsp::uint64",
 {
   ::stoneydsp::test::testSerialization< ::stoneydsp::uint64> (
       1234567890123456789ULL);
+}
+
+//=======================================================//boundary_and_overflow
+
+TEST_CASE ("Boundary and overflow behaviour of stoneydsp::uint8",
+           "[boundary][overflow][uint8]")
+{
+  ::stoneydsp::uint8 a = 255;
+  ::stoneydsp::uint8 b = 1;
+  REQUIRE (static_cast< ::stoneydsp::uint8> (a + b)
+           == 0); // Check overflow wrap-around behaviour
+}
+
+TEST_CASE ("Boundary and overflow behaviour of stoneydsp::uint16",
+           "[boundary][overflow][uint16]")
+{
+  ::stoneydsp::uint16 a = 65535;
+  ::stoneydsp::uint16 b = 1;
+  REQUIRE (static_cast< ::stoneydsp::uint16> (a + b)
+           == 0); // Check overflow wrap-around behaviour
+}
+
+TEST_CASE ("Boundary and overflow behaviour of stoneydsp::uint32",
+           "[boundary][overflow][uint32]")
+{
+  ::stoneydsp::uint32 a = 4294967295U;
+  ::stoneydsp::uint32 b = 1;
+  REQUIRE (static_cast< ::stoneydsp::uint32> (a + b)
+           == 0); // Check overflow wrap-around behaviour
+}
+
+TEST_CASE ("Boundary and overflow behavior of stoneydsp::uint64",
+           "[boundary][overflow][uint64]")
+{
+  ::stoneydsp::uint64 a = 18446744073709551615ULL;
+  ::stoneydsp::uint64 b = 1;
+  REQUIRE (static_cast< ::stoneydsp::uint64> (a + b)
+           == 0); // Check overflow wrap-around behavior
+}
+
+//======================================================//boundary_and_underflow
+
+TEST_CASE ("Boundary and underflow behavior of stoneydsp::uint8",
+           "[boundary][underflow][uint8]")
+{
+  ::stoneydsp::uint8 a = 0;
+  ::stoneydsp::uint8 b = 1;
+  REQUIRE (static_cast< ::stoneydsp::uint8> (a - b)
+           == 255); // Check underflow wrap-around behavior
+}
+
+TEST_CASE ("Boundary and underflow behavior of stoneydsp::uint16",
+           "[boundary][underflow][uint16]")
+{
+  ::stoneydsp::uint16 a = 0;
+  ::stoneydsp::uint16 b = 1;
+  REQUIRE (static_cast< ::stoneydsp::uint16> (a - b)
+           == 65535); // Check underflow wrap-around behavior
+}
+
+TEST_CASE ("Boundary and underflow behavior of stoneydsp::uint32",
+           "[boundary][underflow][uint32]")
+{
+  ::stoneydsp::uint32 a = 0;
+  ::stoneydsp::uint32 b = 1;
+  REQUIRE (static_cast< ::stoneydsp::uint32> (a - b)
+           == 4294967295U); // Check underflow wrap-around behavior
+}
+
+TEST_CASE ("Boundary and unerflow behavior of stoneydsp::uint64",
+           "[boundary][underflow][uint64]")
+{
+  ::stoneydsp::uint64 a = 0;
+  ::stoneydsp::uint64 b = 1;
+  REQUIRE (static_cast< ::stoneydsp::uint64> (a - b)
+           == 18446744073709551615ULL); // Check underflow wrap-around behavior
 }
 
 //============================================================================//
