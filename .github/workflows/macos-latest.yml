@@ -50,7 +50,7 @@ jobs:
       if: matrix.compiler == 'gcc'
       run: |
         brew install gcc
-        brew link --overwrite
+        brew link --overwrite gcc
         GCC_VERSION=$(brew list gcc | grep -o 'gcc-[0-9]*' | head -n 1 | grep -o '[0-9]*')
         echo "CC=$(brew --prefix gcc)/bin/gcc-$GCC_VERSION" >> $GITHUB_ENV
         echo "CXX=$(brew --prefix gcc)/bin/g++-$GCC_VERSION" >> $GITHUB_ENV
