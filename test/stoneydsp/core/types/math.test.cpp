@@ -51,6 +51,9 @@
 // [conversion]
 // [endianness]
 // [serialization]
+// [boundary]
+// [underflow]
+// [overflow]
 
 //======================================================================//sizeof
 
@@ -389,6 +392,68 @@ TEST_CASE ("Endianness handling for stoneydsp::float_t with specific value",
     {
       REQUIRE (false); // Unexpected endianness
     }
+}
+
+//====================================================================//boundary
+
+TEST_CASE ("Boundary value handling for stoneydsp::double_t",
+           "[boundary][double_t]")
+{
+  ::stoneydsp::double_t max_val
+      = std::numeric_limits< ::stoneydsp::double_t>::max ();
+  ::stoneydsp::double_t min_val
+      = std::numeric_limits< ::stoneydsp::double_t>::min ();
+  REQUIRE (std::isfinite (max_val));
+  REQUIRE (std::isfinite (min_val));
+}
+
+TEST_CASE ("Boundary value handling for stoneydsp::float_t",
+           "[boundary][float_t]")
+{
+  ::stoneydsp::float_t max_val
+      = std::numeric_limits< ::stoneydsp::float_t>::max ();
+  ::stoneydsp::float_t min_val
+      = std::numeric_limits< ::stoneydsp::float_t>::min ();
+  REQUIRE (std::isfinite (max_val));
+  REQUIRE (std::isfinite (min_val));
+}
+
+//====================================================================//overflow
+
+TEST_CASE ("Overflow behavior for stoneydsp::double_t", "[overflow][double_t]")
+{
+  ::stoneydsp::double_t max_val
+      = std::numeric_limits< ::stoneydsp::double_t>::max ();
+  ::stoneydsp::double_t overflow_val = max_val * 2.0;
+  REQUIRE (std::isinf (overflow_val)); // Check for positive overflow
+}
+
+TEST_CASE ("Overflow behavior for stoneydsp::float_t", "[overflow][float_t]")
+{
+  ::stoneydsp::float_t max_val
+      = std::numeric_limits< ::stoneydsp::float_t>::max ();
+  ::stoneydsp::float_t overflow_val = max_val * 2.0f;
+  REQUIRE (std::isinf (overflow_val)); // Check for positive overflow
+}
+
+//===================================================================//underflow
+
+TEST_CASE ("Underflow behavior for stoneydsp::double_t",
+           "[underflow][boundary][double_t]")
+{
+  ::stoneydsp::double_t min_val
+      = std::numeric_limits< ::stoneydsp::double_t>::min ();
+  ::stoneydsp::double_t underflow_val = min_val / 2.0;
+  REQUIRE (underflow_val == 0.0); // Check for underflow to zero
+}
+
+TEST_CASE ("Underflow behavior for stoneydsp::float_t",
+           "[underflow][boundary][float_t]")
+{
+  ::stoneydsp::float_t min_val
+      = std::numeric_limits< ::stoneydsp::float_t>::min ();
+  ::stoneydsp::float_t underflow_val = min_val / 2.0f;
+  REQUIRE (underflow_val == 0.0f); // Check for underflow to zero
 }
 
 //============================================================================//
