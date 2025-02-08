@@ -15,24 +15,16 @@
 
 //==============================================================================
 
-  #include <catch2/catch_test_macros.hpp>
-
-//==============================================================================
-
-  #include "stoneydsp/core/types/math.h" // for `stoneydsp::float_t`
-
-//==============================================================================
-
-  #include <algorithm>   // for `std::sort`
-  #include <limits>      // for `std::numeric_limits`
-  #include <numeric>     // for `std::accumulate`
-  #include <sstream>     // for serialization tests
+  #include "stoneydsp/core/system/compiler.h" // for `STONEYDSP_PUBLIC_FUNCTION`
+  #include "stoneydsp/core/types/math.h"      // for `stoneydsp::float_t`
+  #include <algorithm>                        // for `std::sort`
+  #include <catch2/benchmark/catch_benchmark.hpp> //
+  #include <catch2/catch_test_macros.hpp>         //
+  #include <limits>                               // for `std::numeric_limits`
+  #include <numeric>                              // for `std::accumulate`
+  #include <sstream>                              // for serialization tests
   #include <type_traits> // for `is_signed` and `is_unsigned`
   #include <vector>      // for compatibility tests
-
-//==============================================================================
-
-  #include "stoneydsp/core/system/compiler.h" // for `STONEYDSP_PUBLIC_FUNCTION`
 
 //==============================================================================
 
@@ -76,6 +68,7 @@
 // [overflow]
 // [underflow]
 // [compatibility]
+// [benchmark]
 
 //==============================================================================
 
@@ -1265,6 +1258,476 @@ TEST_CASE ("Compatibility of stoneydsp::uint64 with standard library",
 
   // Verify the sum is correct
   REQUIRE (sum == 15000000000LL);
+}
+
+//===================================================================//benchmark
+
+// Benchmark for addition
+TEST_CASE ("Benchmark for stoneydsp::int8 addition", "[benchmark][int8]")
+{
+  ::stoneydsp::int8 a = 12;
+  ::stoneydsp::int8 b = 34;
+
+  BENCHMARK ("Addition") { return a + b; };
+}
+
+// Benchmark for subtraction
+TEST_CASE ("Benchmark for stoneydsp::int8 subtraction", "[benchmark][int8]")
+{
+  ::stoneydsp::int8 a = 34;
+  ::stoneydsp::int8 b = 12;
+
+  BENCHMARK ("Subtraction") { return a - b; };
+}
+
+// Benchmark for multiplication
+TEST_CASE ("Benchmark for stoneydsp::int8 multiplication", "[benchmark][int8]")
+{
+  ::stoneydsp::int8 a = 12;
+  ::stoneydsp::int8 b = 2;
+
+  BENCHMARK ("Multiplication") { return a * b; };
+}
+
+// Benchmark for division
+TEST_CASE ("Benchmark for stoneydsp::int8 division", "[benchmark][int8]")
+{
+  ::stoneydsp::int8 a = 12;
+  ::stoneydsp::int8 b = 2;
+
+  BENCHMARK ("Division") { return a / b; };
+}
+
+// Benchmark for type conversion to int
+TEST_CASE ("Benchmark for stoneydsp::int8 to int conversion",
+           "[benchmark][int8]")
+{
+  ::stoneydsp::int8 a = 12;
+
+  BENCHMARK ("Conversion to int") { return static_cast<int> (a); };
+}
+
+// Benchmark for type conversion to float
+TEST_CASE ("Benchmark for stoneydsp::int8 to float conversion",
+           "[benchmark][int8]")
+{
+  ::stoneydsp::int8 a = 12;
+
+  BENCHMARK ("Conversion to float")
+  {
+    return static_cast< ::stoneydsp::float_t> (a);
+  };
+}
+
+// Benchmark for addition
+TEST_CASE ("Benchmark for stoneydsp::int16 addition", "[benchmark][int16]")
+{
+  ::stoneydsp::int16 a = 1234;
+  ::stoneydsp::int16 b = 5678;
+
+  BENCHMARK ("Addition") { return a + b; };
+}
+
+// Benchmark for subtraction
+TEST_CASE ("Benchmark for stoneydsp::int16 subtraction", "[benchmark][int16]")
+{
+  ::stoneydsp::int16 a = 5678;
+  ::stoneydsp::int16 b = 1234;
+
+  BENCHMARK ("Subtraction") { return a - b; };
+}
+
+// Benchmark for multiplication
+TEST_CASE ("Benchmark for stoneydsp::int16 multiplication",
+           "[benchmark][int16]")
+{
+  ::stoneydsp::int16 a = 1234;
+  ::stoneydsp::int16 b = 2;
+
+  BENCHMARK ("Multiplication") { return a * b; };
+}
+
+// Benchmark for division
+TEST_CASE ("Benchmark for stoneydsp::int16 division", "[benchmark][int16]")
+{
+  ::stoneydsp::int16 a = 1234;
+  ::stoneydsp::int16 b = 2;
+
+  BENCHMARK ("Division") { return a / b; };
+}
+
+// Benchmark for type conversion to int
+TEST_CASE ("Benchmark for stoneydsp::int16 to int conversion",
+           "[benchmark][int16]")
+{
+  ::stoneydsp::int16 a = 1234;
+
+  BENCHMARK ("Conversion to int") { return static_cast<int> (a); };
+}
+
+// Benchmark for type conversion to float
+TEST_CASE ("Benchmark for stoneydsp::int16 to float conversion",
+           "[benchmark][int16]")
+{
+  ::stoneydsp::int16 a = 1234;
+
+  BENCHMARK ("Conversion to float")
+  {
+    return static_cast< ::stoneydsp::float_t> (a);
+  };
+}
+
+// Benchmark for addition
+TEST_CASE ("Benchmark for stoneydsp::int32 addition", "[benchmark][int32]")
+{
+  ::stoneydsp::int32 a = 123456789;
+  ::stoneydsp::int32 b = 987654321;
+
+  BENCHMARK ("Addition") { return a + b; };
+}
+
+// Benchmark for subtraction
+TEST_CASE ("Benchmark for stoneydsp::int32 subtraction", "[benchmark][int32]")
+{
+  ::stoneydsp::int32 a = 987654321;
+  ::stoneydsp::int32 b = 123456789;
+
+  BENCHMARK ("Subtraction") { return a - b; };
+}
+
+// Benchmark for multiplication
+TEST_CASE ("Benchmark for stoneydsp::int32 multiplication",
+           "[benchmark][int32]")
+{
+  ::stoneydsp::int32 a = 123456789;
+  ::stoneydsp::int32 b = 2;
+
+  BENCHMARK ("Multiplication") { return a * b; };
+}
+
+// Benchmark for division
+TEST_CASE ("Benchmark for stoneydsp::int32 division", "[benchmark][int32]")
+{
+  ::stoneydsp::int32 a = 123456789;
+  ::stoneydsp::int32 b = 2;
+
+  BENCHMARK ("Division") { return a / b; };
+}
+
+// Benchmark for type conversion to int
+TEST_CASE ("Benchmark for stoneydsp::int32 to int conversion",
+           "[benchmark][int32]")
+{
+  ::stoneydsp::int32 a = 123456789;
+
+  BENCHMARK ("Conversion to int") { return static_cast<int> (a); };
+}
+
+// Benchmark for type conversion to float
+TEST_CASE ("Benchmark for stoneydsp::int32 to float conversion",
+           "[benchmark][int32]")
+{
+  ::stoneydsp::int32 a = 123456789;
+
+  BENCHMARK ("Conversion to float")
+  {
+    return static_cast< ::stoneydsp::float_t> (a);
+  };
+}
+
+// Benchmark for addition
+TEST_CASE ("Benchmark for stoneydsp::int64 addition", "[benchmark][int64]")
+{
+  ::stoneydsp::int64 a = 1234567890123456789LL;
+  ::stoneydsp::int64 b = 9223372036854775807LL;
+
+  BENCHMARK ("Addition") { return a + b; };
+}
+
+// Benchmark for subtraction
+TEST_CASE ("Benchmark for stoneydsp::int64 subtraction", "[benchmark][int64]")
+{
+  ::stoneydsp::int64 a = 9223372036854775807LL;
+  ::stoneydsp::int64 b = 1234567890123456789LL;
+
+  BENCHMARK ("Subtraction") { return a - b; };
+}
+
+// Benchmark for multiplication
+TEST_CASE ("Benchmark for stoneydsp::int64 multiplication",
+           "[benchmark][int64]")
+{
+  ::stoneydsp::int64 a = 1234567890123456789LL;
+  ::stoneydsp::int64 b = 2;
+
+  BENCHMARK ("Multiplication") { return a * b; };
+}
+
+// Benchmark for division
+TEST_CASE ("Benchmark for stoneydsp::int64 division", "[benchmark][int64]")
+{
+  ::stoneydsp::int64 a = 1234567890123456789LL;
+  ::stoneydsp::int64 b = 2;
+
+  BENCHMARK ("Division") { return a / b; };
+}
+
+// Benchmark for type conversion to int
+TEST_CASE ("Benchmark for stoneydsp::int64 to int conversion",
+           "[benchmark][int64]")
+{
+  ::stoneydsp::int64 a = 1234567890123456789LL;
+
+  BENCHMARK ("Conversion to int") { return static_cast<int> (a); };
+}
+
+// Benchmark for type conversion to float
+TEST_CASE ("Benchmark for stoneydsp::int64 to float conversion",
+           "[benchmark][int64]")
+{
+  ::stoneydsp::int64 a = 1234567890123456789LL;
+
+  BENCHMARK ("Conversion to float")
+  {
+    return static_cast< ::stoneydsp::float_t> (a);
+  };
+}
+
+//===================================================================//benchmark
+
+// Benchmark for addition
+TEST_CASE ("Benchmark for stoneydsp::uint8 addition", "[benchmark][uint8]")
+{
+  ::stoneydsp::uint8 a = 12;
+  ::stoneydsp::uint8 b = 34;
+
+  BENCHMARK ("Addition") { return a + b; };
+}
+
+// Benchmark for subtraction
+TEST_CASE ("Benchmark for stoneydsp::uint8 subtraction", "[benchmark][uint8]")
+{
+  ::stoneydsp::uint8 a = 34;
+  ::stoneydsp::uint8 b = 12;
+
+  BENCHMARK ("Subtraction") { return a - b; };
+}
+
+// Benchmark for multiplication
+TEST_CASE ("Benchmark for stoneydsp::uint8 multiplication",
+           "[benchmark][uint8]")
+{
+  ::stoneydsp::uint8 a = 12;
+  ::stoneydsp::uint8 b = 2;
+
+  BENCHMARK ("Multiplication") { return a * b; };
+}
+
+// Benchmark for division
+TEST_CASE ("Benchmark for stoneydsp::uint8 division", "[benchmark][uint8]")
+{
+  ::stoneydsp::uint8 a = 12;
+  ::stoneydsp::uint8 b = 2;
+
+  BENCHMARK ("Division") { return a / b; };
+}
+
+// Benchmark for type conversion to int
+TEST_CASE ("Benchmark for stoneydsp::uint8 to int conversion",
+           "[benchmark][uint8]")
+{
+  ::stoneydsp::uint8 a = 12;
+
+  BENCHMARK ("Conversion to int") { return static_cast<int> (a); };
+}
+
+// Benchmark for type conversion to float
+TEST_CASE ("Benchmark for stoneydsp::uint8 to float conversion",
+           "[benchmark][uint8]")
+{
+  ::stoneydsp::uint8 a = 12;
+
+  BENCHMARK ("Conversion to float")
+  {
+    return static_cast< ::stoneydsp::float_t> (a);
+  };
+}
+
+// Benchmark for addition
+TEST_CASE ("Benchmark for stoneydsp::uint16 addition", "[benchmark][uint16]")
+{
+  ::stoneydsp::uint16 a = 1234;
+  ::stoneydsp::uint16 b = 5678;
+
+  BENCHMARK ("Addition") { return a + b; };
+}
+
+// Benchmark for subtraction
+TEST_CASE ("Benchmark for stoneydsp::uint16 subtraction",
+           "[benchmark][uint16]")
+{
+  ::stoneydsp::uint16 a = 5678;
+  ::stoneydsp::uint16 b = 1234;
+
+  BENCHMARK ("Subtraction") { return a - b; };
+}
+
+// Benchmark for multiplication
+TEST_CASE ("Benchmark for stoneydsp::uint16 multiplication",
+           "[benchmark][uint16]")
+{
+  ::stoneydsp::uint16 a = 1234;
+  ::stoneydsp::uint16 b = 2;
+
+  BENCHMARK ("Multiplication") { return a * b; };
+}
+
+// Benchmark for division
+TEST_CASE ("Benchmark for stoneydsp::uint16 division", "[benchmark][uint16]")
+{
+  ::stoneydsp::uint16 a = 1234;
+  ::stoneydsp::uint16 b = 2;
+
+  BENCHMARK ("Division") { return a / b; };
+}
+
+// Benchmark for type conversion to int
+TEST_CASE ("Benchmark for stoneydsp::uint16 to int conversion",
+           "[benchmark][uint16]")
+{
+  ::stoneydsp::uint16 a = 1234;
+
+  BENCHMARK ("Conversion to int") { return static_cast<int> (a); };
+}
+
+// Benchmark for type conversion to float
+TEST_CASE ("Benchmark for stoneydsp::uint16 to float conversion",
+           "[benchmark][uint16]")
+{
+  ::stoneydsp::uint16 a = 1234;
+
+  BENCHMARK ("Conversion to float")
+  {
+    return static_cast< ::stoneydsp::float_t> (a);
+  };
+}
+
+// Benchmark for addition
+TEST_CASE ("Benchmark for stoneydsp::uint32 addition", "[benchmark][uint32]")
+{
+  ::stoneydsp::uint32 a = 123456789;
+  ::stoneydsp::uint32 b = 987654321;
+
+  BENCHMARK ("Addition") { return a + b; };
+}
+
+// Benchmark for subtraction
+TEST_CASE ("Benchmark for stoneydsp::uint32 subtraction",
+           "[benchmark][uint32]")
+{
+  ::stoneydsp::uint32 a = 987654321;
+  ::stoneydsp::uint32 b = 123456789;
+
+  BENCHMARK ("Subtraction") { return a - b; };
+}
+
+// Benchmark for multiplication
+TEST_CASE ("Benchmark for stoneydsp::uint32 multiplication",
+           "[benchmark][uint32]")
+{
+  ::stoneydsp::uint32 a = 123456789;
+  ::stoneydsp::uint32 b = 2;
+
+  BENCHMARK ("Multiplication") { return a * b; };
+}
+
+// Benchmark for division
+TEST_CASE ("Benchmark for stoneydsp::uint32 division", "[benchmark][uint32]")
+{
+  ::stoneydsp::uint32 a = 123456789;
+  ::stoneydsp::uint32 b = 2;
+
+  BENCHMARK ("Division") { return a / b; };
+}
+
+// Benchmark for type conversion to int
+TEST_CASE ("Benchmark for stoneydsp::uint32 to int conversion",
+           "[benchmark][uint32]")
+{
+  ::stoneydsp::uint32 a = 123456789;
+
+  BENCHMARK ("Conversion to int") { return static_cast<int> (a); };
+}
+
+// Benchmark for type conversion to float
+TEST_CASE ("Benchmark for stoneydsp::uint32 to float conversion",
+           "[benchmark][uint32]")
+{
+  ::stoneydsp::uint32 a = 123456789;
+
+  BENCHMARK ("Conversion to float")
+  {
+    return static_cast< ::stoneydsp::float_t> (a);
+  };
+}
+
+// Benchmark for addition
+TEST_CASE ("Benchmark for stoneydsp::uint64 addition", "[benchmark][uint64]")
+{
+  ::stoneydsp::uint64 a = 1234567890123456789ULL;
+  ::stoneydsp::uint64 b = 9876543210987654321ULL;
+
+  BENCHMARK ("Addition") { return a + b; };
+}
+
+// Benchmark for subtraction
+TEST_CASE ("Benchmark for stoneydsp::uint64 subtraction",
+           "[benchmark][uint64]")
+{
+  ::stoneydsp::uint64 a = 9876543210987654321ULL;
+  ::stoneydsp::uint64 b = 1234567890123456789ULL;
+
+  BENCHMARK ("Subtraction") { return a - b; };
+}
+
+// Benchmark for multiplication
+TEST_CASE ("Benchmark for stoneydsp::uint64 multiplication",
+           "[benchmark][uint64]")
+{
+  ::stoneydsp::uint64 a = 1234567890123456789ULL;
+  ::stoneydsp::uint64 b = 2;
+
+  BENCHMARK ("Multiplication") { return a * b; };
+}
+
+// Benchmark for division
+TEST_CASE ("Benchmark for stoneydsp::uint64 division", "[benchmark][uint64]")
+{
+  ::stoneydsp::uint64 a = 1234567890123456789ULL;
+  ::stoneydsp::uint64 b = 2;
+
+  BENCHMARK ("Division") { return a / b; };
+}
+
+// Benchmark for type conversion to int
+TEST_CASE ("Benchmark for stoneydsp::uint64 to int conversion",
+           "[benchmark][uint64]")
+{
+  ::stoneydsp::uint64 a = 1234567890123456789ULL;
+
+  BENCHMARK ("Conversion to int") { return static_cast<int> (a); };
+}
+
+// Benchmark for type conversion to float
+TEST_CASE ("Benchmark for stoneydsp::uint64 to float conversion",
+           "[benchmark][uint64]")
+{
+  ::stoneydsp::uint64 a = 1234567890123456789ULL;
+
+  BENCHMARK ("Conversion to float")
+  {
+    return static_cast< ::stoneydsp::float_t> (a);
+  };
 }
 
 //============================================================================//
