@@ -156,8 +156,8 @@ preset:
 ###########################################<<<-Standards, Flags, and Directories
 
 ## Standards
-C_STANDARD ?= 11
-CXX_STANDARD ?= 11
+C_STANDARD ?= 14
+CXX_STANDARD ?= 14
 
 ifdef USE_GNU_EXTENSIONS
 	C_DIALECT := gnu
