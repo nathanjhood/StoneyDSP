@@ -55,6 +55,9 @@ function(stoneydsp_add_core)
     # types/int.h
     set(STONEYDSP_CORE_TYPES_INT_H_FILE "${STONEYDSP_INCLUDE_DIR}/${STONEYDSP_SLUG}/${STONEYDSP_CORE_TARGET_NAME}/types/int.h")
 
+    # types/stddef.h
+    set(STONEYDSP_CORE_TYPES_DEF_H_FILE "${STONEYDSP_INCLUDE_DIR}/${STONEYDSP_SLUG}/${STONEYDSP_CORE_TARGET_NAME}/types/def.h")
+
     # types/math.h
     set(STONEYDSP_CORE_TYPES_MATH_H_FILE "${STONEYDSP_INCLUDE_DIR}/${STONEYDSP_SLUG}/${STONEYDSP_CORE_TARGET_NAME}/types/math.h")
 
@@ -71,6 +74,7 @@ function(stoneydsp_add_core)
         "${STONEYDSP_CORE_SYSTEM_CXX_H_FILE}"
         "${STONEYDSP_CORE_TYPES_GENERIC_H_FILE}"
         "${STONEYDSP_CORE_TYPES_INT_H_FILE}"
+        "${STONEYDSP_CORE_TYPES_DEF_H_FILE}"
         "${STONEYDSP_CORE_TYPES_MATH_H_FILE}"
         "${STONEYDSP_CORE_H_FILE}"
     )
@@ -78,7 +82,7 @@ function(stoneydsp_add_core)
     # List source files (private)
     set(STONEYDSP_CORE_SOURCE_FILES)
     list(APPEND STONEYDSP_CORE_SOURCE_FILES
-        ${STONEYDSP_CORE_CPP_FILE}
+        "${STONEYDSP_CORE_CPP_FILE}"
     )
 
     # List link libraries (private)
