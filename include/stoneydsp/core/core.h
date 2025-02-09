@@ -82,6 +82,7 @@ extern char const *stoneydsp_version;
 
 //==============================================================================
 
+  #include "stoneydsp/core/types/def.h"
   #include "stoneydsp/core/types/generic.h"
   #include "stoneydsp/core/types/int.h"
   #include "stoneydsp/core/types/math.h"
