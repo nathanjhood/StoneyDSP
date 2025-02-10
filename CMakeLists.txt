@@ -47,21 +47,77 @@ cmake_dependent_option(STONEYDSP_BUILD_TEST "Use '-DSTONEYDSP_BUILD_TEST=ON|OFF'
 
 include(CMakeDependentOption)
 
+set(STONEYDSP_TARGETS)
+
 #[==============================[stoneydsp::core]==============================]
 if(STONEYDSP_BUILD_CORE)
     include(stoneydsp-core)
     stoneydsp_add_core()
+    list(APPEND STONEYDSP_TARGETS "${STONEYDSP_CORE_TARGET_NAME}")
 endif()
 
 #[==============================[stoneydsp::simd]==============================]
 if(STONEYDSP_BUILD_SIMD)
     include(stoneydsp-simd)
     stoneydsp_add_simd()
+
+    # list(APPEND STONEYDSP_TARGETS "${STONEYDSP_SIMD_TARGET_NAME}")
 endif()
 
 #[===========================[stoneydsp::stoneydsp]===========================]
 # 'always-on' target: libstoneydsp
 stoneydsp_add_stoneydsp()
+list(APPEND STONEYDSP_TARGETS "${STONEYDSP_TARGET_NAME}")
+include(CMakePackageConfigHelpers)
+
+file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/${STONEYDSP_SLUG}-config.cmake.in" [==[
+# Begin package init
+@PACKAGE_INIT@
+# End package init
+
+include("${CMAKE_CURRENT_LIST_DIR}/@STONEYDSP_SLUG@-config-version.cmake")
+
+set(_@STONEYDSP_SLUG@_supported_components)
+list(APPEND _@STONEYDSP_SLUG@_supported_components
+    @STONEYDSP_TARGETS@
+)
+
+## Custom 'check_required_components' macro
+foreach(_requested_component ${@STONEYDSP_SLUG@_FIND_COMPONENTS})
+    if (NOT _requested_component IN_LIST _@STONEYDSP_SLUG@_supported_components)
+        message(FATAL_ERROR "Unsupported component: ${_requested_component}")
+        set(@STONEYDSP_SLUG@_FOUND False)
+        set(@STONEYDSP_SLUG@_NOT_FOUND_MESSAGE "Unsupported component: ${_requested_component}")
+    endif()
+    include("${CMAKE_CURRENT_LIST_DIR}/@STONEYDSP_SLUG@-${_requested_component}-targets.cmake")
+    # Tell the user what is happening
+    message(STATUS "Imported target: @STONEYDSP_SLUG@::${_requested_component}")
+endforeach()
+
+unset(_@STONEYDSP_SLUG@_supported_components)
+# 'always-on' library target
+include("${CMAKE_CURRENT_LIST_DIR}/@STONEYDSP_TARGET_NAME@-targets.cmake")
+# Tell the user what is happening
+message(STATUS "Imported target: @STONEYDSP_SLUG@::@STONEYDSP_TARGET_NAME@")
+]==])
+
+# create cmake config file
+configure_package_config_file(
+    "${CMAKE_CURRENT_BINARY_DIR}/${STONEYDSP_SLUG}-config.cmake.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/lib/cmake/${STONEYDSP_BRAND}/${STONEYDSP_SLUG}-config.cmake"
+    INSTALL_DESTINATION
+    "${CMAKE_INSTALL_LIBDIR}/cmake/${STONEYDSP_BRAND}"
+
+    # Use custom 'check_required_components' macro
+    NO_CHECK_REQUIRED_COMPONENTS_MACRO
+)
+
+# generate the version file for the cmake config file
+write_basic_package_version_file(
+    "${CMAKE_CURRENT_BINARY_DIR}/lib/cmake/${STONEYDSP_BRAND}/${STONEYDSP_SLUG}-config-version.cmake"
+    VERSION ${STONEYDSP_VERSION_MAJOR}.${STONEYDSP_VERSION_MINOR}.${STONEYDSP_VERSION_PATCH}
+    COMPATIBILITY AnyNewerVersion
+)
 
 #[==============================[stoneydsp::test]==============================]
 if(STONEYDSP_BUILD_TEST)
@@ -77,7 +133,7 @@ if(STONEYDSP_BUILD_TEST)
     include(Catch)
 
     set(CMAKE_CATCH_DISCOVER_TESTS_DISCOVERY_MODE PRE_TEST)
-    catch_discover_tests(${STONEYDSP_TEST_TARGET_NAME})
+    catch_discover_tests("${STONEYDSP_TEST_TARGET_NAME}")
 endif()
 
 #[===================================[CPack]===================================]
