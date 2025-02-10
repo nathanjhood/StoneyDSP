@@ -67,7 +67,6 @@ endif()
 #[===========================[stoneydsp::stoneydsp]===========================]
 # 'always-on' target: libstoneydsp
 stoneydsp_add_stoneydsp()
-list(APPEND STONEYDSP_TARGETS "${STONEYDSP_TARGET_NAME}")
 include(CMakePackageConfigHelpers)
 
 file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/${STONEYDSP_SLUG}-config.cmake.in" [==[

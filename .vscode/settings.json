@@ -4,6 +4,7 @@
 			"name": "Default",
 			"makeArgs": [
 				"BUILD_CORE=1",
+				"BUILD_SIMD=1",
 				"BUILD_TEST=1",
 				"DEBUG=1"
 			]
@@ -11,22 +12,18 @@
 	],
 	"cmake.configureArgs": [
 		"-DSTONEYDSP_BUILD_CORE:BOOL=ON",
+		"-DSTONEYDSP_BUILD_SIMD:BOOL=ON",
 		"-DSTONEYDSP_BUILD_TEST:BOOL=ON"
 	],
 	"makefile.launchConfigurations": [
 		{
-			"cwd": "${workspaceFolder}/build/bin",
-			"binaryPath": "${workspaceFolder}/build/bin/main",
+			"cwd": "${workspaceFolder}/build/test",
+			"binaryPath": "${workspaceFolder}/build/test/main",
 			"binaryArgs": [],
 			"MIMode": "gdb",
 			"miDebuggerPath": "${workspaceFolder}/share/gdbinit",
 			"stopAtEntry": false,
 			"symbolSearchPath": "${workspaceFolder}/include"
-		},
-		{
-			"cwd": "/home/stoneydsp/dev/stoneydsp/StoneyDSP/build/test",
-			"binaryPath": "/home/stoneydsp/dev/stoneydsp/StoneyDSP/build/test/main",
-			"binaryArgs": []
 		}
 	],
 	"cmake.debugConfig": {
@@ -186,6 +183,7 @@
 	"C_Cpp.default.includePath": [
 		"${workspaceFolder}/include"
 	],
+	"C_Cpp.default.browse.databaseFilename": "${workspaceFolder}/.vscode/.browse.vc.db",
 	"C_Cpp.files.exclude": {
 		"**/.vscode": true,
 		"**/.vs": true
