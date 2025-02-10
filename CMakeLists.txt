@@ -119,6 +119,12 @@ write_basic_package_version_file(
     COMPATIBILITY AnyNewerVersion
 )
 
+install(FILES
+    "${CMAKE_CURRENT_BINARY_DIR}/lib/cmake/${STONEYDSP_BRAND}/${STONEYDSP_SLUG}-config-version.cmake"
+    DESTINATION
+    "${CMAKE_INSTALL_LIBDIR}/cmake/${STONEYDSP_BRAND}"
+)
+
 #[==============================[stoneydsp::test]==============================]
 if(STONEYDSP_BUILD_TEST)
     find_package(Catch2 REQUIRED 3.7.1)
