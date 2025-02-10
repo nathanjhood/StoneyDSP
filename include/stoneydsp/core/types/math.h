@@ -26,6 +26,18 @@ namespace stoneydsp
  *  @{
  */
 
+namespace core
+{
+/** @addtogroup core
+ *  @{
+ */
+
+namespace types
+{
+/** @addtogroup types
+ *  @{
+ */
+
 /**
  * @brief Double-precision numerical value.
  *
@@ -37,6 +49,33 @@ using double_t = ::std::double_t;
  *
  */
 using float_t = ::std::float_t;
+
+/// @} group types
+} // namespace types
+/// @} group core
+} // namespace core
+/// @} group stoneydsp
+} // namespace stoneydsp
+
+//==============================================================================
+
+namespace stoneydsp
+{
+/** @addtogroup stoneydsp
+ *  @{
+ */
+
+/**
+ * @brief Double-precision numerical value.
+ *
+ */
+using double_t = ::stoneydsp::core::types::double_t;
+
+/**
+ * @brief Single-precision numerical value.
+ *
+ */
+using float_t = ::stoneydsp::core::types::float_t;
 
 /// @} group stoneydsp
 } // namespace stoneydsp

@@ -37,7 +37,22 @@ namespace stoneydsp
  */
 namespace core
 {
-} /// @} group stoneydsp
+/** @addtogroup core
+ *  @{
+ */
+/**
+ * @brief The `stoneydsp::core::types` namespace.
+ * @author Nathan J. Hood (nathanjhood@googlemail.com)
+ * @copyright Copyright (c) 2024
+ * @version @STONEYDSP_CORE_VERSION@
+ *
+ */
+namespace types
+{
+} // namespace types
+  /// @} group core
+} //  namespace core
+  /// @} group stoneydsp
 } // namespace stoneydsp
 
   //============================================================================//

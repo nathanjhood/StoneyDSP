@@ -26,6 +26,18 @@ namespace stoneydsp
  *  @{
  */
 
+namespace core
+{
+/** @addtogroup core
+ *  @{
+ */
+
+namespace types
+{
+/** @addtogroup types
+ *  @{
+ */
+
 /**
  * @brief Fixed-width integer.
  *
@@ -81,6 +93,77 @@ using int64_t = ::std::int64_t;
  * Guaranteed to be exactly 64 unsigned bits.
  */
 using uint64_t = ::std::uint64_t;
+
+/// @} group types
+} // namespace types
+/// @} group core
+} // namespace core
+/// @} group stoneydsp
+} // namespace stoneydsp
+
+//==============================================================================
+
+namespace stoneydsp
+{
+/** @addtogroup stoneydsp
+ *  @{
+ */
+
+/**
+ * @brief Fixed-width integer.
+ *
+ * Guaranteed to be exactly 8 signed bits.
+ */
+using int8_t = ::stoneydsp::core::types::int8_t;
+
+/**
+ * @brief Fixed-width integer.
+ *
+ * Guaranteed to be exactly 8 unsigned bits.
+ */
+using uint8_t = ::stoneydsp::core::types::uint8_t;
+
+/**
+ * @brief Fixed-width integer.
+ *
+ * Guaranteed to be exactly 16 signed bits.
+ */
+using int16_t = ::stoneydsp::core::types::int16_t;
+
+/**
+ * @brief Fixed-width integer.
+ *
+ * Guaranteed to be exactly 16 unsigned bits.
+ */
+using uint16_t = ::stoneydsp::core::types::uint16_t;
+
+/**
+ * @brief Fixed-width integer.
+ *
+ * Guaranteed to be exactly 32 signed bits.
+ */
+using int32_t = ::stoneydsp::core::types::int32_t;
+
+/**
+ * @brief Fixed-width integer.
+ *
+ * Guaranteed to be exactly 32 unsigned bits.
+ */
+using uint32_t = ::stoneydsp::core::types::uint32_t;
+
+/**
+ * @brief Fixed-width integer.
+ *
+ * Guaranteed to be exactly 64 signed bits.
+ */
+using int64_t = ::stoneydsp::core::types::int64_t;
+
+/**
+ * @brief Fixed-width integer.
+ *
+ * Guaranteed to be exactly 64 unsigned bits.
+ */
+using uint64_t = ::stoneydsp::core::types::uint64_t;
 
 /// @} group stoneydsp
 } // namespace stoneydsp

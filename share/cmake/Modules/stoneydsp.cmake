@@ -336,7 +336,7 @@ function(stoneydsp_add_stoneydsp)
 
         # Install export set
         install(EXPORT ${STONEYDSP_TARGET_NAME}Install
-            FILE "${STONEYDSP_SLUG}-${STONEYDSP_TARGET_NAME}-targets.cmake"
+            FILE "${STONEYDSP_TARGET_NAME}-targets.cmake"
             NAMESPACE ${STONEYDSP_BRAND}::${STONEYDSP_SLUG}::
             DESTINATION "${CMAKE_INSTALL_LIBDIR}/cmake/${STONEYDSP_BRAND}"
         )
@@ -352,7 +352,7 @@ function(stoneydsp_add_stoneydsp)
         # Install export set
         export(
             EXPORT ${STONEYDSP_TARGET_NAME}Export
-            FILE "lib/cmake/${STONEYDSP_BRAND}/${STONEYDSP_SLUG}-${STONEYDSP_TARGET_NAME}-targets.cmake"
+            FILE "lib/cmake/${STONEYDSP_BRAND}/${STONEYDSP_TARGET_NAME}-targets.cmake"
             NAMESPACE ${STONEYDSP_BRAND}::${STONEYDSP_SLUG}::
         )
     endif()
