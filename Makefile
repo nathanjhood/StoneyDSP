@@ -29,7 +29,7 @@ CTEST := ctest
 CPACK := cpack
 
 GIT := git
-ZIP := ZIP
+ZIP := zip
 UNZIP := unzip
 XXD := xxd
 MD5SUM := md5sum
