@@ -14,6 +14,8 @@
 #ifndef STONEYDSP_SIMD_VECTOR_SUPPORT_H_INCLUDED
   #define STONEYDSP_SIMD_VECTOR_SUPPORT_H_INCLUDED
 
+  #include <stoneydsp/core/core.h>
+
   /**
    * Native headers:
    *
