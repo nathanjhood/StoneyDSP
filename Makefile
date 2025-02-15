@@ -385,15 +385,15 @@ VCPKG := $(VCPKG_ROOT)/vcpkg
 
 ifdef DEBUG
 	LIB_CATCH := Catch2d
-	LIB_CATCH_PATH := build/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/debug/lib
-	# PKG_CONFIG_PATH +=build/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/debug/lib/pkgconfig
+	LIB_CATCH_PATH := $(BUILD_DIR)/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/debug/lib
+	# PKG_CONFIG_PATH +=$(BUILD_DIR)/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/debug/lib/pkgconfig
 else
 	LIB_CATCH := Catch2
-	LIB_CATCH_PATH := build/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/lib
-	# PKG_CONFIG_PATH +=build/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/lib/pkgconfig
+	LIB_CATCH_PATH := $(BUILD_DIR)/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/lib
+	# PKG_CONFIG_PATH +=$(BUILD_DIR)/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/lib/pkgconfig
 endif
 
-INCLUDES += -Ibuild/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/include
+INCLUDES += -I$(BUILD_DIR)/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/include
 
 ifeq ($(BUILD_TEST),1)
 	LDFLAGS += -L$(LIB_CATCH_PATH)
