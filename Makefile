@@ -29,7 +29,7 @@ CTEST := ctest
 CPACK := cpack
 
 GIT := git
-ZIP := ZIP
+ZIP := zip
 UNZIP := unzip
 XXD := xxd
 MD5SUM := md5sum
@@ -385,15 +385,15 @@ VCPKG := $(VCPKG_ROOT)/vcpkg
 
 ifdef DEBUG
 	LIB_CATCH := Catch2d
-	LIB_CATCH_PATH := build/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/debug/lib
-	# PKG_CONFIG_PATH +=build/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/debug/lib/pkgconfig
+	LIB_CATCH_PATH := $(BUILD_DIR)/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/debug/lib
+	# PKG_CONFIG_PATH +=$(BUILD_DIR)/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/debug/lib/pkgconfig
 else
 	LIB_CATCH := Catch2
-	LIB_CATCH_PATH := build/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/lib
-	# PKG_CONFIG_PATH +=build/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/lib/pkgconfig
+	LIB_CATCH_PATH := $(BUILD_DIR)/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/lib
+	# PKG_CONFIG_PATH +=$(BUILD_DIR)/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/lib/pkgconfig
 endif
 
-INCLUDES += -Ibuild/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/include
+INCLUDES += -I$(BUILD_DIR)/vcpkg_installed/$(TRIPLET_ARCH)-$(TRIPLET_OS)/include
 
 ifeq ($(BUILD_TEST),1)
 	LDFLAGS += -L$(LIB_CATCH_PATH)
@@ -556,7 +556,7 @@ $(BUILD_DIR)/include: $(CMAKE_CACHE)
 ## <CC>
 
 ## '*.c' - Pre-Processor
-$(BUILD_DIR)/src/%.c.i: $(SRC_DIR)/%.c $(BUILD_DIR)/include
+$(BUILD_DIR)/src/%.c.i: $(SRC_DIR)/%.c
 	@echo
 	@echo Building target: $@
 	@mkdir -p $(dir $@)
@@ -589,7 +589,7 @@ $(BUILD_DIR)/src/%.c.o: $(BUILD_DIR)/src/%.c.s
 ## <CXX>
 
 ## '*.cpp.i' - Pre-Processor
-$(BUILD_DIR)/src/%.cpp.i: $(SRC_DIR)/%.cpp $(BUILD_DIR)/include
+$(BUILD_DIR)/src/%.cpp.ii: $(SRC_DIR)/%.cpp
 	@echo
 	@echo Building target: $@
 	@mkdir -p $(dir $@)
@@ -598,7 +598,7 @@ $(BUILD_DIR)/src/%.cpp.i: $(SRC_DIR)/%.cpp $(BUILD_DIR)/include
 	@echo
 
 ## '*.cpp.s' - Assembler
-$(BUILD_DIR)/src/%.cpp.s: $(BUILD_DIR)/src/%.cpp.i
+$(BUILD_DIR)/src/%.cpp.s: $(BUILD_DIR)/src/%.cpp.ii
 	@echo
 	@echo Building target: $@
 	@mkdir -p $(dir $@)
@@ -619,13 +619,13 @@ $(BUILD_DIR)/src/%.cpp.o: $(BUILD_DIR)/src/%.cpp.s
 # $(BUILD_DIR)/src/%.cpp.d: $(SRC_DIR)/%.cpp
 # 	@echo Building target: $@
 # 	@mkdir -p $(dir $@)
-# 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) $(FLAGS) $(DEFINES) $(INCLUDES) -x c++ -MM -MF $@ -MT $(@:.d=.o) $<
+# 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -x c++ -MM -MF $@ -MT $(@:.d=.o) $<
 # -include $(DEPS)
 
 ## <OBJC>
 
 ## '*.m.i' - Pre-Processor
-$(BUILD_DIR)/src/%.m.i: $(SRC_DIR)/%.m $(BUILD_DIR)/include
+$(BUILD_DIR)/src/%.m.mi: $(SRC_DIR)/%.m
 	@echo
 	@echo Building target: $@
 	@mkdir -p $(dir $@)
@@ -634,7 +634,7 @@ $(BUILD_DIR)/src/%.m.i: $(SRC_DIR)/%.m $(BUILD_DIR)/include
 	@echo
 
 ## '*.m.s' - Assembler
-$(BUILD_DIR)/src/%.m.s: $(BUILD_DIR)/src/%.m.i
+$(BUILD_DIR)/src/%.m.s: $(BUILD_DIR)/src/%.m.mi
 	@echo
 	@echo Building target: $@
 	@mkdir -p $(dir $@)
@@ -653,7 +653,7 @@ $(BUILD_DIR)/src/%.m.o: $(BUILD_DIR)/src/%.m.s
 
 ## <OBJCXX>
 ## '*.mm.i' - Pre-Processor
-$(BUILD_DIR)/src/%.mm.i: $(SRC_DIR)/%.mm $(BUILD_DIR)/include
+$(BUILD_DIR)/src/%.mm.mii: $(SRC_DIR)/%.mm
 	@echo
 	@echo Building target: $@
 	@mkdir -p $(dir $@)
@@ -662,7 +662,7 @@ $(BUILD_DIR)/src/%.mm.i: $(SRC_DIR)/%.mm $(BUILD_DIR)/include
 	@echo
 
 ## '*.mm.s' - Assembler
-$(BUILD_DIR)/src/%.mm.s: $(BUILD_DIR)/src/%.mm.i
+$(BUILD_DIR)/src/%.mm.s: $(BUILD_DIR)/src/%.mm.mii
 	@echo
 	@echo Building target: $@
 	@mkdir -p $(dir $@)
